@@ -14,3 +14,4 @@ Collaborators
 - Stefan Kurzbauer &lt;st.kurzbauer@gmail.com&gt;
 - Simon Lehner-Dittenberger &lt;simon.lehnerd@gmail.com&gt;
 - Lukas Wallenböck &lt;lukas.wallenboeck@outlook.at&gt;
+- Thomas Rapberger &lt;thomas.rapberger@hotmail.com &gt;
