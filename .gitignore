@@ -81,3 +81,16 @@ buildNumber.properties
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+
+# Created by https://www.gitignore.io/api/netbena,netbeans
+
+#!! ERROR: netbena is undefined. Use list command to see defined gitignore types !!#
+
+### NetBeans ###
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
