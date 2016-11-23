@@ -8,10 +8,14 @@
     <artifactId>core</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
-    <name>Geocaching Tools</name>
+    <name>geocachingtools</name>
 
     <modules>
         <module>geoui</module>
+        <module>geoutil</module>
+        <module>validator</module>
+        <module>imagedecoder</module>
+        <module>stringdecoder</module>
     </modules>
 
     <build>

@@ -8,7 +8,7 @@
         <version>1.0</version>
     </parent>
 
-    <name>Geo UI</name>
+    <name>geoui</name>
     <artifactId>geoui</artifactId>
     <modelVersion>4.0.0</modelVersion>
     <packaging>war</packaging>
