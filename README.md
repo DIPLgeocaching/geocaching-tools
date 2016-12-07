@@ -1,4 +1,4 @@
-# Geocaching-Tools
+# Geocaching-Tools ![alt text][logo]
 
 Diplomarbeit 2016/17
 
@@ -15,3 +15,5 @@ Collaborators
 - Simon Lehner-Dittenberger &lt;simon.lehnerd@gmail.com&gt;
 - Lukas Wallenböck &lt;lukas.wallenboeck@outlook.at&gt;
 - Thomas Rapberger &lt;thomas.rapberger@hotmail.com &gt;
+
+[logo]: https://raw.githubusercontent.com/DIPLgeocaching/geocaching-tools/develop/README.md "Projektlogo"
