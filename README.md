@@ -1,4 +1,4 @@
-#  Geocaching-Tools <img src="https://raw.githubusercontent.com/DIPLgeocaching/geocaching-tools/develop/fav.png" width="48">
+#  Geocaching-Tools <img src="https://raw.githubusercontent.com/DIPLgeocaching/geocaching-tools/develop/logo.png" height="48">
 
 Projekt und Diplomarbeiten 2016/17
 
