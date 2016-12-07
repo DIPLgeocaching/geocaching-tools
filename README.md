@@ -1,6 +1,6 @@
 # Geocaching-Tools ![alt text][logo]
 
-Diplomarbeit 2016/17
+Projekt und Diplomarbeiten 2016/17
 
 # Impressum
 HTBLuVA St. Pölten
@@ -16,4 +16,4 @@ Collaborators
 - Lukas Wallenböck &lt;lukas.wallenboeck@outlook.at&gt;
 - Thomas Rapberger &lt;thomas.rapberger@hotmail.com &gt;
 
-[logo]: https://raw.githubusercontent.com/DIPLgeocaching/geocaching-tools/develop/README.md "Projektlogo"
+[logo]: https://raw.githubusercontent.com/DIPLgeocaching/geocaching-tools/develop/logo.png "Projektlogo"
