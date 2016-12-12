@@ -14,8 +14,7 @@
         <module>geoui</module>
         <module>geoutil</module>
         <module>validator</module>
-        <module>imagedecoder</module>
-        <module>stringdecoder</module>
+        <module>decoder</module>
     </modules>
 
     <build>
