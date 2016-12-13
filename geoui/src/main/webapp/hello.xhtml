@@ -11,7 +11,36 @@
     <h:body>
         <h2>Geocaching Tools</h2>
         <h:form>
-            <h:outputText value="#{helloBean.name}"></h:outputText>
+            <h:inputTextarea value="#{helloBean.inputText}"></h:inputTextarea>
+
+            <h:inputTextarea value="#{helloBean.passwords}"></h:inputTextarea>
+
+            <h:dataTable id="methodtable"
+                         var="method"
+                         value="#{helloBean.methods}">
+                <h:column>
+                    <f:facet name="header">Name</f:facet>
+                    <h:outputText value="#{method.name}"></h:outputText>
+                </h:column>    
+                <h:column>
+                    <f:facet name="header">Requires Password</f:facet>
+                    <h:outputText value="#{method.requiresPassword}"></h:outputText>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Type</f:facet>
+                    <h:outputText value="#{method.type}"></h:outputText>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Use This Method</f:facet>
+                    <h:selectBooleanCheckbox value="#{helloBean.map[method]}"></h:selectBooleanCheckbox>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Result</f:facet>
+                    <h:outputText value="#{helloBean.results[method]}"></h:outputText>
+                </h:column>
+            </h:dataTable>
+            <h:messages/>
+            <h:commandButton value="Submit" action="#{helloBean.doit}" />
         </h:form>
     </h:body>
 </html>

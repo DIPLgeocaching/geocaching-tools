@@ -14,6 +14,11 @@
     <packaging>war</packaging>
     <dependencies>
         <dependency>
+            <groupId>org.geocachingtools</groupId>
+            <artifactId>decoder</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
             <groupId>javax.faces</groupId>
             <artifactId>jsf-api</artifactId>
             <version>2.1</version>
