@@ -9,10 +9,10 @@ package org.geocachingtools.decoder;
  *
  * @author Simon
  */
-public class DecoderResult {
-    private DecoderMethod method;
-    private String result;
-    private Double relevance;
+public class DecoderResult implements Comparable<DecoderResult> {
+    private final DecoderMethod method;
+    private final String result;
+    private final Double relevance;
 
     public DecoderResult(DecoderMethod method, String result, Double relevance) {
         this.method = method;
@@ -30,6 +30,11 @@ public class DecoderResult {
 
     public String getResult() {
         return result;
+    }
+
+    @Override
+    public int compareTo(DecoderResult o) {
+        return relevance.compareTo(o.relevance);
     }
     
     

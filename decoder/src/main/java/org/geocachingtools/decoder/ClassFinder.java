@@ -19,7 +19,14 @@ import java.util.jar.JarFile;
 
 public class ClassFinder {
 
-    public static ArrayList<String> findNames(String packageName) throws IOException, URISyntaxException {
+    /**
+     * Given a package name this method returns all the contained class names (only the names, without the package)
+     * @param packageName
+     * @return
+     * @throws IOException
+     * @throws URISyntaxException
+     */
+    public static List<String> findNames(String packageName) throws IOException, URISyntaxException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         URL packageURL;
         ArrayList<String> names = new ArrayList<>();
@@ -62,6 +69,14 @@ public class ClassFinder {
         return names;
     }
 
+    /**
+     * Given a package this method returns all the contained classes.
+     * @param pack
+     * @return 
+     * @throws ClassNotFoundException
+     * @throws IOException
+     * @throws URISyntaxException 
+     */
     public static List<Class<?>> find(String pack) throws ClassNotFoundException, IOException, URISyntaxException {
         List<Class<?>> f = new ArrayList<>();
         for (String s : findNames(pack)) {

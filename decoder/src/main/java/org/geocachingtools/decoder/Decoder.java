@@ -5,9 +5,7 @@
  */
 package org.geocachingtools.decoder;
 
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,7 +17,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.geocachingtools.decoder.methods.DecoderMethodTest;
 /**
  *
  * @author Simon
@@ -33,7 +30,6 @@ public class Decoder {
         //DECODER_INSTANCE.methods.put(String.class, Arrays.asList(new DecoderMethodTest()));
         try {
             List<Class<?>> classes = ClassFinder.find(DECODER_METHOD_PACKAGE);
-            System.out.println(classes);
             for(Class<?> c : classes) {
                 Method annotation = c.getAnnotation(Method.class);
                 if(annotation != null) {
@@ -41,6 +37,7 @@ public class Decoder {
                     if(list == null)
                         list = new ArrayList<>();
                     list.add((DecoderMethod) c.newInstance());
+                    Logger.getLogger(Decoder.class.getName()).log(Level.INFO, "Found new decoder method {0}", c.getName());
                     DECODER_INSTANCE.methods.put(annotation.type(), list);
                 }
             }
