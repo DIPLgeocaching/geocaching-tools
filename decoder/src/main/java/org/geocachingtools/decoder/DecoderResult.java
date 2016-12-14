@@ -11,14 +11,20 @@ package org.geocachingtools.decoder;
  */
 public class DecoderResult implements Comparable<DecoderResult> {
     private final DecoderMethod method;
-    private final String result;
+    private final String fullResult, briefResult;
     private final Double relevance;
 
-    public DecoderResult(DecoderMethod method, String result, Double relevance) {
+    public DecoderResult(DecoderMethod method, String fullResult, Double relevance) {
+        this(method,fullResult,null,relevance);
+    }
+
+    public DecoderResult(DecoderMethod method, String fullResult, String briefResult, Double relevance) {
         this.method = method;
-        this.result = result;
+        this.fullResult = fullResult;
+        this.briefResult = briefResult;
         this.relevance = relevance;
     }
+    
 
     public DecoderMethod getMethod() {
         return method;
@@ -28,8 +34,12 @@ public class DecoderResult implements Comparable<DecoderResult> {
         return relevance;
     }
 
-    public String getResult() {
-        return result;
+    public String getBriefResult() {
+        return briefResult;
+    }
+    
+    public String getFullResult() {
+        return fullResult;
     }
 
     @Override

@@ -12,6 +12,7 @@ import java.util.Map;
 import org.geocachingtools.decoder.Decoder;
 import org.geocachingtools.decoder.DecoderMethod;
 import org.geocachingtools.decoder.DecoderRequest;
+import org.geocachingtools.decoder.DecoderResult;
 
 @ManagedBean
 @SessionScoped
@@ -19,6 +20,7 @@ public class HelloBean implements Serializable {
 
     private Map<DecoderMethod, Boolean> map = new HashMap<>();
     private Map<DecoderMethod, String> results = new HashMap<>();
+    private Map<DecoderMethod, String> briefs = new HashMap<>();
     private String inputText = "";
     private String passwords = "";
 
@@ -28,6 +30,10 @@ public class HelloBean implements Serializable {
 
     public Map<DecoderMethod, String> getResults() {
         return results;
+    }
+
+    public Map<DecoderMethod, String> getBriefs() {
+        return briefs;
     }
 
     public String getInputText() {
@@ -75,7 +81,9 @@ public class HelloBean implements Serializable {
                         Arrays.asList(passwords.split("\n"))
                 );
                 //schicke request synchron ab
-                results.put(entry.getKey(), entry.getKey().decode(request).getResult());
+                DecoderResult result = entry.getKey().decode(request);
+                results.put(entry.getKey(), result.getFullResult());
+                briefs.put(entry.getKey(), result.getBriefResult());
             }
         }
     }

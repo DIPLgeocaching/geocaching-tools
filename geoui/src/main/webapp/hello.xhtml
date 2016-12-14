@@ -35,8 +35,15 @@
                     <h:selectBooleanCheckbox value="#{helloBean.map[method]}"></h:selectBooleanCheckbox>
                 </h:column>
                 <h:column>
+                    <f:facet name="header">Brief Result</f:facet>
+                    <h:outputText value="#{helloBean.briefs[method]}"></h:outputText>
+                </h:column>
+                <h:column>
                     <f:facet name="header">Result</f:facet>
-                    <h:outputText value="#{helloBean.results[method]}"></h:outputText>
+                    <div style="cursor: pointer; text-decoration: blue underline;" onclick="spoiler_#{method.cleanName}.style.display = ((spoiler_#{method.cleanName}.style.display==='none') ? 'inherit' : 'none')">Spoiler</div>
+                    <div id="spoiler_#{method.cleanName}" style="display: none;">
+                        <h:outputText value="#{helloBean.results[method]}"></h:outputText>
+                    </div>
                 </h:column>
             </h:dataTable>
             <h:messages/>

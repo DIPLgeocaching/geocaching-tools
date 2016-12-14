@@ -25,6 +25,10 @@ public abstract class DecoderMethod<T> implements Comparable<DecoderMethod<T>> {
     public final String getName() {
         return this.getClass().getAnnotation(Method.class).name();
     }
+    public final String getCleanName() {
+        return getName().replace(" ", "").replace("\t","").replace("\n","");
+    }
+    
     public final Class<?> getType() {
         return this.getClass().getAnnotation(Method.class).type();
     }

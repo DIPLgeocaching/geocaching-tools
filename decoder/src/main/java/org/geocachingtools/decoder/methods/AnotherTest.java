@@ -19,7 +19,7 @@ public class AnotherTest extends DecoderMethod<String> {
 
     @Override
     public DecoderResult decode(DecoderRequest<String> request) {
-        return new DecoderResult(this, "Hallo Welt result für Passwörter: " + request.getPasswords().toString(), 0.0);
+        return new DecoderResult(this, "","Hallo Welt result für Passwörter: " + request.getPasswords().toString(), 0.0);
     }
     
 }

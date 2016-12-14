@@ -21,6 +21,7 @@ public class DecoderMethodTest extends DecoderMethod<String>{
     public DecoderResult decode(DecoderRequest<String> request) {
         return new DecoderResult(
                 this,
+                "",
                 "Das ist ein Test: " + request.getData().replace("<", "").replace("\"", "").replace("'", ""),
                 1.0
         );

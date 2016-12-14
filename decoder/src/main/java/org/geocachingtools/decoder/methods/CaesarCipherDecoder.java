@@ -21,12 +21,12 @@ import org.geocachingtools.validator.DictionaryValidator;
  * @author Simon
  */
 @Method(
-        name="Caesar Cipher",
+        name = "Caesar Cipher",
         requiresPassword = false,
         expectedExecutionTime = FAST,
         type = String.class
 )
-public class CaesarCipherDecoder extends DecoderMethod<String>{
+public class CaesarCipherDecoder extends DecoderMethod<String> {
 
     DictionaryValidator validator;
 
@@ -40,36 +40,37 @@ public class CaesarCipherDecoder extends DecoderMethod<String>{
             Logger.getLogger(CaesarCipherDecoder.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public char shift(char ch, int n) {
-        if(Character.isAlphabetic(ch)) {
-            if(Character.isUpperCase(ch)) {
+        if (Character.isAlphabetic(ch)) {
+            if (Character.isUpperCase(ch)) {
                 return (char) ((((ch - 'A') + n) % 26) + 'A');
             }
-            if(Character.isLowerCase(ch)) {
+            if (Character.isLowerCase(ch)) {
                 return (char) ((((ch - 'a') + n) % 26) + 'a');
             }
         }
         return ch;
     }
-    
+
     @Override
     public DecoderResult decode(DecoderRequest<String> request) {
         String data = request.getData();
         StringBuilder result = new StringBuilder();
-        for(int n = 1; n < 26; n++) {
+        StringBuilder brief = new StringBuilder();
+        for (int n = 1; n < 26; n++) {
             StringBuilder tmp = new StringBuilder();
-            for(char c : data.toCharArray()) {
+            for (char c : data.toCharArray()) {
                 tmp.append(shift(c, n));
             }
-            result.append(String.format("rot-%02d: ", n));
-            result.append(tmp.toString());
-            result.append("\"");
-            result.append(validator.check(tmp.toString()));
-            result.append("<br>\n");
-            
+            double rel = validator.check(tmp.toString());
+            String str = String.format("rot-%02d: \"%s\" %f<br>\n", n, tmp.toString(), rel);
+            result.append(str);
+            if (rel > 0.8) {
+                brief.append(str);
+            }
         }
-        return new DecoderResult(this, result.toString(), 0.0);
+        return new DecoderResult(this, result.toString(),brief.toString(), 0.0);
     }
-    
+
 }
