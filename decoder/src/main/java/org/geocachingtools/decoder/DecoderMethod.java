@@ -10,7 +10,13 @@ package org.geocachingtools.decoder;
  * @author Simon
  * @param <T>
  */
-public abstract class DecoderMethod<T> {
+public abstract class DecoderMethod<T> implements Comparable<DecoderMethod<T>> {
+    
+    public static enum ExecutionTime {
+        SLOW,NORMAL,FAST
+    }
+    
+    
     public abstract DecoderResult decode(DecoderRequest<T> request);
     
     public final boolean getRequiresPassword() {
@@ -21,6 +27,22 @@ public abstract class DecoderMethod<T> {
     }
     public final Class<?> getType() {
         return this.getClass().getAnnotation(Method.class).type();
+    }
+    public final ExecutionTime getExpectedExecutionTime(){
+        return this.getClass().getAnnotation(Method.class).expectedExecutionTime();
+    }
+
+    public DecoderMethod() {
+    }
+
+    @Override
+    public int compareTo(DecoderMethod<T> o) {
+        int result = o.getExpectedExecutionTime().compareTo(getExpectedExecutionTime());
+        //Two different decoder methods with the same priority must not return 0 because a SortedSet would not allow these 'duplicates'
+        //Therefore we have to add another sorting criteria.
+        if(result == 0)
+            result = o.getName().compareTo(getName());
+        return result;
     }
 
     @Override

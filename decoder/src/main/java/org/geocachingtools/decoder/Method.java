@@ -20,4 +20,6 @@ public @interface Method {
     String name();
     boolean requiresPassword() default false;
     Class<?> type();
+    DecoderMethod.ExecutionTime expectedExecutionTime() default DecoderMethod.ExecutionTime.NORMAL;
+    
 }
