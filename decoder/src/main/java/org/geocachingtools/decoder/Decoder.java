@@ -5,6 +5,8 @@
  */
 package org.geocachingtools.decoder;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,7 +29,6 @@ public class Decoder {
     private static final String DECODER_METHOD_PACKAGE = "org.geocachingtools.decoder.methods";
     static {
         DECODER_INSTANCE = new Decoder();
-        //DECODER_INSTANCE.methods.put(String.class, Arrays.asList(new DecoderMethodTest()));
         try {
             List<Class<?>> classes = ClassFinder.find(DECODER_METHOD_PACKAGE);
             for(Class<?> c : classes) {
@@ -41,7 +42,7 @@ public class Decoder {
                     DECODER_INSTANCE.methods.put(annotation.type(), list);
                 }
             }
-        } catch (Exception ex) {
+        } catch (IOException | ClassNotFoundException | IllegalAccessException | InstantiationException | URISyntaxException ex) {
             Logger.getLogger(Decoder.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

@@ -10,7 +10,7 @@ package org.geocachingtools.decoder;
  * @author Simon
  * @param <T>
  */
-public abstract class DecoderMethod<T> implements Comparable<DecoderMethod<T>> {
+public abstract class DecoderMethod<T> implements Comparable<DecoderMethod> {
     
     public static enum ExecutionTime {
         SLOW,NORMAL,FAST
@@ -40,7 +40,7 @@ public abstract class DecoderMethod<T> implements Comparable<DecoderMethod<T>> {
     }
 
     @Override
-    public int compareTo(DecoderMethod<T> o) {
+    public int compareTo(DecoderMethod o) {
         int result = o.getExpectedExecutionTime().compareTo(getExpectedExecutionTime());
         //Two different decoder methods with the same priority must not return 0 because a SortedSet would not allow these 'duplicates'
         //Therefore we have to add another sorting criteria.
