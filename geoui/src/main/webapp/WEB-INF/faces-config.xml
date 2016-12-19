@@ -10,7 +10,7 @@
             <supported-locale>de</supported-locale>
         </locale-config>
         <resource-bundle>
-            <base-name>org.geocachingtools.geoui.i18n.i18n</base-name>
+            <base-name>i18n</base-name>
             <var>i18n</var>
         </resource-bundle>
     </application>
