@@ -17,38 +17,32 @@
         <h:body>
             <nav class="navbar navbar-inverse">
                 <div class="container-fluid">
-                    
+
                     <div class="navbar-header">
                         <a href="#">
                             <img onclick="" src="res\logo.png" title="Startseite" height="100" width="210" style="margin: 10px 20px 10px 10px"/>
                         </a>
                     </div>
 
-                    <div class="navbar-collapse">
-                        <a href="#" class="btn btn-primary" style="margin-bottom: -160px">Primary</a>
-                        <a href="#" class="btn btn-primary" style="margin-bottom: -160px">Primary</a>
-                        
+                    <div class="navbar-collapse" >
+
+                        <a href="home.xhtml" class="btn btn-primary" style="margin-bottom: -160px"><h:outputText value="#{i18n['home']}"/></a>
+                        <a href="#" class="btn btn-primary" style="margin-bottom: -160px"><h:outputText value="#{i18n['textEnt']}"/></a>
+                        <a href="#" class="btn btn-primary" style="margin-bottom: -160px"><h:outputText value="#{i18n['bildEnt']}"/></a>
+                        <a href="#" class="btn btn-primary" style="margin-bottom: -160px"><h:outputText value="#{i18n['geochecker']}"/></a>
+                        <a href="#" class="btn btn-primary" style="margin-bottom: -160px"><h:outputText value="#{i18n['userEinladen']}"/></a>
+
                         <div class="nav navbar-nav navbar-right">
                             <h:form>
-                                <h:commandButton action="#{localeCon.setLocaleEN()}"  image="res\eng-flag.ico" style="height: 30px; width: 35px; margin-top: 60px"/>
-                                <h:commandButton action="#{localeCon.setLocaleDE()}"  image="res\ger-flag.ico" style="height: 30px; width: 35px"/>
+                                <h:commandButton action="#{localeCon.setLocaleEN()}"  image="res\flags\eng-flag.ico" style="height: 30px; width: 35px; margin-top: 60px"/>
+                                <h:commandButton action="#{localeCon.setLocaleDE()}"  image="res\flags\ger-flag.ico" style="height: 30px; width: 35px"/>
+                                <a href="#" class="btn btn-primary"><h:outputText value="#{i18n['logout']}"/></a>
                             </h:form>  
+
                         </div>
                     </div>
                 </div>
             </nav>
-
-
-            <div id="container" class="container">
-                <ui:insert name="content">
-                    <h1>Test</h1>
-                    <button class="btn btn-success">Test</button>
-                </ui:insert>
-            </div>
-
-            <footer>
-                <p>Footer</p>
-            </footer>
         </h:body>
     </f:view>
 </html>
