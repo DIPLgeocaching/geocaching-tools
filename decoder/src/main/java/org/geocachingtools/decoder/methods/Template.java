@@ -15,7 +15,7 @@ import org.geocachingtools.decoder.Method;
  * @author Simon
  */
 @Method(name="HalloWelt",requiresPassword = true,type=String.class)
-public class AnotherTest extends DecoderMethod<String> {
+public class Template extends DecoderMethod<String> {
 
     @Override
     public DecoderResult decode(DecoderRequest<String> request) {

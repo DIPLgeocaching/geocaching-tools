@@ -39,10 +39,10 @@ public class DecoderResult implements Comparable<DecoderResult> {
         this(method, fullResult, null, relevance);
     }
 
-    public DecoderResult(DecoderMethod method, String fullResult, String briefResult, Double relevance) {
+    public DecoderResult(DecoderMethod method, String briefResult, String fullResult, Double relevance) {
         this.method = method;
-        this.fullResult = fullResult;
         this.briefResult = briefResult;
+        this.fullResult = fullResult;
         this.relevance = relevance;
     }
 
