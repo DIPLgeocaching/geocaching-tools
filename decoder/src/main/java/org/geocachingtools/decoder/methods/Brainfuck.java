@@ -39,7 +39,7 @@ public class Brainfuck extends DecoderMethod<String> {
         try{
             String result = interpret(request.getData());
             //TODO: Validate
-            return new DecoderResult(this, "NO VALIDATION AVAILABLE ATM","HUGO:"+result, 0.0);
+            return new DecoderResult(this, "NO VALIDATION AVAILABLE ATM",result, 0.0);
         }catch(UnsupportedOperationException e){
             return new DecoderResult(this, "No input ',' for brainfuck supported","", 0.0);
         }        
