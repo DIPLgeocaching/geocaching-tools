@@ -5,8 +5,6 @@
  */
 package org.geocachingtools.decoder.methods;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.geocachingtools.decoder.DecoderMethod;
 import static org.geocachingtools.decoder.DecoderMethod.ExecutionTime.FAST;
 import org.geocachingtools.decoder.DecoderRequest;
@@ -26,7 +24,6 @@ import org.geocachingtools.validator.ValidatorResult;
         expectedExecutionTime = FAST,
         type = String.class
 )
-@Named
 public class CaesarCipherDecoder extends DecoderMethod<String> {
 
 
