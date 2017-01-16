@@ -30,7 +30,7 @@ import org.geocachingtools.decoder.*;
  *
  * @author Kurzbauer
  */
-@Method(name="HalloWelt",requiresPassword = false,type=String.class)
+@Method(name="Brainfuck",requiresPassword = false,type=String.class)
 public class Brainfuck extends DecoderMethod<String> {
     private static final int LENGTH = 65535;
     
@@ -38,7 +38,8 @@ public class Brainfuck extends DecoderMethod<String> {
     public DecoderResult decode(DecoderRequest<String> request) {
         try{
             String result = interpret(request.getData());
-            return new DecoderResult(this, "NO VALIDATION AVAILABLE ATM",result, 0.0);
+            //TODO: Validate
+            return new DecoderResult(this, "NO VALIDATION AVAILABLE ATM","HUGO:"+result, 0.0);
         }catch(UnsupportedOperationException e){
             return new DecoderResult(this, "No input ',' for brainfuck supported","", 0.0);
         }        
@@ -64,7 +65,7 @@ public class Brainfuck extends DecoderMethod<String> {
             } else if(code.charAt(i) == '-') {
                 mem[dataPointer]--;
             } else if(code.charAt(i) == '.') {
-                System.out.print((char) mem[dataPointer]);
+                output.append((char) mem[dataPointer]);
             } else if(code.charAt(i) == ',') {
                 throw new UnsupportedOperationException();
             } else if(code.charAt(i) == '[') {
