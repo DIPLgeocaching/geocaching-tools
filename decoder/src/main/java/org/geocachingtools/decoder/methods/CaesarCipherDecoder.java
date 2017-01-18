@@ -5,16 +5,14 @@
  */
 package org.geocachingtools.decoder.methods;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.geocachingtools.decoder.DecoderMethod;
 import static org.geocachingtools.decoder.DecoderMethod.ExecutionTime.FAST;
 import org.geocachingtools.decoder.DecoderRequest;
 import org.geocachingtools.decoder.DecoderResult;
 import org.geocachingtools.decoder.Method;
-import org.geocachingtools.validator.DictionaryValidator;
+import org.geocachingtools.validator.Validator;
+import org.geocachingtools.validator.ValidatorRequest;
+import org.geocachingtools.validator.ValidatorResult;
 
 /**
  *
@@ -28,18 +26,6 @@ import org.geocachingtools.validator.DictionaryValidator;
 )
 public class CaesarCipherDecoder extends DecoderMethod<String> {
 
-    DictionaryValidator validator;
-
-    public CaesarCipherDecoder() {
-        super();
-        try {
-            System.out.print("Downloading word list ...");
-            this.validator = new DictionaryValidator(new URL("https://raw.githubusercontent.com/dwyl/english-words/master/words.txt"));
-            System.out.println(" done!");
-        } catch (IOException ex) {
-            Logger.getLogger(CaesarCipherDecoder.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
 
     public char shift(char ch, int n) {
         if (Character.isAlphabetic(ch)) {
@@ -55,22 +41,25 @@ public class CaesarCipherDecoder extends DecoderMethod<String> {
 
     @Override
     public DecoderResult decode(DecoderRequest<String> request) {
+        Validator validator = Validator.getInstance();
         String data = request.getData();
         StringBuilder result = new StringBuilder();
         StringBuilder brief = new StringBuilder();
+        double relevance = 0;
         for (int n = 1; n < 26; n++) {
             StringBuilder tmp = new StringBuilder();
             for (char c : data.toCharArray()) {
                 tmp.append(shift(c, n));
             }
-            double rel = validator.check(tmp.toString());
-            String str = String.format("rot-%02d: \"%s\" %f<br>\n", n, tmp.toString(), rel);
+            ValidatorResult rel = validator.check(new ValidatorRequest(tmp.toString()));
+            String str = String.format("rot-%02d: \"%s\" %f<br>\n", n, tmp.toString(), rel.getRelevance());
             result.append(str);
-            if (rel > 0.8) {
+            if (rel.getRelevance() > ValidatorResult.THRESHOLD) {
                 brief.append(str);
             }
+            relevance += rel.getRelevance();
         }
-        return new DecoderResult(this, result.toString(),brief.toString(), 0.0);
+        return new DecoderResult(this, result.toString(),brief.toString(), relevance/25);
     }
 
 }
