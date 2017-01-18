@@ -19,14 +19,21 @@ and open the template in the editor.
                     At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. 
                     Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
                     At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-                <div id="loginDiv" class="">
-                    <a href="registrieren.xhtml" class="btn btn-primary" style="margin-bottom: -160px"><h:outputText value="#{i18n['register']}"/></a>
-
-                </div>
+               
             </ui:define>
-            <ui:define name="leftmenue" >
-                <h2>Left Bar</h2>
-
+            <ui:define name="topBar">
+                <h2>Login</h2>
+                <h:button value="Google Login"/>
+                <br/>
+                <br/>
+                <h:outputText value="Invite Key:  "/>
+                <h:inputText style="background-color: buttonface" />
+                
+                <div>
+                    <h:outputText value="#{i18n['inviteKey']}"/>
+                    <br/>
+                    <h:outputText value="Richten Sie sich an email oder so "/>
+                </div>
             </ui:define>
         </ui:composition>
     </h:body>

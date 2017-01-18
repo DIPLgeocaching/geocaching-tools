@@ -8,14 +8,15 @@ and open the template in the editor.
     Author     : 20120451
 */
 
-.left-bar{
+.top-bar{
     background-color: #f7f7f7;
     position: relative;
     top: -21px;
     left: 0px;
-    border-right: 1px solid;
+    border-bottom: 1px solid;
     border-right-color: black;
-    width: 300px;
+    width: available;
+    height: 200px;
     padding: 10px;
     
 }
