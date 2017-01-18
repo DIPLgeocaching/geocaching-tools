@@ -14,12 +14,12 @@ import org.geocachingtools.decoder.Method;
  *
  * @author Simon
  */
-@Method(name="HalloWelt",requiresPassword = true,type=String.class)
-public class AnotherTest extends DecoderMethod<String> {
+@Method(name="Template",requiresPassword = true,type=String.class)
+public class Template extends DecoderMethod<String> {
 
     @Override
     public DecoderResult decode(DecoderRequest<String> request) {
-        return new DecoderResult(this, "","Hallo Welt result für Passwörter: " + request.getPasswords().toString(), 0.0);
+        return new DecoderResult(this, "Short Result","Long Result, Passwörter: " + request.getPasswords().toString(), 0.0);
     }
     
 }
