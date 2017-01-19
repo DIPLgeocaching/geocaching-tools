@@ -55,7 +55,7 @@ public class CaesarCipherDecoder extends DecoderMethod<String> {
             }
             relevance = Math.max(relevance,rel.getRelevance());
         }
-        return new DecoderResult(this, result.toString(),brief.toString(), relevance);
+        return new DecoderResult(this,brief.toString(),result.toString(), relevance);
     }
 
 }
