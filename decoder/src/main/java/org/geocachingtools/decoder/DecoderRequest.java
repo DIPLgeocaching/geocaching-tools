@@ -7,7 +7,7 @@ package org.geocachingtools.decoder;
 
 import java.util.Collection;
 import java.util.List;
-
+import java.util.Locale;
 
 /**
  *
@@ -19,6 +19,7 @@ public class DecoderRequest<T> {
     private T data;
     private DecoderMethod method;
     private List<String> passwords;
+    private Locale locale;
 
     public DecoderRequest() {
     }
@@ -28,6 +29,15 @@ public class DecoderRequest<T> {
         this.data = data;
         this.method = method;
         this.passwords = passwords;
+        this.locale=Locale.getDefault();
+    }
+
+    public DecoderRequest(Class<T> dataType, T data, DecoderMethod method, List<String> passwords, Locale locale) {
+        this.dataType = dataType;
+        this.data = data;
+        this.method = method;
+        this.passwords = passwords;
+        this.locale = locale;
     }
     
     public T getData() {
@@ -61,4 +71,13 @@ public class DecoderRequest<T> {
     public void setPasswords(List<String> passwords) {
         this.passwords = passwords;
     }
+
+    public Locale getLocale() {
+        return locale;
+    }
+
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
+    
 }

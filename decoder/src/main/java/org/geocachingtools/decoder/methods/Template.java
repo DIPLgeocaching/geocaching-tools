@@ -1,25 +1,30 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.geocachingtools.decoder.methods;
 
-import org.geocachingtools.decoder.DecoderMethod;
-import org.geocachingtools.decoder.DecoderRequest;
-import org.geocachingtools.decoder.DecoderResult;
-import org.geocachingtools.decoder.Method;
+import org.geocachingtools.decoder.*;
+import org.geocachingtools.validator.Validator;
 
 /**
  *
- * @author Simon
+ * @author AwesomeDragon42
  */
-@Method(name="Template",requiresPassword = true,type=String.class)
+@Method(name="Template",
+        type=String.class,
+        requiresPassword = false,
+        expectedExecutionTime = DecoderMethod.ExecutionTime.FAST
+        )
 public class Template extends DecoderMethod<String> {
-
+    private Validator validator = Validator.getInstance();
+    private I18n i18n;
+    
     @Override
     public DecoderResult decode(DecoderRequest<String> request) {
-        return new DecoderResult(this, "Short Result","Long Result, Passwörter: " + request.getPasswords().toString(), 0.0);
+        i18n = new I18n(request.getLocale());
+        String briefResult="",fullResult="";
+        double relevance=0;
+        
+        briefResult=i18n.get("TEST");
+        
+        return new DecoderResult(this, briefResult,fullResult, relevance);
     }
     
 }
