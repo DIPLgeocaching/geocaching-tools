@@ -22,7 +22,7 @@ import java.lang.Math;
 )
 public class CaesarCipherDecoder extends DecoderMethod<String> {
 
-
+    //TODO REFACTOR
     public char shift(char ch, int n) {
         if (Character.isAlphabetic(ch)) {
             if (Character.isUpperCase(ch)) {
