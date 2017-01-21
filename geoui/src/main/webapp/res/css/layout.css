@@ -8,15 +8,19 @@ and open the template in the editor.
     Author     : 20120451
 */
 
-.top-bar{
-    background-color: #f7f7f7;
+* {
+    box-sizing: border-box;
+}
+
+.top_menue{ 
     position: relative;
     top: -21px;
     left: 0px;
     border-bottom: 1px solid;
     border-right-color: black;
     width: available;
-    height: 200px;
-    padding: 10px;
+    height: available;
+    background-color: #E0E7FF;
     
 }
+

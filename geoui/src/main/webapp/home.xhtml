@@ -13,26 +13,34 @@ and open the template in the editor.
 
     <h:body>
         <ui:composition template="/WEB-INF/template.xhtml">
+
             <ui:define name="content">
-                <h1>Vorstellung von uns</h1>
-                <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
-                    At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. 
-                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
-                    At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
-               
+                <div class="container">
+                    <div class="row">
+                        <h1>Vorstellung von uns</h1>
+                        <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
+                            At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. 
+                            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
+                            At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+                    </div>
+                </div>
             </ui:define>
             <ui:define name="topBar">
-                <h2>Login</h2>
-                <h:button value="Google Login"/>
-                <br/>
-                <br/>
-                <h:outputText value="Invite Key:  "/>
-                <h:inputText style="background-color: buttonface" />
-                
-                <div>
-                    <h:outputText value="#{i18n['inviteKey']}"/>
-                    <br/>
-                    <h:outputText value="Richten Sie sich an email oder so "/>
+                <div class="container">
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <h2>Login</h2>
+                            <h4><h:outputText value="Invite Key:  "/></h4>
+                            <h:inputText value="Test"/><br/>
+                            <h:button style="margin-right: 0px;" value="Google Login"/>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <h2><h:outputText value="#{i18n['inviteKey']}"/></h2>
+                            <h:outputText value="Richten Sie sich per Email an..."/>
+                        </div>
+                    </div>
                 </div>
             </ui:define>
         </ui:composition>
