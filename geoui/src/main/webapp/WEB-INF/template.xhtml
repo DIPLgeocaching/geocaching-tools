@@ -26,24 +26,26 @@
                         </a>
                     </div>
 
-                    <div class="navbar-collapse" >
-
-                        <a href="home.xhtml" style="margin-bottom: -160px">
-                            <h:outputText class="btn btn-primary" value="#{i18n['home']}"/>
-                        </a>
-                        <a href="text_decipher.xhtml" style="margin-bottom: -160px">
-                            <h:outputText class="btn btn-primary" value="#{i18n['textEnt']}" rendered="#{userController.loggedIn}"/>
-                        </a>
-                        <a href="pic_decipher.xhtml" style="margin-bottom: -160px">
-                            <h:outputText  class="btn btn-primary"  value="#{i18n['bildEnt']}" rendered="#{userController.loggedIn}"/>
-                        </a>
-                        <a href="#"  style="margin-bottom: -160px">
-                            <h:outputText class="btn btn-primary" value="#{i18n['geochecker']}" rendered="#{not userController.loggedIn}"/>
-                        </a>
-                        <a href="invite_user.xhtml"  style="margin-bottom: -160px">
-                            <h:outputText class="btn btn-primary" value="#{i18n['userEinladen']}" rendered="#{userController.loggedIn}"/>
-                        </a>
-
+                    <div class="navbar-collapse"  >
+                        <ul class="nav navbar-nav">
+                            <div style="margin-top: 20%">
+                                <a href="home.xhtml">
+                                    <h:outputText class="btn btn-primary" value="#{i18n['home']}"/>
+                                </a>
+                                <a href="text_decipher.xhtml">
+                                    <h:outputText class="btn btn-primary" value="#{i18n['textEnt']}" rendered="#{userController.loggedIn}"/>
+                                </a>
+                                <a href="pic_decipher.xhtml" >
+                                    <h:outputText  class="btn btn-primary"  value="#{i18n['bildEnt']}" rendered="#{userController.loggedIn}"/>
+                                </a>
+                                <a href="#">
+                                    <h:outputText class="btn btn-primary" value="#{i18n['geochecker']}" rendered="#{not userController.loggedIn}"/>
+                                </a>
+                                <a href="invite_user.xhtml">
+                                    <h:outputText class="btn btn-primary" value="#{i18n['userEinladen']}" rendered="#{userController.loggedIn}"/>
+                                </a>
+                            </div>  
+                        </ul>
                         <div class="nav navbar-nav navbar-right">
                             <h:form>
                                 <h:commandButton action="#{localeCon.setLocaleEN()}"  image="res\flags\eng-flag.ico" style="height: 30px; width: 35px; margin-top: 60px"/>

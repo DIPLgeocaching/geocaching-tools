@@ -24,3 +24,14 @@ and open the template in the editor.
     
 }
 
+.password-input{
+    position: relative;
+    border-bottom: 1px solid;
+    border-right-color: black;
+    width: 60%;
+    height: 10%;
+}
+
+.selectAll{
+    width: 8%;
+}

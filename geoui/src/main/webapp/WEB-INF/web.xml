@@ -8,6 +8,11 @@
 
     <display-name>JavaServerFaces</display-name>
 
+<!--    <error-page>     
+        <exception-type>javax.faces.application.ViewExpiredException</exception-type>     
+        <location>/home.xhtml</location> 
+    </error-page>-->
+
     <!-- Change to "Production" when you are ready to deploy -->
     <context-param>
         <param-name>javax.faces.PROJECT_STAGE</param-name>

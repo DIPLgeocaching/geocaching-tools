@@ -15,38 +15,67 @@ and open the template in the editor.
     <ui:composition template="/WEB-INF/template.xhtml">
         <ui:define name="content">
             <body>
-                <h:dataTable class="table table-striped table-hover ">
-                    <h:column>
-                        <f:facet name="header">Verfahren</f:facet>
+                <h:form>
+                    <h:dataTable class="table table-striped table-hover ">
+                        <h:column headerClass="selectAll">
+                            <f:facet name="header"><h:selectBooleanCheckbox value=""/><h:outputLabel value="Select All"/></f:facet>
 
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Ergebnis</f:facet>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Verfahren</f:facet>
+                            <h:outputText value="item"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Ergebnis</f:facet>
 
-                    </h:column>
-                </h:dataTable>
+                        </h:column>
+                    </h:dataTable>
+                </h:form>
             </body>
         </ui:define>
 
         <ui:define name="topBar">
+            <div class="containter">
+                <h2><h:outputText value="#{i18n['bildEnt']}"/></h2>
+                <div class="row">
+                    <h:form>
+                        <div class="col-sm-1"></div>
+                        <div class="col-sm-6">
+                            <h3><h:outputText value="#{i18n['uploadPicture']}"/></h3>
 
-            <h:form>
-                <h:outputText value="#{i18n['bildEnt']}"/>
-                <br/>
-                <h:outputText value="#{i18n['uploadPicture']}"/>
+                            <p:fileUpload fileUploadListener="#{userController.handleFileUpload}" 
+                                          mode="advanced" 
+                                          dragDropSupport="true"
+                                          update="bildMessages" 
+                                          sizeLimit="100000" 
+                                          auto="true" 
+                                          fileLimit="1" 
+                                          allowTypes="/(\.|\/)(gif|jpe?g|png)$/" 
+                                          style="width: 60%;"/>
+                            <br/>
+                            <p:button value="Submit" class="btn btn-primary btn-xs"/>
 
-                <p:fileUpload fileUploadListener="#{userController.handleFileUpload}" mode="advanced" dragDropSupport="true"
-                              update="bildMessages" sizeLimit="100000" auto="true" fileLimit="3" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
-                <p:growl id="bildMessages" showDetail="true" />
+                            <p:growl id="bildMessages" showDetail="true" />
+                        </div>
+                        <div class="col-sm-5">
+                            <h3><h:outputText value="#{i18n['passwortListe']}"/></h3>
+                            <p:inputTextarea rows="3" cols="50" />
+                            <br/>
+                            <p:fileUpload fileUploadListener="#{userController.handleFileUpload}" 
+                                          mode="simple" 
+                                          skinSimple="true" 
+                                          dragDropSupport="false"
+                                          update="passwortListeMessage" 
+                                          sizeLimit="100000" 
+                                          auto="true" 
+                                          allowTypes="/(\.|\/)(txt)$/" 
+                                          multiple="false"/>
 
-                <h:outputText value="#{i18n['passwortListe']}"/>
-                <h:inputText value="Hier kommen die Plain texte rein" /><br/>
-                <p:fileUpload fileUploadListener="#{userController.handleFileUpload}" mode="simple" skinSimple="true" dragDropSupport="false"
-                              update="passwortListeMessage" sizeLimit="100000" auto="true" allowTypes="/(\.|\/)(txt)$/" multiple="false"/>
-
-                <p:growl id="passwortListeMessage" showDetail="true" />
-
-            </h:form>
+                            <p:growl id="passwortListeMessage" showDetail="true" />
+                        </div>
+                    </h:form>
+                </div>
+            </div> 
         </ui:define>
 
     </ui:composition>
