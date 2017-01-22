@@ -10,7 +10,7 @@ import java.lang.Math;
  */
 @Method(name = "Vigenere on ROT0 basis",
         type = String.class,
-        requiresPassword = false,
+        requiresPassword = true,
         expectedExecutionTime = DecoderMethod.ExecutionTime.FAST
 )
 public class Vigenere extends DecoderMethod<String> {
