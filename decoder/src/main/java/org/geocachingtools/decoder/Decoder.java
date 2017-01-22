@@ -83,6 +83,7 @@ public class Decoder {
                 try{
                     return request.getMethod().decode(request);
                 }catch(Exception e){
+                    e.printStackTrace();
                     return new DecoderResult(request.getMethod(),new I18n(request.getLocale()).get("DECODER-EXCEPTION"),"",0.0);
                 }
                 
