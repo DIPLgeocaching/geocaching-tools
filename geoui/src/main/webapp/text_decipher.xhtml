@@ -41,7 +41,14 @@ and open the template in the editor.
                         <div class="col-sm-1"/>
                         <div class="col-sm-6">
                             <h3><h:outputText value="#{i18n['solveText']}"/></h3>
-                            <p:inputTextarea rows="3" cols="50" />
+                            <p:inputTextarea id="textDecryptArea" rows="3" cols="50" />
+                            
+                            <p:tooltip id="textDecryptAreaTooltip" 
+                                       for="textDecryptArea" 
+                                       value="Passwörter werden per Zeilenumbruch getrennt" 
+                                       showEvent="focus" 
+                                       hideEvent="blur" 
+                                       />
                             <br/>
                             <p:button value="Submit" class="btn btn-primary btn-xs"/>
                             <br/>
@@ -49,9 +56,14 @@ and open the template in the editor.
                         </div>
                         <div class="col-sm-5">
                             <h3><h:outputText value="#{i18n['passwortListe']}"/></h3>
-                            <p:inputTextarea rows="3" cols="50" />
+                            <p:inputTextarea id="passwordListArea2" rows="3" cols="50" />
+                            <p:tooltip id="passwordListTooltip2" 
+                                       for="passwordListArea2" 
+                                       value="Passwörter werden per Zeilenumbruch getrennt" 
+                                       showEvent="focus" 
+                                       hideEvent="blur" 
+                                       />
                             <br/>
-                            <!--Lädt das File automatisch hoch-->
                             <!--http://www.primefaces.org/showcase/ui/file/upload/auto.xhtml-->
                             <p:fileUpload fileUploadListener="#{userController.handleFileUpload}"  
                                           mode="simple" 
@@ -59,10 +71,10 @@ and open the template in the editor.
                                           dragDropSupport="false"
                                           update="passwortListeMessage" 
                                           sizeLimit="100000" 
-                                          auto="true" 
+                                          auto="false" 
                                           allowTypes="/(\.|\/)(txt)$/" 
                                           multiple="false"/>
-                            <p:growl id="passwortListeMessage" showDetail="true" />
+
                         </div>
                     </h:form>
                 </div>

@@ -23,11 +23,9 @@ and open the template in the editor.
                         </h:column>
                         <h:column>
                             <f:facet name="header">Verfahren</f:facet>
-                            <h:outputText value="item"/>
                         </h:column>
                         <h:column>
                             <f:facet name="header">Ergebnis</f:facet>
-
                         </h:column>
                     </h:dataTable>
                 </h:form>
@@ -48,18 +46,25 @@ and open the template in the editor.
                                           dragDropSupport="true"
                                           update="bildMessages" 
                                           sizeLimit="100000" 
-                                          auto="true" 
+                                          auto="false" 
                                           fileLimit="1" 
                                           allowTypes="/(\.|\/)(gif|jpe?g|png)$/" 
-                                          style="width: 60%;"/>
+                                          style="width: 60%;
+                                          "/>
                             <br/>
+                            <h:inputText value="URL"/>
                             <p:button value="Submit" class="btn btn-primary btn-xs"/>
-
                             <p:growl id="bildMessages" showDetail="true" />
                         </div>
                         <div class="col-sm-5">
                             <h3><h:outputText value="#{i18n['passwortListe']}"/></h3>
-                            <p:inputTextarea rows="3" cols="50" />
+                            <p:inputTextarea id="passwordListArea" rows="3" cols="50" />
+                            <p:tooltip id="passwordListTooltip" 
+                                       for="passwordListArea" 
+                                       value="Passwörter werden per Zeilenumbruch getrennt" 
+                                       showEvent="focus" 
+                                       hideEvent="blur" 
+                                       position="bottom"/>
                             <br/>
                             <p:fileUpload fileUploadListener="#{userController.handleFileUpload}" 
                                           mode="simple" 
