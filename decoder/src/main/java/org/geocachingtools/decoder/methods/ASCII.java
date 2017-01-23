@@ -18,8 +18,9 @@ public class ASCII extends DecoderMethod<String> {
     private I18n i18n;
 
     /**
-     * The Method that is called by the Decoder.
-     * Multi-threading etc. has to be managed by upper layers of the software.
+     * The Method that is called by the Decoder. Multi-threading etc. has to be
+     * managed by upper layers of the software.
+     *
      * @param request Object
      * @return result Object
      */
@@ -30,7 +31,7 @@ public class ASCII extends DecoderMethod<String> {
         double relevance = 0;
 
         fullResult = decode(request.getData());
-        
+
         relevance = validator.check(new ValidatorRequest(fullResult)).getRelevance();
         if (relevance >= ValidatorResult.THRESHOLD) {
             briefResult = fullResult;
@@ -39,13 +40,14 @@ public class ASCII extends DecoderMethod<String> {
         }
         return new DecoderResult(this, briefResult, fullResult, relevance);
     }
-    
+
     /**
      * The actual decoding
+     *
      * @param ciphertext
      * @return plaintext
      */
-    private String decode(String cipher){
+    private String decode(String cipher) {
         String[] words = cipher.split("[^0-9]");//Split on all characters that are not numeric
         StringBuilder result = new StringBuilder();
 
@@ -58,18 +60,11 @@ public class ASCII extends DecoderMethod<String> {
             }
         }
 
-        //PARSE
-        if (splitWords) {
-            for (String word : words) {
-                String[] chars = word.split("(?<=\\G.{2})");
-                for (String ch : chars) {
-                    if(ch.length()==2)result.append((char)Integer.parseInt(ch));
-                }
-                result.append(" ");
-            }
-        } else {//Every 'word' is only one char
-            for (String ch : words) {
-                if(ch.length()==2)result.append((char)Integer.parseInt(ch));
+        for (String ch : words) {
+            try{
+                result.append((char) Integer.parseInt(ch));
+            }catch(NumberFormatException e ){
+                //NOTHING TO DO
             }
         }
 
