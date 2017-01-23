@@ -30,7 +30,26 @@
                         <a href="#">
                             <img onclick="" src="res\eng-flag.jpg" title="English" height="10" width="18" style="margin: 0 0 -160px 0"/>
                         </a>
-                        <a href="#" class="btn btn-primary" style="margin-bottom: -160px; border-right: 5px">Primary</a>
+
+                        <!-- OAuth-Login -->
+                        <meta name="google-signin-client_id" content="282017452229-165f3htsp7os10s9bk4689lunqm38euj.apps.googleusercontent.com"/>
+                        <script src="https://apis.google.com/js/platform.js" async="true" defer="true"></script>
+                        <script>
+                            function onSignIn(googleUser) {
+                                var id_token = googleUser.getAuthResponse().id_token;
+                                var xhr = new XMLHttpRequest();
+                                xhr.open('POST', 'http://localhost:8080/geoui/OAuthServlet');
+                                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                                xhr.send('idtoken=' + id_token);
+                            }
+
+                            function signOut() {
+                                var auth2 = gapi.auth2.getAuthInstance();
+                                auth2.signOut();
+                            }
+                        </script>
+                        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                        <h:commandButton onclick="signOut();" value="Sign out" class="btn btn-primary"/>
                     </div>
                 </div>
             </div>
