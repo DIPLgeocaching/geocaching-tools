@@ -1,18 +1,19 @@
 package org.geocachingtools.decoder.methods;
 
+import java.nio.charset.StandardCharsets;
 import org.geocachingtools.decoder.*;
 import org.geocachingtools.validator.*;
 
 /**
- *
+ * Decodes Base64 with the java.util.Base64 class
  * @author AwesomeDragon42
  */
-@Method(name = "Template",
+@Method(name = "Base64",
         type = String.class,
         requiresPassword = false,
         expectedExecutionTime = DecoderMethod.ExecutionTime.FAST
 )
-public class Template extends DecoderMethod<String> {
+public class Base64 extends DecoderMethod<String> {
 
     private Validator validator = Validator.getInstance();
     private I18n i18n;
@@ -46,7 +47,7 @@ public class Template extends DecoderMethod<String> {
      * @return plaintext
      */
     private String decode(String cipher){
-        return cipher;
+        return new String(java.util.Base64.getMimeDecoder().decode(cipher.getBytes(StandardCharsets.UTF_8)));
     }
 
 }

@@ -22,7 +22,7 @@ import java.lang.Math;
 )
 public class CaesarCipherDecoder extends DecoderMethod<String> {
 
-
+    //TODO REFACTOR
     public char shift(char ch, int n) {
         if (Character.isAlphabetic(ch)) {
             if (Character.isUpperCase(ch)) {
@@ -55,7 +55,7 @@ public class CaesarCipherDecoder extends DecoderMethod<String> {
             }
             relevance = Math.max(relevance,rel.getRelevance());
         }
-        return new DecoderResult(this, result.toString(),brief.toString(), relevance);
+        return new DecoderResult(this,brief.toString(),result.toString(), relevance);
     }
 
 }
