@@ -7,19 +7,20 @@ import org.geocachingtools.validator.*;
  *
  * @author AwesomeDragon42
  */
-@Method(name = "Template",
+@Method(name = "Atbash",
         type = String.class,
         requiresPassword = false,
         expectedExecutionTime = DecoderMethod.ExecutionTime.FAST
 )
-public class Template extends DecoderMethod<String> {
+public class Atbash extends DecoderMethod<String> {
 
     private Validator validator = Validator.getInstance();
     private I18n i18n;
 
     /**
-     * The Method that is called by the Decoder.
-     * Multi-threading etc. has to be managed by upper layers of the software.
+     * The Method that is called by the Decoder. Multi-threading etc. has to be
+     * managed by upper layers of the software.
+     *
      * @param request Object
      * @return result Object
      */
@@ -30,7 +31,7 @@ public class Template extends DecoderMethod<String> {
         double relevance = 0;
 
         fullResult = decode(request.getData());
-        
+
         relevance = validator.check(new ValidatorRequest(fullResult)).getRelevance();
         if (relevance >= ValidatorResult.THRESHOLD) {
             briefResult = fullResult;
@@ -39,14 +40,25 @@ public class Template extends DecoderMethod<String> {
         }
         return new DecoderResult(this, briefResult, fullResult, relevance);
     }
-    
+
     /**
      * The actual decoding
+     *
      * @param ciphertext
      * @return plaintext
      */
-    private String decode(String cipher){
-        return cipher;
+    private String decode(String cipher) {
+        StringBuilder result = new StringBuilder();
+        for (char c : cipher.toCharArray()) {
+            if ('A' <= c && c <= 'Z') {
+                result.append((char) (('Z' - c) + 'A'));
+            } else if ('a' <= c && c <= 'z') {
+                result.append((char) (('z' - c) + 'a'));
+            } else {
+                result.append(c);
+            }
+        }
+        return result.toString();
     }
 
 }

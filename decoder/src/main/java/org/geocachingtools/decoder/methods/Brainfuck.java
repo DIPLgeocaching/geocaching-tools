@@ -25,6 +25,7 @@
 package org.geocachingtools.decoder.methods;
 
 import org.geocachingtools.decoder.*;
+import org.geocachingtools.validator.*;
 
 /**
  *
@@ -33,15 +34,27 @@ import org.geocachingtools.decoder.*;
 @Method(name="Brainfuck",requiresPassword = false,type=String.class)
 public class Brainfuck extends DecoderMethod<String> {
     private static final int LENGTH = 65535;
+    private Validator validator = Validator.getInstance();
+    private I18n i18n;
     
     @Override
     public DecoderResult decode(DecoderRequest<String> request) {
+        i18n = new I18n(request.getLocale());
+        i18n = new I18n(request.getLocale());
+        String briefResult="",fullResult="";
+        double relevance=0;
+        
         try{
-            String result = interpret(request.getData());
-            //TODO: Validate
-            return new DecoderResult(this, "NO VALIDATION AVAILABLE ATM",result, 0.0);
+            fullResult = interpret(request.getData());
+            relevance = validator.check(new ValidatorRequest(fullResult)).getRelevance();
+            if(relevance >= ValidatorResult.THRESHOLD){
+                briefResult=fullResult;
+            }else{
+                briefResult=i18n.get("LOW-VALIDATOR-RESULT");
+            }
+            return new DecoderResult(this, briefResult,fullResult, relevance);
         }catch(UnsupportedOperationException e){
-            return new DecoderResult(this, "No input ',' for brainfuck supported","", 0.0);
+            return new DecoderResult(this, i18n.get("BRAINFUCK-ERROR"),"", 0.0);
         }        
     }
     
