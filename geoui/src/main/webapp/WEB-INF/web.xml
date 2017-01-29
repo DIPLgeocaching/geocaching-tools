@@ -8,6 +8,11 @@
 
     <display-name>JavaServerFaces</display-name>
 
+<!--    <error-page>     
+        <exception-type>javax.faces.application.ViewExpiredException</exception-type>     
+        <location>/home.xhtml</location> 
+    </error-page>-->
+
     <!-- Change to "Production" when you are ready to deploy -->
     <context-param>
         <param-name>javax.faces.PROJECT_STAGE</param-name>
@@ -16,7 +21,7 @@
 
     <!-- Welcome page -->
     <welcome-file-list>
-        <welcome-file>faces/hello.xhtml</welcome-file>
+        <welcome-file>home.xhtml</welcome-file>
     </welcome-file-list>
 
     <!-- JSF mapping -->
@@ -29,10 +34,6 @@
     <!-- Map these files with JSF -->
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
-        <url-pattern>/faces/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.jsf</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
@@ -43,5 +44,5 @@
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
-
+ 
 </web-app>

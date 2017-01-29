@@ -7,6 +7,7 @@ package org.geocachingtools.geoui.controller;
 
 import java.io.Serializable;
 import java.util.Locale;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
