@@ -5,11 +5,10 @@
  */
 package org.geocachingtools.geoui.controller;
 
-import org.geocachingtools.geoui.models.User;
+import org.geocachingtools.geoui.model.Gctusr;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
-import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import org.primefaces.event.FileUploadEvent;
@@ -25,7 +24,7 @@ public class UserController implements Serializable {
     /**
      * Creates a new instance of UserController
      */
-    private User user;
+    private Gctusr user;
 
     public UserController() {
     }
