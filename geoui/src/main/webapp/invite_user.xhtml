@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"     
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+
+    <ui:composition template="/WEB-INF/template.xhtml">
+        <ui:define name="content">
+            <body>
+                <h:form>
+                    <div class="container">
+                        <div class="row" > 
+                            <div class="col-sm-6">
+                                <h:column>
+                                    <h3><h:outputText value="#{i18n['nachricht']}"/></h3>
+                                    <p:editor/>
+                                </h:column>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <h3><h:outputText value="#{i18n['email']}"/></h3>
+                                <p:inputTextarea rows="3" cols="50"/> <br/>
+                                <p:button value="Submit" class="btn btn-primary btn-xs"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="top_menue" style="margin-top: 3%; border-top: solid 1px">
+                        <h2><h:outputText value="#{i18n['userOverview']}"/></h2>
+                    </div>
+                    <div class="container">
+                        <div class="col-sm-6">
+                            <h:column>
+                                <h3><h:outputText value="#{i18n['eingeladeneUser']}"/></h3>
+                                <h:dataTable>
+                                    <f:facet name="header">E-Mail Adresse</f:facet>
+                                    <h:outputText value="john.doe@gmail.com"/>
+                                </h:dataTable>
+                            </h:column>
+
+                        </div>
+                        <div class="col-sm-6">
+                            <h3><h:outputText value="#{i18n['registrierteUser']}"/></h3>
+                            <h:dataTable>
+                                <h:column>
+                                    <f:facet name="header">E-Mail Adresse</f:facet>
+                                    <h:outputText value="jane.doe@gmail.com"/>
+                                </h:column>
+                            </h:dataTable>
+                        </div>
+                    </div>
+                </h:form>
+            </body>
+
+        </ui:define>
+
+        <ui:define name="topBar">
+
+            <h:form>
+                <h2><h:outputText value="#{i18n['userEinladen']}"/></h2>
+
+                <!--                <div class="container">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                        </div>
+                
+                                    </div>
+                                </div>-->
+
+
+
+            </h:form>
+        </ui:define>
+
+    </ui:composition>
+</html>

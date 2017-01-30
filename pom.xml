@@ -8,10 +8,13 @@
     <artifactId>core</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
-    <name>Geocaching Tools</name>
+    <name>geocachingtools</name>
 
     <modules>
-        <module>ValidityChecker</module>
+        <module>geoui</module>
+        <module>geoutil</module>
+        <module>validator</module>
+        <module>decoder</module>
     </modules>
 
     <build>
@@ -33,7 +36,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>3.8.1</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
