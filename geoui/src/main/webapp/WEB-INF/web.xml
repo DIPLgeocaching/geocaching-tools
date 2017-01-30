@@ -8,7 +8,7 @@
 
     <display-name>JavaServerFaces</display-name>
 
-<!--    <error-page>     
+    <!--    <error-page>     
         <exception-type>javax.faces.application.ViewExpiredException</exception-type>     
         <location>/home.xhtml</location> 
     </error-page>-->
@@ -17,6 +17,11 @@
     <context-param>
         <param-name>javax.faces.PROJECT_STAGE</param-name>
         <param-value>Development</param-value>
+    </context-param>
+    
+    <context-param>
+        <param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
+        <param-value>true</param-value>
     </context-param>
 
     <!-- Welcome page -->
