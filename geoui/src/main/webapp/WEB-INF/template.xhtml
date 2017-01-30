@@ -53,6 +53,13 @@
                                 <a href="#"><h:outputText value="#{i18n['logout']}" class="btn btn-primary" rendered="#{userController.loggedIn}"/></a>
                                 <!--<a href="#"><h:outputText value="{i18n['register']}" class="btn btn-primary" rendered="{not userController.loggedIn}"/></a>-->
                             </h:form> 
+                            
+                            <!-- OAuth-Login -->
+                        <meta name="google-signin-client_id" content="282017452229-165f3htsp7os10s9bk4689lunqm38euj.apps.googleusercontent.com"/>
+                        <script src="https://apis.google.com/js/platform.js" async="true" defer="true"></script>
+                        <script src="res\js\oauth.js"></script>
+                        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                        <h:commandButton onclick="signOut();" value="Sign out" class="btn btn-primary"/>
                         </div>
                     </div>
                 </div>
