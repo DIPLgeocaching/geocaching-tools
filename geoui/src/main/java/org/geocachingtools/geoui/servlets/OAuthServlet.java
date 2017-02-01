@@ -37,11 +37,15 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.geocachingtools.geoui.controller.LocaleController;
+import org.geocachingtools.geoui.model.Gctusr;
+import org.geocachingtools.geoui.util.Dao;
 
 /**
  *
@@ -51,6 +55,9 @@ import javax.servlet.http.HttpServletResponse;
 public class OAuthServlet extends HttpServlet {
 
     private final String CLIENT_ID = "282017452229-165f3htsp7os10s9bk4689lunqm38euj.apps.googleusercontent.com";
+    private final Dao dao = (Dao) this.getServletContext().getAttribute("dao");
+    @Inject
+    private LocaleController localCon;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -85,14 +92,16 @@ public class OAuthServlet extends HttpServlet {
                 String email = payload.getEmail();
                 boolean emailVerified = payload.getEmailVerified();
                 String name = (String) payload.get("name");
-                String pictureUrl = (String) payload.get("picture");
                 String locale = (String) payload.get("locale");
-                String familyName = (String) payload.get("family_name");
-                String givenName = (String) payload.get("given_name");
                 
                 System.out.println(email);
-                // Use or store profile information
-                // ...
+                System.out.println(localCon);
+//                if(emailVerified) {
+//                    Gctusr usr = new Gctusr(email, name, false);
+//                    if(dao.saveGctusr(usr)) {
+//                        
+//                    }
+//                }
             } else {
                 System.out.println("Invalid ID token.");
             }

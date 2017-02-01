@@ -13,7 +13,13 @@
             <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/paper/bootstrap.min.css" rel="stylesheet" integrity="sha384-awusxf8AUojygHf2+joICySzB780jVvQaVCAt1clU3QsyAitLGul28Qxb2r1e5g+" crossorigin="anonymous"/>
             <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/yeti/bootstrap.min.css" rel="stylesheet" integrity="sha384-HzUaiJdCTIY/RL2vDPRGdEQHHahjzwoJJzGUkYjHVzTwXFQ2QN/nVgX7tzoMW3Ov" crossorigin="anonymous"/>
             <link href="./res/css/layout.css" rel="stylesheet" type="text/css" />
-
+            <!-- OAuth-Login -->
+            <meta name="google-signin-client_id" content="282017452229-165f3htsp7os10s9bk4689lunqm38euj.apps.googleusercontent.com"/>
+            <script src="https://apis.google.com/js/platform.js" async="true" defer="true"></script>
+            <script src="res\js\oauth.js"></script>
+            <!-- Tag Input -->
+            <link rel="stylesheet" href="./res/css/bootstrap-tagsinput.css"/>
+            <script src="./res/js/bootstrap-tagsinput.js"></script>
         </h:head>
 
         <h:body>
@@ -51,15 +57,11 @@
                                 <h:commandButton action="#{localeCon.setLocaleEN()}"  image="res\flags\eng-flag.ico" style="height: 30px; width: 35px; margin-top: 60px"/>
                                 <h:commandButton action="#{localeCon.setLocaleDE()}"  image="res\flags\ger-flag.ico" style="height: 30px; width: 35px"/>
                                 <a href="#"><h:outputText value="#{i18n['logout']}" class="btn btn-primary" rendered="#{userController.loggedIn}"/></a>
-                                <!--<a href="#"><h:outputText value="{i18n['register']}" class="btn btn-primary" rendered="{not userController.loggedIn}"/></a>-->
-                            </h:form> 
-                            
-                            <!-- OAuth-Login -->
-                        <meta name="google-signin-client_id" content="282017452229-165f3htsp7os10s9bk4689lunqm38euj.apps.googleusercontent.com"/>
-                        <script src="https://apis.google.com/js/platform.js" async="true" defer="true"></script>
-                        <script src="res\js\oauth.js"></script>
-                        <div class="g-signin2" data-onsuccess="onSignIn"></div>
-                        <h:commandButton onclick="signOut();" value="Sign out" class="btn btn-primary"/>
+                                <p value="{i18n['login']}">
+                                    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                                </p>
+                                <h:commandButton onclick="signOut();" value="{i18n['logout']}" rendered="{not userCon.loggedIn}" class="btn btn-primary"/>
+                            </h:form>
                         </div>
                     </div>
                 </div>

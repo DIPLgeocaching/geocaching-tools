@@ -7,6 +7,7 @@ package org.geocachingtools.geoui.controller;
 
 import java.io.Serializable;
 import java.util.Locale;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -21,6 +22,11 @@ import javax.inject.Named;
 public class LocaleController implements Serializable {
 
     private Locale locale;
+    
+    @PostConstruct
+    public void init() {
+        setLocaleEN();
+    }
 
     public Locale getLocale() {
         return locale;

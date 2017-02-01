@@ -17,7 +17,7 @@ import org.primefaces.event.FileUploadEvent;
  *
  * @author 20120451
  */
-@Named(value = "userController")
+@Named(value = "userCon")
 @SessionScoped
 public class UserController implements Serializable {
 

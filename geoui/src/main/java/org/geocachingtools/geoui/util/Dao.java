@@ -102,19 +102,22 @@ public class Dao {
         }
     }
 
-    public void saveGctusr(Gctusr gu) {
+    public boolean saveGctusr(Gctusr gu) {
         Session ses = HibernateUtil.getSessionFactory().openSession();
         Transaction tx;
+        boolean succ = false;
 
         try {
             tx = ses.beginTransaction();
             ses.save(gu);
             tx.commit();
+            succ = true;
         } catch (Exception ex) {
             System.err.println("Exception in saveGctusr()\n" + ex);
         } finally {
             ses.close();
         }
+        return succ;
     }
 
     public void saveHint(Hint h) {

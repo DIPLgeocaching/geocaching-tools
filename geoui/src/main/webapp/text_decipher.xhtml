@@ -56,13 +56,7 @@ and open the template in the editor.
                         </div>
                         <div class="col-sm-5">
                             <h3><h:outputText value="#{i18n['passwortListe']}"/></h3>
-                            <p:inputTextarea id="passwordListArea2" rows="3" cols="50" />
-                            <p:tooltip id="passwordListTooltip2" 
-                                       for="passwordListArea2" 
-                                       value="Passwörter werden per Zeilenumbruch getrennt" 
-                                       showEvent="focus" 
-                                       hideEvent="blur" 
-                                       />
+                            <input type="text" value="" data-role="tagsinput" class="form-control"/>
                             <br/>
                             <!--http://www.primefaces.org/showcase/ui/file/upload/auto.xhtml-->
                             <p:fileUpload fileUploadListener="#{userController.handleFileUpload}"  
