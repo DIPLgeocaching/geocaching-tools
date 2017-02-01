@@ -14,6 +14,7 @@ import org.geocachingtools.geoui.model.Gctusr;
 import org.geocachingtools.geoui.model.Hint;
 import org.geocachingtools.geoui.model.Invitekey;
 import org.geocachingtools.geoui.model.SessionAttempts;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -22,6 +23,10 @@ import org.hibernate.Transaction;
  * @author Schule
  */
 public class Dao {
+
+    public Dao() {
+        initDb();
+    }
 
     public void initDb() {
         Gctusr usr1 = new Gctusr("informatik.gc@gmail.com", "Backdoor", true);
@@ -258,14 +263,18 @@ public class Dao {
     public Gctusr getCertianGctusr(String googleAccount) {
         Session ses = HibernateUtil.getSessionFactory().openSession();
         Transaction tx;
-        Gctusr gctusr = new Gctusr();
+        Gctusr gctusr = null;
 
         try {
             tx = ses.beginTransaction();
-            gctusr = (Gctusr) ses.createQuery("from Gctusr where GoogleAccount = :ga").setParameter("ga", googleAccount).list().get(0);
+            Query q = ses.createQuery("from Gctusr where GoogleAccount = :ga");
+            q.setParameter("ga", googleAccount);
+            gctusr = (Gctusr) q.list().get(0);
             tx.commit();
-        } catch (Exception ex) {
-            System.err.println("Exception in getCertianCctusr\n" + ex);
+        } catch (NullPointerException ex) {
+            System.out.println("Benutzer " + googleAccount + " nicht vorhanden!");
+        } catch (Exception ex2) {
+            System.err.println("Exception in getCertianCctusr\n" + ex2);
         } finally {
             ses.close();
         }

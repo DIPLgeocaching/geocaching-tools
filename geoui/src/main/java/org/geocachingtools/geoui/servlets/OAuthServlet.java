@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
@@ -43,7 +44,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.geocachingtools.geoui.controller.LocaleController;
+import org.geocachingtools.geoui.controller.UserController;
 import org.geocachingtools.geoui.model.Gctusr;
 import org.geocachingtools.geoui.util.Dao;
 
@@ -55,9 +58,11 @@ import org.geocachingtools.geoui.util.Dao;
 public class OAuthServlet extends HttpServlet {
 
     private final String CLIENT_ID = "282017452229-165f3htsp7os10s9bk4689lunqm38euj.apps.googleusercontent.com";
-    private final Dao dao = (Dao) this.getServletContext().getAttribute("dao");
+    private Dao dao;
     @Inject
     private LocaleController localCon;
+    @Inject
+    private UserController userCon;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -70,7 +75,8 @@ public class OAuthServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {          
+        try {
+            dao = (Dao) request.getSession().getAttribute("dao");
             // Set up the HTTP transport and JSON factory
             HttpTransport transport = GoogleNetHttpTransport.newTrustedTransport();
             JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
@@ -84,24 +90,29 @@ public class OAuthServlet extends HttpServlet {
             if (idToken != null) {
                 Payload payload = idToken.getPayload();
                 
-                // Print user identifier
-                String userId = payload.getSubject();
-                System.out.println("User ID: " + userId);
-                
                 // Get profile information from payload
                 String email = payload.getEmail();
                 boolean emailVerified = payload.getEmailVerified();
                 String name = (String) payload.get("name");
                 String locale = (String) payload.get("locale");
                 
+                //Testausgabe
                 System.out.println(email);
-                System.out.println(localCon);
-//                if(emailVerified) {
-//                    Gctusr usr = new Gctusr(email, name, false);
-//                    if(dao.saveGctusr(usr)) {
-//                        
-//                    }
-//                }
+                
+                if(emailVerified) {
+                    Gctusr usr = null;
+                    if((usr = dao.getCertianGctusr(email)) != null) {
+                        userCon.setUser(usr);
+                        if("de".equals(locale)) {
+                            localCon.setLocaleDE();
+                        } else {
+                            localCon.setLocaleEN();
+                        }
+                    } else {
+                        //User nicht registriert!!!!!!!
+                        //TODO!
+                    }
+                }
             } else {
                 System.out.println("Invalid ID token.");
             }

@@ -34,8 +34,6 @@ public class LocaleController implements Serializable {
 
     public void setLocale(Locale locale) {
         this.locale = locale;
-        FacesContext.getCurrentInstance()
-                .getViewRoot().setLocale(locale);
     }
 
     public void setLocaleDE() {

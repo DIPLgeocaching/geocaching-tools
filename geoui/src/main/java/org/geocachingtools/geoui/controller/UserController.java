@@ -38,4 +38,11 @@ public class UserController implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
 
+    public Gctusr getUser() {
+        return user;
+    }
+
+    public void setUser(Gctusr user) {
+        this.user = user;
+    }
 }
