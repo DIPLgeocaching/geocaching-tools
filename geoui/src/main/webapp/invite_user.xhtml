@@ -28,7 +28,10 @@ and open the template in the editor.
                             <div class="col-sm-6">
                                 <h3><h:outputText value="#{i18n['email']}"/></h3>
                                 <p:inputTextarea rows="3" cols="50"/> <br/>
-                                <p:button value="Submit" class="btn btn-primary btn-xs"/>
+                                <h:commandButton id="emailButton" value="Submit" action="#{emailController.sendMailTLS()}" class="btn btn-primary btn-xs">
+                                    <p:growl/>  
+                                </h:commandButton>
+                                
                             </div>
                         </div>
                     </div>
