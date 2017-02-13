@@ -44,10 +44,14 @@ public class TextController implements Serializable {
     }
 
     public void submit() {
-        //TODO Build passwords
+        //TODO Build passwords completely--------------------------------
+        passwords = Arrays.asList(passwordText.split(" "));
+                
         System.out.println(methodsToUse);
         System.out.println(passwordText);
         System.out.println("cipher: "+cipher);
+        //TODO END ------------------------------------------------------
+        
         for (DecoderMethod method : methods) {
             if (methodsToUse.get(method)) {
                 System.out.println(method.getName());
