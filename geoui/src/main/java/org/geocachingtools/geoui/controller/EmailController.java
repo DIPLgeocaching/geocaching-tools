@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.mail.PasswordAuthentication;
 import java.util.Properties;
+import java.util.Random;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -99,7 +100,10 @@ public class EmailController implements Serializable {
         try {
 
             Message message = new MimeMessage(session);
-
+            messageToSent += "<br/>------------------------------------------------------------<br/>" 
+                            +"<span style=\"font-weight: bold;\">Invite Key</span><br/>"  
+                            +createInviteKey();
+            //TODO: save in DB
             message.setFrom(new InternetAddress("informatik.gc@gmail.com"));
             message.setSubject("Invitation to Geocaching Tools!");
             message.setContent(messageToSent, "text/html");
@@ -109,7 +113,7 @@ public class EmailController implements Serializable {
                 Transport.send(message);
                 System.out.println("Email Successfull sent");
             }
-            
+
             FacesContext.getCurrentInstance().addMessage("Email", new FacesMessage("Email erfolgreich gesendet"));
             emailAdresseString = "";
             messageToSent = "";
@@ -120,4 +124,13 @@ public class EmailController implements Serializable {
         }
     }
 
+    private String createInviteKey() {
+        char[] chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
+        String key = "";
+        Random random = new Random();
+        for (int i = 0; i < 16; i++) {
+            key += chars[random.nextInt(chars.length)];
+        }
+        return key;
+    }
 }
