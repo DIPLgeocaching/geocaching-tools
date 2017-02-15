@@ -55,13 +55,12 @@ public class EmailController implements Serializable {
      */
     private String messageToSent;
     private String emailAdresseString;
-    private List<String> emailAdress;
 
     @PostConstruct
     public void init() {
         messageToSent = "";
         emailAdresseString = "";
-        emailAdress = new ArrayList<>();
+
     }
 
     public String getMessageToSent() {
@@ -78,14 +77,6 @@ public class EmailController implements Serializable {
 
     public void setEmailAdresseString(String emailAdresseString) {
         this.emailAdresseString = emailAdresseString;
-    }
-
-    public List<String> getEmailAdress() {
-        return emailAdress;
-    }
-
-    public void setEmailAdress(List<String> emailAdress) {
-        this.emailAdress = emailAdress;
     }
 
     public void sendMailTLS() {
@@ -108,20 +99,17 @@ public class EmailController implements Serializable {
         try {
 
             Message message = new MimeMessage(session);
+
             message.setFrom(new InternetAddress("informatik.gc@gmail.com"));
-            emailAdress = Arrays.asList(emailAdresseString.split(","));
+            message.setSubject("Invitation to Geocaching Tools!");
+            message.setContent(messageToSent, "text/html");
 
-            for (String s : emailAdress) {
-                message.setRecipients(Message.RecipientType.TO,
-                        InternetAddress.parse(s));
-
-                message.setSubject("Invitation to Geocaching Tools!");
-                message.setText(messageToSent);
-
+            for (String s : Arrays.asList(emailAdresseString.split(","))) {
+                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(s));
                 Transport.send(message);
-
                 System.out.println("Email Successfull sent");
             }
+            
             FacesContext.getCurrentInstance().addMessage("Email", new FacesMessage("Email erfolgreich gesendet"));
             emailAdresseString = "";
             messageToSent = "";
