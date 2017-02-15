@@ -53,15 +53,23 @@ public class EmailController implements Serializable {
     /**
      * Creates a new instance of EmailController
      */
-    String messageSent;
-    String emailAdresseString;
-    List<String> emailAdress;
+    private String messageToSent;
+    private String emailAdresseString;
+    private List<String> emailAdress;
 
     @PostConstruct
     public void init() {
-        messageSent = "";
+        messageToSent = "";
         emailAdresseString = "";
         emailAdress = new ArrayList<>();
+    }
+
+    public String getMessageToSent() {
+        return messageToSent;
+    }
+
+    public void setMessageToSent(String messageToSent) {
+        this.messageToSent = messageToSent;
     }
 
     public String getEmailAdresseString() {
@@ -78,14 +86,6 @@ public class EmailController implements Serializable {
 
     public void setEmailAdress(List<String> emailAdress) {
         this.emailAdress = emailAdress;
-    }
-
-    public String getMessageSent() {
-        return messageSent;
-    }
-
-    public void setMessageSent(String messageSent) {
-        this.messageSent = messageSent;
     }
 
     public void sendMailTLS() {
@@ -116,7 +116,7 @@ public class EmailController implements Serializable {
                         InternetAddress.parse(s));
 
                 message.setSubject("Invitation to Geocaching Tools!");
-                message.setText(messageSent);
+                message.setText(messageToSent);
 
                 Transport.send(message);
 
@@ -124,7 +124,7 @@ public class EmailController implements Serializable {
             }
             FacesContext.getCurrentInstance().addMessage("Email", new FacesMessage("Email erfolgreich gesendet"));
             emailAdresseString = "";
-            messageSent = "";
+            messageToSent = "";
         } catch (MessagingException e) {
             FacesContext.getCurrentInstance().addMessage("Email", new FacesMessage("Email senden gescheitert, Schule: Port nicht offen, Email Adresse nicht gefunden"));
 
