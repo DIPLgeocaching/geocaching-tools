@@ -108,7 +108,7 @@ public class EmailController implements Serializable {
         try {
 
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("informatik.gc@gmail.com")); 
+            message.setFrom(new InternetAddress("informatik.gc@gmail.com"));
             emailAdress = Arrays.asList(emailAdresseString.split(","));
 
             for (String s : emailAdress) {
