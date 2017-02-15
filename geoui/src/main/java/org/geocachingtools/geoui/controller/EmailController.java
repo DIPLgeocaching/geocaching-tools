@@ -27,6 +27,9 @@ package org.geocachingtools.geoui.controller;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.mail.PasswordAuthentication;
 import java.util.Properties;
 import javax.annotation.PostConstruct;
@@ -50,12 +53,39 @@ public class EmailController implements Serializable {
     /**
      * Creates a new instance of EmailController
      */
+    String messageSent;
+    String emailAdresseString;
+    List<String> emailAdress;
+
     @PostConstruct
     public void init() {
-
+        messageSent = "";
+        emailAdresseString = "";
+        emailAdress = new ArrayList<>();
     }
 
-    public EmailController() {
+    public String getEmailAdresseString() {
+        return emailAdresseString;
+    }
+
+    public void setEmailAdresseString(String emailAdresseString) {
+        this.emailAdresseString = emailAdresseString;
+    }
+
+    public List<String> getEmailAdress() {
+        return emailAdress;
+    }
+
+    public void setEmailAdress(List<String> emailAdress) {
+        this.emailAdress = emailAdress;
+    }
+
+    public String getMessageSent() {
+        return messageSent;
+    }
+
+    public void setMessageSent(String messageSent) {
+        this.messageSent = messageSent;
     }
 
     public void sendMailTLS() {
@@ -78,59 +108,28 @@ public class EmailController implements Serializable {
         try {
 
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("informatik.gc@gmail.com"));
-            message.setRecipients(Message.RecipientType.TO,
-                    InternetAddress.parse("jakobgeringer@gmail.com"));
-            message.setSubject("Testing Subject");
-            message.setText("Dear Mail Crawler,"
-                    + "\n\n No spam to my email, please!");
+            message.setFrom(new InternetAddress("informatik.gc@gmail.com")); 
+            emailAdress = Arrays.asList(emailAdresseString.split(","));
 
-            Transport.send(message);
+            for (String s : emailAdress) {
+                message.setRecipients(Message.RecipientType.TO,
+                        InternetAddress.parse(s));
 
-            System.out.println("Done");
+                message.setSubject("Invitation to Geocaching Tools!");
+                message.setText(messageSent);
+
+                Transport.send(message);
+
+                System.out.println("Email Successfull sent");
+            }
             FacesContext.getCurrentInstance().addMessage("Email", new FacesMessage("Email erfolgreich gesendet"));
-
+            emailAdresseString = "";
+            messageSent = "";
         } catch (MessagingException e) {
-            FacesContext.getCurrentInstance().addMessage("Email", new FacesMessage("Email gescheitert, Schule: Port nicht offen"));
+            FacesContext.getCurrentInstance().addMessage("Email", new FacesMessage("Email senden gescheitert, Schule: Port nicht offen, Email Adresse nicht gefunden"));
 
-            //throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
     }
-
-//    public void sendMailSSL() {
-//        String to = "jakobgeringer@gmail.com";
-//        String msg = "test test";
-//        String from = "informatik.gc@gmail.com";
-//        String password = "geocaching1234";
-//        String subject = "You have been invited to Geocaching Tools!";
-//
-//        Properties props = new Properties();
-//        props.put("mail.smtp.host", "smtp.gmail.com");
-//        props.put("mail.smtp.socketFactory.port", "465");
-//        props.put("mail.smtp.socketFactory.class",
-//                "javax.net.ssl.SSLSocketFactory");
-//        props.put("mail.smtp.auth", "true");
-//        props.put("mail.smtp.port", "465");
-//
-//        Session session = Session.getDefaultInstance(props,
-//                new javax.mail.Authenticator() {
-//            protected PasswordAuthentication getPasswordAuthentication() {
-//                return new PasswordAuthentication(from, password);
-//            }
-//        });
-//
-//        try {
-//            MimeMessage message = new MimeMessage(session);
-//            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-//            message.setSubject(subject);
-//            message.setText(msg);
-//
-//            Transport.send(message);
-//            System.out.println("Message successfully Sent");
-//
-//        } catch (MessagingException ex) {
-//            throw new RuntimeException(ex);
-//        }
-//    }
 
 }

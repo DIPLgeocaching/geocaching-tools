@@ -21,13 +21,13 @@ and open the template in the editor.
                             <div class="col-sm-6">
                                 <h:column>
                                     <h3><h:outputText value="#{i18n['nachricht']}"/></h3>
-                                    <p:editor/>
+                                    <p:editor value="#{emailController.messageSent}"/>
                                 </h:column>
                             </div>
 
                             <div class="col-sm-6">
                                 <h3><h:outputText value="#{i18n['email']}"/></h3>
-                                <p:inputTextarea rows="3" cols="50"/> <br/>
+                                <p:inputTextarea rows="3" cols="50" value="#{emailController.emailAdresseString}"  /> <br/>
                                 <h:commandButton id="emailButton" value="Submit" action="#{emailController.sendMailTLS()}" class="btn btn-primary btn-xs">
                                     <p:growl/>  
                                 </h:commandButton>
