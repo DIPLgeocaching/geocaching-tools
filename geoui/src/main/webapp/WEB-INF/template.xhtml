@@ -3,9 +3,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-    
-    <f:view locale="#{localeCon.locale}">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view id="view" locale="#{localeCon.locale}">
 
         <h:head>
             <title>Geocaching Tools</title>
@@ -54,14 +55,20 @@
                             </div>  
                         </ul>
                         <div class="nav navbar-nav navbar-right">
-                            <h:form>
+                            <h:form id="hF">
                                 <h:commandButton action="#{localeCon.setLocaleEN()}"  image="res\flags\eng-flag.ico" style="height: 30px; width: 35px; margin-top: 60px"/>
                                 <h:commandButton action="#{localeCon.setLocaleDE()}"  image="res\flags\ger-flag.ico" style="height: 30px; width: 35px"/>
                                 <a href="#"><h:outputText value="#{i18n['logout']}" class="btn btn-primary" rendered="#{userController.loggedIn}"/></a>
-                                <p value="{i18n['login']}">
-                                    <div class="g-signin2" data-onsuccess="onSignIn"></div>
-                                </p>
-                                <h:commandButton onclick="signOut();" value="{i18n['logout']}" rendered="{not userCon.loggedIn}" class="btn btn-primary"/>
+
+                                <h:form id="loginForm" rendered="#{not userCon.loggedIn}">
+                                    <p value="{i18n['login']}" >
+                                        <div class="g-signin2" data-onsuccess="onSignIn">
+                                            <p:ajax event="select" process="view"/>
+                                        </div>
+                                    </p>
+                                </h:form>
+                                <p:remoteCommand name="loginMethod" action="#{userCon.login()}" />
+                                <h:commandButton id="logoutBttn" onclick="signOut();" value="#{i18n['logout']}" rendered="#{userCon.loggedIn}" class="btn btn-primary" actionListener="#{userCon.logout()}"/>
                             </h:form>
                         </div>
                     </div>

@@ -50,7 +50,14 @@
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
     
+    <!-- Error handling -->
+    <error-page>
+        <!--<exception-type>org.​geocachingtools.​geoui.​exception.​UserNotFoundException</exception-type>-->
+        <error-code>512</error-code>
+        <location>/error.xhtml</location>
+    </error-page>
+    
     <listener>
-        <listener-class>org.geocachingtools.geoui.listener.SessionListener</listener-class>
+        <listener-class>org.geocachingtools.geoui.listener.ServletListener</listener-class>
     </listener>
 </web-app>

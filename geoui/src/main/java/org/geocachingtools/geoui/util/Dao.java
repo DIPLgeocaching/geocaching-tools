@@ -6,10 +6,8 @@
 package org.geocachingtools.geoui.util;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import org.geocachingtools.geoui.model.Cache;
-import org.geocachingtools.geoui.model.Childwaypoint;
 import org.geocachingtools.geoui.model.Gctusr;
 import org.geocachingtools.geoui.model.Hint;
 import org.geocachingtools.geoui.model.Invitekey;
@@ -23,73 +21,27 @@ import org.hibernate.Transaction;
  * @author Schule
  */
 public class Dao {
-
-    public Dao() {
-        initDb();
-    }
-
-    public void initDb() {
-        Gctusr usr1 = new Gctusr("informatik.gc@gmail.com", "Backdoor", true);
-        Gctusr usr2 = new Gctusr("googleAccount2", "gcaccuntname2", false);
-        Gctusr usr3 = new Gctusr("googleAccount3", "gcaccuntname3", false);
-        Gctusr usr4 = new Gctusr("Rapi1234-GA", "Rapi1234-GC", true);
-
-        Invitekey ik1 = new Invitekey("ABCD", usr1);
-        Invitekey ik2 = new Invitekey("EFGH", usr1);
-        Invitekey ik3 = new Invitekey("IJKL", usr2);
-
-        Cache ca1 = new Cache("Gcname1", "GCWaypiont1", -12.459, 12.456, "message1", usr1);
-        Cache ca2 = new Cache("Gcname2", "GcWaypoint2", -12.459, 12.456, "message2", usr1);
-        Cache ca3 = new Cache("Gcname3", "GcWaypoint3", -12.459, 12.456, "message3", usr3);
-        Cache ca4 = new Cache("Toller Cache", "GCABCDE", -12.459, 12.456, "Juhu du hast es geschafft", usr4);
-        Cache ca5 = new Cache("Der tollste Cache", "GC12345", 1.0, 0.0, "yess u made it", usr4);
-        Cache ca6 = new Cache("Der allertollste Cache", "GC54321", -12.459, 12.456, "Gratuliere", usr4);
-
-        Childwaypoint cw1 = new Childwaypoint("Versuche es mit Cesar", 2.0, 0.0, ca5);
-        Childwaypoint cw2 = new Childwaypoint("Dies ist ein Hinweis", 12.000, 12.000, ca5);
-
-        SessionAttempts sa1 = new SessionAttempts(10, new Date(), true, new Date(), ca3);
-        SessionAttempts sa2 = new SessionAttempts(100, new Date(), true, new Date(), ca3);
-        SessionAttempts sa3 = new SessionAttempts(1000, new Date(), true, new Date(), ca2);
-
-        Hint h1 = new Hint(10, "helptext1", ca1);
-        Hint h2 = new Hint(5, "helptext2", ca1);
-        Hint h3 = new Hint(20, "helptext3", ca2);
-        Hint h4 = new Hint(5, "Bitte lass es gut sein... du kommst nicht drauf...", ca4);
-
+    
+    private static final String ADMINMAIL = "informatik.gc@gmail.com";
+    
+    static {
+        Gctusr usr1 = new Gctusr(ADMINMAIL, "Admin", true);
+        
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx;
 
         try {
             tx = session.beginTransaction();
             session.save(usr1);
-            session.save(usr2);
-            session.save(usr3);
-            session.save(usr4);
-            session.save(ik1);
-            session.save(ik2);
-            session.save(ik3);
-            session.save(ca1);
-            session.save(ca2);
-            session.save(ca3);
-            session.save(ca4);
-            session.save(ca5);
-            session.save(ca6);
-            session.save(cw1);
-            session.save(cw2);
-            session.save(sa1);
-            session.save(sa2);
-            session.save(sa3);
-            session.save(h1);
-            session.save(h2);
-            session.save(h3);
-            session.save(h4);
             tx.commit();
         } catch (Exception ex) {
             System.err.println(ex);
         } finally {
             session.close();
         }
+    }
+
+    public Dao() {
     }
 
     public void saveCache(Cache c) {
@@ -271,7 +223,7 @@ public class Dao {
             q.setParameter("ga", googleAccount);
             gctusr = (Gctusr) q.list().get(0);
             tx.commit();
-        } catch (NullPointerException ex) {
+        } catch (IndexOutOfBoundsException ex) {
             System.out.println("Benutzer " + googleAccount + " nicht vorhanden!");
         } catch (Exception ex2) {
             System.err.println("Exception in getCertianCctusr\n" + ex2);

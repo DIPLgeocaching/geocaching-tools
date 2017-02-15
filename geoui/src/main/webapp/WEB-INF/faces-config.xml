@@ -15,4 +15,8 @@
         </resource-bundle>
     </application>
     
+    <lifecycle>
+        <phase-listener>org.geocachingtools.geoui.listener.SessionPhaseListener</phase-listener>
+    </lifecycle>
+    
 </faces-config>
