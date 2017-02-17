@@ -28,6 +28,7 @@ and open the template in the editor.
                 </script>
 
                 <h:form id="inviteForm" >
+                    <p:growl/>  
                     <div class="container">
                         <div class="row" > 
                             <div class="col-sm-6">
@@ -47,7 +48,6 @@ and open the template in the editor.
                                 <h:inputHidden id="emailHidden" value="#{emailController.emailAdresseString}" />
                                 <br/>
                                 <p:commandLink id="emailButton" value="Submit" action="#{emailController.sendMailTLS}" class="btn btn-primary btn-s">
-                                    <p:growl/>  
                                 </p:commandLink>
 
                             </div>
