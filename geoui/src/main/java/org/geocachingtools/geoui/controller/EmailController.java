@@ -78,10 +78,11 @@ public class EmailController implements Serializable {
         this.emailAdresseString = emailAdresseString;
     }
 
-    public void sendMailTLS() {
+    public String sendMailTLS() {
         final String username = "informatik.gc@gmail.com";
         final String password = "geocaching1234";
 
+        System.out.println("Sending mail to " + emailAdresseString);
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -118,8 +119,9 @@ public class EmailController implements Serializable {
         } catch (MessagingException e) {
             FacesContext.getCurrentInstance().addMessage("Email", new FacesMessage("Email senden gescheitert, Schule: Port nicht offen, Email Adresse nicht gefunden"));
 
-            throw new RuntimeException(e);
+          throw new RuntimeException(e);
         }
+        return "invite_user.xhtml";
     }
 
     private String createInviteKey() {
