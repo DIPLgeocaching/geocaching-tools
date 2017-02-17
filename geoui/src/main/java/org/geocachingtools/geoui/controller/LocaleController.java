@@ -20,7 +20,7 @@ import javax.inject.Named;
 @SessionScoped
 public class LocaleController implements Serializable {
 
-    private Locale locale;
+    private Locale locale = Locale.ENGLISH;
 
     public Locale getLocale() {
         return locale;
