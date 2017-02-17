@@ -37,16 +37,14 @@ public class Validator {
     }
 
     private void init() {
-        try {
-            URL url = new URL("https://raw.githubusercontent.com/dwyl/english-words/master/words.txt");
-            InputStream stream = url.openStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+        try (InputStream stream = Validator.class.getResourceAsStream("/words.txt");
+                BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 words.add(line);
             }
         } catch (IOException ex) {
-            Logger.getLogger(Validator.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Validator.class.getName()).log(Level.SEVERE, "VALIDATOR INIT EXCEPTION", ex);
         }
 
     }
