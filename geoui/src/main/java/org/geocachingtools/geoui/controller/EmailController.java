@@ -78,7 +78,7 @@ public class EmailController implements Serializable {
         this.emailAdresseString = emailAdresseString;
     }
 
-    public String sendMailTLS() {
+    public void sendMailTLS() {
         final String username = "informatik.gc@gmail.com";
         final String password = "geocaching1234";
 
@@ -99,9 +99,9 @@ public class EmailController implements Serializable {
         try {
 
             Message message = new MimeMessage(session);
-            messageToSent += "<br/>------------------------------------------------------------<br/>" 
-                            +"<span style=\"font-weight: bold;\">Invite Key</span><br/>"  
-                            +createInviteKey();
+            messageToSent += "<br/>------------------------------------------------------------<br/>"
+                    + "<span style=\"font-weight: bold;\">Invite Key</span><br/>"
+                    + createInviteKey();
             //TODO: save in DB
             message.setFrom(new InternetAddress("informatik.gc@gmail.com"));
             message.setSubject("Invitation to Geocaching Tools!");
@@ -112,16 +112,15 @@ public class EmailController implements Serializable {
                 Transport.send(message);
                 System.out.println("Email Successfull sent");
             }
-
-            FacesContext.getCurrentInstance().addMessage("Email", new FacesMessage("Email erfolgreich gesendet"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Email erfolgreich gesendet"));
             emailAdresseString = "";
             messageToSent = "";
         } catch (MessagingException e) {
-            FacesContext.getCurrentInstance().addMessage("Email", new FacesMessage("Email senden gescheitert, Schule: Port nicht offen, Email Adresse nicht gefunden"));
-
-          throw new RuntimeException(e);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Email senden gescheitert, Schule: Port nicht offen, Email Adresse nicht gefunden"));
+            messageToSent = "";
+            System.out.println("Fehler im EmailCon sendTLS");
+            // throw new RuntimeException(e);
         }
-        return "invite_user.xhtml";
     }
 
     private String createInviteKey() {
