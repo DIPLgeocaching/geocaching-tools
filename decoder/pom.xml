@@ -27,15 +27,48 @@
             <version>1.3</version>
             <scope>test</scope>
         </dependency>
+        
+        <dependency>                 
+            <groupId>open-stego</groupId>                 
+            <artifactId>open-stego</artifactId>                 
+            <version>1.0</version>           
+        </dependency>
     </dependencies>
+    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    
     <build>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
             </resource>
         </resources>
+        
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>install-external</id>
+                        <phase>clean</phase>
+                        <configuration>
+                            <file>${basedir}/openstego.jar</file>
+                            <repositoryLayout>default</repositoryLayout>
+                            <groupId>open-stego</groupId>
+                            <artifactId>open-stego</artifactId>
+                            <version>1.0</version>
+                            <packaging>jar</packaging>
+                            <generatePom>true</generatePom>
+                        </configuration>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 </project>
