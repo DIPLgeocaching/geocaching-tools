@@ -37,13 +37,10 @@ public class Validator {
     }
 
     private void init() {
-        try {
-            //URL url = new URL("https://raw.githubusercontent.com/dwyl/english-words/master/words.txt");
-            InputStream stream = Validator.class.getResourceAsStream("/words.txt");
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+        try (InputStream stream = Validator.class.getResourceAsStream("/words.txt");
+                BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                System.out.println("Add to dictionary: "+line);
                 words.add(line);
             }
         } catch (IOException ex) {
