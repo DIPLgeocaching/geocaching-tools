@@ -1,5 +1,14 @@
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import org.geocachingtools.decoder.DecoderRequest;
+import org.geocachingtools.decoder.DecoderResult;
 import org.geocachingtools.decoder.methods.OpenStego;
 
 
@@ -37,8 +46,19 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        OpenStego openStego = new OpenStego();
-        openStego.decode(null);
+        try {
+            OpenStego openStego = new OpenStego();
+            File file = new File("C:/Users/lukas/Downloads/stego2.png");
+            List<String> pwdList = new ArrayList<>();
+            pwdList.add("1234");
+            pwdList.add("12");
+            
+            DecoderResult decode = openStego.decode(
+                    new DecoderRequest<>(BufferedImage.class, ImageIO.read(file), openStego, pwdList));
+            System.out.println(decode.getFullResult());
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
 }
