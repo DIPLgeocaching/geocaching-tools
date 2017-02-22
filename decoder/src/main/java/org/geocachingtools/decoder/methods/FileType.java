@@ -66,7 +66,7 @@ public class FileType extends DecoderMethod<InputStream> {
     public DecoderResult decode(DecoderRequest<InputStream> request) {
         i18n = new I18n(request.getLocale());
         double releveance = 0;
-        String fullResult = "";
+        String fullResult;
         try {
             Tika t = new Tika();
             String type = t.detect(request.getData());
@@ -77,7 +77,7 @@ public class FileType extends DecoderMethod<InputStream> {
                 fullResult = i18n.get("LOW-VALIDATOR-RESULT");
             }
         } catch (IOException ex) {
-            Logger.getLogger(FileType.class.getName()).log(Level.SEVERE, null, ex);
+            return new DecoderResult(this, i18n.get("DECODER-EXCEPTION"),"", 0.0);
         }
         return new DecoderResult(this, fullResult, releveance);
     }
