@@ -96,4 +96,4 @@ nbdist/
 .nb-gradle/
 
 #Allow specific jar
-!*/openstego.jar
+!/decoder/src/lib/openstego.jar
