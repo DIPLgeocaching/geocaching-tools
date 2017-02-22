@@ -56,7 +56,7 @@
                         <id>install-external</id>
                         <phase>clean</phase>
                         <configuration>
-                            <file>${basedir}/openstego.jar</file>
+                            <file>${basedir}/src/lib/openstego.jar</file>
                             <repositoryLayout>default</repositoryLayout>
                             <groupId>open-stego</groupId>
                             <artifactId>open-stego</artifactId>
