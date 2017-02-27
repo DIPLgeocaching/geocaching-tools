@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.geocachingtools.geoui.controller;
 
 import javax.inject.Named;
@@ -29,8 +24,8 @@ public class TextController implements Serializable {
     private String cipher;
     private String passwordText;//The Textfield for passwords
     private List<String> passwords;
-    private List<DecoderMethod> methods = new ArrayList<>();
-    private Map<DecoderMethod, Boolean> methodsToUse = new HashMap<>();//the flags to decide which methods are executed
+    private List<DecoderMethod> methods = new ArrayList<>();//Available Methods
+    private List<DecoderMethod> methodsToUse;//Selected Methods
     private Map<DecoderMethod, DecoderResult> results = new HashMap<>();
     private Decoder decoder = Decoder.getInstance();
     @Inject
@@ -44,35 +39,35 @@ public class TextController implements Serializable {
     }
 
     public void submit() {
+        results.clear();
         //TODO Build passwords completely--------------------------------
         passwords = Arrays.asList(passwordText.split(" "));
-                
+
         System.out.println(methodsToUse);
         System.out.println(passwordText);
-        System.out.println("cipher: "+cipher);
+        System.out.println("cipher: " + cipher);
         //TODO END ------------------------------------------------------
-        
-        for (DecoderMethod method : methods) {
-            if (methodsToUse.get(method)) {
-                System.out.println(method.getName());
-                Future<DecoderResult> future;
-                future = decoder.decode(
-                        new DecoderRequest(
-                                type,
-                                cipher,
-                                method,
-                                passwords,
-                                localecon.getLocale()
-                        )
-                );
-                try {
-                    results.put(method, future.get());
-                } catch (InterruptedException | ExecutionException ex) {
-                    Logger.getLogger(TextController.class.getName()).log(Level.SEVERE, null, ex);
-                    throw new RuntimeException(ex);//TODO better exception handling
-                }
+
+        for (DecoderMethod method : methodsToUse) {
+            System.out.println(method.getName());
+            Future<DecoderResult> future;
+            future = decoder.decode(
+                    new DecoderRequest(
+                            type,
+                            cipher,
+                            method,
+                            passwords,
+                            localecon.getLocale()
+                    )
+            );
+            try {
+                results.put(method, future.get());
+            } catch (InterruptedException | ExecutionException ex) {
+                Logger.getLogger(TextController.class.getName()).log(Level.SEVERE, null, ex);
+                throw new RuntimeException(ex);//TODO better exception handling
             }
         }
+        if(methodsToUse!=null)methodsToUse.clear();
     }
 
     /**
@@ -105,11 +100,11 @@ public class TextController implements Serializable {
         this.methods = methods;
     }
 
-    public Map<DecoderMethod, Boolean> getMethodsToUse() {
+    public List<DecoderMethod> getMethodsToUse() {
         return methodsToUse;
     }
 
-    public void setMethodsToUse(Map<DecoderMethod, Boolean> methodsToUse) {
+    public void setMethodsToUse(List<DecoderMethod> methodsToUse) {
         this.methodsToUse = methodsToUse;
     }
 
