@@ -12,9 +12,6 @@ package org.geocachingtools.validator;
 public class ValidatorRequest {
     private String plaintext;
 
-    public ValidatorRequest() {
-    }
-
     public ValidatorRequest(String plaintext) {
         this.plaintext = plaintext;
     }
