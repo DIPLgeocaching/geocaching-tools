@@ -27,11 +27,10 @@ package org.geocachingtools.geoui.controller;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import javax.mail.PasswordAuthentication;
 import java.util.Properties;
+import java.util.Random;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -55,13 +54,12 @@ public class EmailController implements Serializable {
      */
     private String messageToSent;
     private String emailAdresseString;
-    private List<String> emailAdress;
 
     @PostConstruct
     public void init() {
         messageToSent = "";
         emailAdresseString = "";
-        emailAdress = new ArrayList<>();
+
     }
 
     public String getMessageToSent() {
@@ -80,18 +78,11 @@ public class EmailController implements Serializable {
         this.emailAdresseString = emailAdresseString;
     }
 
-    public List<String> getEmailAdress() {
-        return emailAdress;
-    }
-
-    public void setEmailAdress(List<String> emailAdress) {
-        this.emailAdress = emailAdress;
-    }
-
     public void sendMailTLS() {
         final String username = "informatik.gc@gmail.com";
         final String password = "geocaching1234";
 
+        System.out.println("Sending mail to " + emailAdresseString);
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -108,28 +99,37 @@ public class EmailController implements Serializable {
         try {
 
             Message message = new MimeMessage(session);
+            messageToSent += "<br/>------------------------------------------------------------<br/>"
+                    + "<span style=\"font-weight: bold;\">Invite Key</span><br/>"
+                    + createInviteKey();
+            //TODO: save in DB
             message.setFrom(new InternetAddress("informatik.gc@gmail.com"));
-            emailAdress = Arrays.asList(emailAdresseString.split(","));
+            message.setSubject("Invitation to Geocaching Tools!");
+            message.setContent(messageToSent, "text/html");
 
-            for (String s : emailAdress) {
-                message.setRecipients(Message.RecipientType.TO,
-                        InternetAddress.parse(s));
-
-                message.setSubject("Invitation to Geocaching Tools!");
-                message.setText(messageToSent);
-
+            for (String s : Arrays.asList(emailAdresseString.split(","))) {
+                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(s));
                 Transport.send(message);
-
                 System.out.println("Email Successfull sent");
             }
-            FacesContext.getCurrentInstance().addMessage("Email", new FacesMessage("Email erfolgreich gesendet"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Email erfolgreich gesendet"));
             emailAdresseString = "";
             messageToSent = "";
         } catch (MessagingException e) {
-            FacesContext.getCurrentInstance().addMessage("Email", new FacesMessage("Email senden gescheitert, Schule: Port nicht offen, Email Adresse nicht gefunden"));
-
-            throw new RuntimeException(e);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Email senden gescheitert, Schule: Port nicht offen, Email Adresse nicht gefunden"));
+            messageToSent = "";
+            System.out.println("Fehler im EmailCon sendTLS");
+            // throw new RuntimeException(e);
         }
     }
 
+    private String createInviteKey() {
+        char[] chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
+        String key = "";
+        Random random = new Random();
+        for (int i = 0; i < 16; i++) {
+            key += chars[random.nextInt(chars.length)];
+        }
+        return key;
+    }
 }
