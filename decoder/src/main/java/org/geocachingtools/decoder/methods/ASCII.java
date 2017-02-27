@@ -1,5 +1,6 @@
 package org.geocachingtools.decoder.methods;
 
+import java.util.Scanner;
 import org.geocachingtools.decoder.*;
 import org.geocachingtools.validator.*;
 
@@ -48,26 +49,15 @@ public class ASCII extends DecoderMethod<String> {
      * @return plaintext
      */
     private String decode(String cipher) {
-        String[] words = cipher.split("[^0-9]");//Split on all characters that are not numeric
         StringBuilder result = new StringBuilder();
-
-        //if words contains only strings of length 2 or less, characters were already seperated
-        boolean splitWords = false;
-        for (String s : words) {
-            if (s.length() > 2) {
-                splitWords = true;
-                break;
+        Scanner sc = new Scanner(cipher);
+        while(sc.hasNext()){
+            if(sc.hasNextInt()){
+                result.append((char)sc.nextInt());
+            }else{
+                sc.next();
             }
         }
-
-        for (String ch : words) {
-            try{
-                result.append((char) Integer.parseInt(ch));
-            }catch(NumberFormatException e ){
-                //NOTHING TO DO
-            }
-        }
-
         return result.toString();
     }
 
