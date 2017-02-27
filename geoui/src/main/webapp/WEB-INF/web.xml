@@ -7,7 +7,7 @@
          id="WebApp_ID" version="2.5">
 
     <display-name>JavaServerFaces</display-name>
-
+    
     <!--    <error-page>     
         <exception-type>javax.faces.application.ViewExpiredException</exception-type>     
         <location>/home.xhtml</location> 
@@ -23,6 +23,22 @@
         <param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
         <param-value>true</param-value>
     </context-param>
+
+    <context-param>
+        <param-name>primefaces.UPLOADER</param-name>  
+        <param-value>common</param-value>
+    </context-param>
+
+    <!--Filter-->
+    <filter>
+        <filter-name>primeFacesFileUploadFilter</filter-name>
+        <filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>primeFacesFileUploadFilter</filter-name>
+        <servlet-name>Faces Servlet</servlet-name>
+    </filter-mapping>
+
 
     <!-- Welcome page -->
     <welcome-file-list>

@@ -9,7 +9,7 @@
 
     <ui:composition template="/WEB-INF/template.xhtml">
         <ui:define name="content">
-            <h:form>
+            <h:form enctype="multipart/form-data">
                 <div class="containter">
                     <h2><h:outputText value="#{i18n['textEnt']}"/></h2>
                     <div class="row">
@@ -21,16 +21,17 @@
 
                             <p:tooltip id="textDecryptAreaTooltip" 
                                        for="textDecryptArea" 
-                                       value="Passw�rter werden per Zeilenumbruch getrennt" 
+                                       value="PasswÃƒÂ¶rter werden per Zeilenumbruch getrennt" 
                                        showEvent="focus" 
                                        hideEvent="blur" 
                                        />
                             <br/>
-                            <p:commandButton value="Submit" 
+                            <h:commandButton value="Submit" 
                                              action="#{textcon.submit}" 
-                                             update="methodtable"
-
+                                             
                                              class="btn btn-primary btn-xs"/>
+                            
+                            
                             <br/>
                             <p:growl id="bildMessages" showDetail="true" />
                         </div>
@@ -39,49 +40,53 @@
                             <p:inputTextarea value="#{textcon.passwordText}" id="passwordListArea2" rows="3" cols="50" />
                             <p:tooltip id="passwordListTooltip2" 
                                        for="passwordListArea2" 
-                                       value="Passw�rter werden per Zeilenumbruch getrennt" 
+                                       value="PasswÃ¶rter werden per Zeilenumbruch getrennt" 
                                        showEvent="focus" 
                                        hideEvent="blur" 
                                        />
                             <br/>
                             <!--http://www.primefaces.org/showcase/ui/file/upload/auto.xhtml-->
-                            <p:fileUpload fileUploadListener="#{userController.handleFileUpload}"  
+                            <!--Passwortliste upload-->
+<!--                            <p:fileUpload value="#{textcon.passwordFile}" 
                                           mode="simple" 
                                           skinSimple="true" 
-                                          dragDropSupport="false"
-                                          update="passwortListeMessage" 
-                                          sizeLimit="100000" 
                                           auto="false" 
-                                          allowTypes="/(\.|\/)(txt)$/" 
-                                          multiple="false"/>
+                                          sizeLimit="1000"/>-->
+                            <!--Caused by: javax.servlet.ServletException: The request content-type is not a multipart/form-data-->
+                            <!--                            <h:inputFile id="file" value="{textcon.passwordFile}"/>
+                                                        <h:commandButton value="Upload"
+                                                                         action="{textcon.submit()}"/>
+                                                    </div>-->
+
+                            <h:inputFile value="#{textcon.file}"/>
 
                         </div>
-                    </div>
-                </div> 
-                <p:dataTable id="methodtable"
-                             var="method"
-                             value="#{textcon.methods}"
-                             class="table table-striped table-hover">
-                    <p:column pt:headerClass="selectAll">
-                        <f:facet name="header">USE</f:facet>
-                        <h:selectBooleanCheckbox value="#{textcon.methodsToUse[method]}"/>
-                    </p:column>
-                    <p:column>
-                        <f:facet name="header">Verfahren</f:facet>
-                            #{method.name}
-                    </p:column>
+                    </div> 
+                    <p:dataTable id="methodtable"
+                                 var="method"
+                                 value="#{textcon.methods}"
+                                 class="table table-striped table-hover">
+                        <p:column pt:headerClass="selectAll">
+                            <f:facet name="header">USE</f:facet>
+                            <h:selectBooleanCheckbox value="#{textcon.methodsToUse[method]}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">Verfahren</f:facet>
+                                #{method.name}
+                        </p:column>
 
-                    <p:column>
-                        <f:facet name="header">Result</f:facet>
-                        <h:outputText value="#{textcon.results[method].briefResult}" escape="false"/>
-                    </p:column>
-                     <p:column>
-                         <p:rowToggler></p:rowToggler>
-                    </p:column>
-                    <p:rowExpansion>
-                        <h:outputText value="#{textcon.results[method].fullResult}" escape="false"/>
-                    </p:rowExpansion>
-                </p:dataTable>
+                        <p:column>
+                            <f:facet name="header">Result</f:facet>
+                            <h:outputText value="#{textcon.results[method].briefResult}" escape="false"/>
+                        </p:column>
+                        <p:column>
+                            <p:rowToggler></p:rowToggler>
+                        </p:column>
+                        <p:rowExpansion>
+                            <h:outputText value="#{textcon.results[method].fullResult}" escape="false"/>
+                        </p:rowExpansion>
+                    </p:dataTable>
+                </div>
             </h:form>
         </ui:define>
 
