@@ -42,10 +42,10 @@ public class Vigenere extends DecoderMethod<String> {
             result = decode(request.getData(), key.trim());
             partialRelevance = validator.check(new ValidatorRequest(result)).getRelevance();
             if (partialRelevance >= ValidatorResult.THRESHOLD) {
-                briefResult += result + " <br/>";
+                briefResult += "<b>" + key + "</b> => " + result + " <br/>";
                 relevance = Math.max(relevance, partialRelevance);
             }
-            fullResult += key + " => " + result + "<br/>";
+            fullResult += "<b>" + key + "</b> => " + result + "<br/>";
         }
 
         if (relevance < ValidatorResult.THRESHOLD) {//No suitable result found

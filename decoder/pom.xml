@@ -27,7 +27,13 @@
             <version>1.3</version>
             <scope>test</scope>
         </dependency>
-        
+        <!-- https://mvnrepository.com/artifact/org.apache.tika/tika-core -->
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+            <version>1.14</version>
+        </dependency>
+      
         <dependency>                 
             <groupId>open-stego</groupId>                 
             <artifactId>open-stego</artifactId>                 
@@ -56,7 +62,7 @@
                         <id>install-external</id>
                         <phase>clean</phase>
                         <configuration>
-                            <file>${basedir}/openstego.jar</file>
+                            <file>${basedir}/src/lib/openstego.jar</file>
                             <repositoryLayout>default</repositoryLayout>
                             <groupId>open-stego</groupId>
                             <artifactId>open-stego</artifactId>

@@ -75,7 +75,7 @@ public class Vanity extends DecoderMethod<String> {
         result = result.replaceAll("2", "a");
         
         result = result.replaceAll(" ", "");
-        result = result.replaceAll("0", " ");//0 or 1 oftenused as space
+        result = result.replaceAll("0", " ");//0 or 1 often used as space
         result = result.replaceAll("1", " ");
         return result;
     }

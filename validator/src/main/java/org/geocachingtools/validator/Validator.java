@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -25,6 +26,7 @@ import javax.annotation.PostConstruct;
 public class Validator {
 
     private static final Validator instance = new Validator();
+    private String[] dictionaries={"/english.txt","/german.txt"};
 
     public static Validator getInstance() {
         return instance;
@@ -37,7 +39,11 @@ public class Validator {
     }
 
     private void init() {
-        try (InputStream stream = Validator.class.getResourceAsStream("/words.txt");
+        Arrays.stream(dictionaries).parallel().forEach(this::addDictionary);
+    }
+
+    private void addDictionary(String path){
+        try (InputStream stream = Validator.class.getResourceAsStream(path);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -46,10 +52,13 @@ public class Validator {
         } catch (IOException ex) {
             Logger.getLogger(Validator.class.getName()).log(Level.SEVERE, "VALIDATOR INIT EXCEPTION", ex);
         }
-
     }
-
+    
     public ValidatorResult check(ValidatorRequest request) {
+        String plain = request.getPlaintext();
+        if(plain.trim().isEmpty()){
+            return new ValidatorResult(0);
+        }
         return new ValidatorResult(Stream.of(request.getPlaintext().split("\\s"))
                 .map(String::toLowerCase)
                 .mapToDouble(str -> {

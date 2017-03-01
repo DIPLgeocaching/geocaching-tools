@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.geocachingtools.geoui.controller;
 
 import java.io.BufferedReader;
@@ -39,8 +34,8 @@ public class TextController implements Serializable {
     private String cipher;
     private String passwordText;//The Textfield for passwords
     private List<String> passwords;
-    private List<DecoderMethod> methods = new ArrayList<>();
-    private Map<DecoderMethod, Boolean> methodsToUse = new HashMap<>();//the flags to decide which methods are executed
+    private List<DecoderMethod> methods = new ArrayList<>();//Available Methods
+    private List<DecoderMethod> methodsToUse;//Selected Methods
     private Map<DecoderMethod, DecoderResult> results = new HashMap<>();
     private Decoder decoder = Decoder.getInstance();
 
@@ -84,7 +79,7 @@ public class TextController implements Serializable {
     }
 
     public void submit() {
-
+        results.clear();
         passwords = new ArrayList<>(Arrays.asList(passwordText.split(",")));
         
         upload();
@@ -115,6 +110,7 @@ public class TextController implements Serializable {
                 }
             }
         }
+        if(methodsToUse!=null)methodsToUse.clear();
     }
 
     public String getCipher() {
@@ -141,11 +137,11 @@ public class TextController implements Serializable {
         this.methods = methods;
     }
 
-    public Map<DecoderMethod, Boolean> getMethodsToUse() {
+    public List<DecoderMethod> getMethodsToUse() {
         return methodsToUse;
     }
 
-    public void setMethodsToUse(Map<DecoderMethod, Boolean> methodsToUse) {
+    public void setMethodsToUse(List<DecoderMethod> methodsToUse) {
         this.methodsToUse = methodsToUse;
     }
 
