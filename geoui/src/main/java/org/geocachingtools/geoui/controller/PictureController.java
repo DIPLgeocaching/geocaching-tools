@@ -24,10 +24,18 @@
  */
 package org.geocachingtools.geoui.controller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
@@ -39,6 +47,8 @@ import org.primefaces.model.UploadedFile;
 @SessionScoped
 public class PictureController implements Serializable {
 
+    private UploadedFile passwordFile;
+
     @PostConstruct
     public void init() {
 
@@ -49,10 +59,41 @@ public class PictureController implements Serializable {
         System.out.println("----");
         System.out.println(picture.getFileName());
     }
-    
-    public void justDoIt()
-    {
+
+    public void upload() {
+
+        if (passwordFile.getSize() > 0) {
+            FacesMessage message = new FacesMessage("Succesfull", passwordFile.getFileName() + " is uploaded.");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+
+            try (InputStream is = passwordFile.getInputstream();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+
+                String line = "";
+                while ((line = br.readLine()) != null) {
+                   //Add Passwords to list here
+                }
+
+            } catch (IOException ex) {
+                Logger.getLogger(TextController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            FacesMessage message = new FacesMessage("Kein File gefunden...");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        }
+    }
+
+    public void justDoIt() {
         System.out.println("Swag");
     }
 
+    public UploadedFile getPasswordFile() {
+        return passwordFile;
+    }
+
+    public void setPasswordFile(UploadedFile passwordFile) {
+        this.passwordFile = passwordFile;
+    }
+
+    
 }

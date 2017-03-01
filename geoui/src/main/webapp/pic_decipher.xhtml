@@ -35,27 +35,28 @@ and open the template in the editor.
                 <h2><h:outputText value="#{i18n['bildEnt']}"/></h2>
                 <div class="row">
                     <h:form enctype="multipart/form-data">
+                        <p:growl id="bildMessages" showDetail="true" />
                         <div class="col-sm-1"></div>
                         <div class="col-sm-6">
                             <h3><h:outputText value="#{i18n['uploadPicture']}"/></h3>
 
-                            <p:fileUpload fileUploadListener="#{picCon.justDoIt}" 
+<!--                            <p:fileUpload fileUploadListener="{picCon.justDoIt}" 
                                           mode="advanced" 
                                           dragDropSupport="true"
                                           update="bildMessages"
                                           auto="false" 
                                           fileLimit="1" 
                                           style="width: 60%;"
-                                          />
+                                          />-->
                             <br/>
 
+                            <h:inputText value="URL" />
                             
-
-
-                            <h:inputText value="URL"/>
-                            <p:button value="Submit" class="btn btn-primary btn-xs"/>
-                            <p:growl id="bildMessages" showDetail="true" />
+                            <h:commandButton value="Submit"
+                                             action="#{picCon.upload}"
+                                             class="btn btn-primary btn-xs"/>
                         </div>
+
                         <div class="col-sm-5">
                             <h3><h:outputText value="#{i18n['passwortListe']}"/></h3>
                             <p:inputTextarea id="passwordListArea" rows="3" cols="50" />
@@ -65,15 +66,8 @@ and open the template in the editor.
                                        showEvent="focus" 
                                        hideEvent="blur"/>
                             <br/>
-                            <!--                            <p:fileUpload fileUploadListener="{textcon.handlePictureUpload}" 
-                                                                      mode="simple" 
-                                                                      skinSimple="true" 
-                                                                      dragDropSupport="false"
-                                                                      update="passwortListeMessage" 
-                                                                      sizeLimit="100000" 
-                                                                      auto="true" 
-                                                                      allowTypes="/(\.|\/)(txt)$/" 
-                                                                      multiple="false"/>-->
+                            <p:fileUpload mode="simple"
+                                          value="#{picCon.passwordFile}"/>
 
                             <p:growl id="passwortListeMessage" showDetail="true" />
                         </div>

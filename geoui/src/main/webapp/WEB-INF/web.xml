@@ -24,11 +24,6 @@
         <param-value>true</param-value>
     </context-param>
 
-    <context-param>
-        <param-name>primefaces.UPLOADER</param-name>  
-        <param-value>common</param-value>
-    </context-param>
-
     <!--Filter-->
     <filter>
         <filter-name>primeFacesFileUploadFilter</filter-name>
@@ -53,14 +48,14 @@
     </servlet>
 
     <!-- Map these files with JSF -->
-    <servlet-mapping>
+<!--    <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.jsf</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.faces</url-pattern>
-    </servlet-mapping>
+    </servlet-mapping>-->
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>

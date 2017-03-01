@@ -10,6 +10,7 @@
     <ui:composition template="/WEB-INF/template.xhtml">
         <ui:define name="content">
             <h:form enctype="multipart/form-data">
+                <p:growl id="bildMessages" showDetail="true" />
                 <div class="containter">
                     <h2><h:outputText value="#{i18n['textEnt']}"/></h2>
                     <div class="row">
@@ -21,47 +22,36 @@
 
                             <p:tooltip id="textDecryptAreaTooltip" 
                                        for="textDecryptArea" 
-                                       value="PasswÃƒÂ¶rter werden per Zeilenumbruch getrennt" 
+                                       value="PasswÃƒÆ’Ã‚Â¶rter werden per Zeilenumbruch getrennt" 
                                        showEvent="focus" 
                                        hideEvent="blur" 
                                        />
                             <br/>
                             <h:commandButton value="Submit" 
                                              action="#{textcon.submit}" 
-                                             
                                              class="btn btn-primary btn-xs"/>
-                            
-                            
+
+
                             <br/>
-                            <p:growl id="bildMessages" showDetail="true" />
                         </div>
                         <div class="col-sm-5">
                             <h3><h:outputText value="#{i18n['passwortListe']}"/></h3>
                             <p:inputTextarea value="#{textcon.passwordText}" id="passwordListArea2" rows="3" cols="50" />
                             <p:tooltip id="passwordListTooltip2" 
                                        for="passwordListArea2" 
-                                       value="PasswÃ¶rter werden per Zeilenumbruch getrennt" 
+                                       value="PasswÃƒÂ¶rter werden per Zeilenumbruch getrennt" 
                                        showEvent="focus" 
                                        hideEvent="blur" 
                                        />
                             <br/>
-                            <!--http://www.primefaces.org/showcase/ui/file/upload/auto.xhtml-->
+
                             <!--Passwortliste upload-->
-<!--                            <p:fileUpload value="#{textcon.passwordFile}" 
-                                          mode="simple" 
-                                          skinSimple="true" 
-                                          auto="false" 
-                                          sizeLimit="1000"/>-->
-                            <!--Caused by: javax.servlet.ServletException: The request content-type is not a multipart/form-data-->
-                            <!--                            <h:inputFile id="file" value="{textcon.passwordFile}"/>
-                                                        <h:commandButton value="Upload"
-                                                                         action="{textcon.submit()}"/>
-                                                    </div>-->
-
-                            <h:inputFile value="#{textcon.file}"/>
-
+                            <p:fileUpload mode="simple"
+                                          value="#{textcon.passwordFile}"/>
+                            
                         </div>
-                    </div> 
+                    </div>
+
                     <p:dataTable id="methodtable"
                                  var="method"
                                  value="#{textcon.methods}"
