@@ -1,5 +1,11 @@
 package org.geocachingtools.geoui.controller;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
@@ -8,9 +14,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
-import javax.management.RuntimeErrorException;
 import org.geocachingtools.decoder.*;
+
+import org.primefaces.model.UploadedFile;
 
 /**
  *
@@ -28,52 +38,74 @@ public class TextController implements Serializable {
     private List<DecoderMethod> methodsToUse;//Selected Methods
     private Map<DecoderMethod, DecoderResult> results = new HashMap<>();
     private Decoder decoder = Decoder.getInstance();
+
+    private UploadedFile passwordFile;
+
     @Inject
     private LocaleController localecon;
 
     {
         decoder.getMethods(type).stream().forEach(o -> {
             methods.add(o);
-            //methodsToUse.put(o, Boolean.TRUE);
         });
+    }
+
+    public void upload() {
+
+        if (passwordFile.getSize() > 0) {
+            FacesMessage message = new FacesMessage("Succesfull", passwordFile.getFileName() + " is uploaded.");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+
+            try (InputStream is = passwordFile.getInputstream();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+                
+                String line = "";
+                while ((line= br.readLine()) != null) {
+                    passwords.add(line);
+                }
+
+            } catch (IOException ex) {
+                Logger.getLogger(TextController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            FacesMessage message = new FacesMessage("Kein File gefunden...");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        }
     }
 
     public void submit() {
         results.clear();
-        //TODO Build passwords completely--------------------------------
-        passwords = Arrays.asList(passwordText.split(" "));
-
+        passwords = new ArrayList<>(Arrays.asList(passwordText.split(",")));
+        
+        upload();
+        
         System.out.println(methodsToUse);
         System.out.println(passwordText);
+        passwords.stream().forEach(System.out::println);
         System.out.println("cipher: " + cipher);
-        //TODO END ------------------------------------------------------
 
-        for (DecoderMethod method : methodsToUse) {
-            System.out.println(method.getName());
-            Future<DecoderResult> future;
-            future = decoder.decode(
-                    new DecoderRequest(
-                            type,
-                            cipher,
-                            method,
-                            passwords,
-                            localecon.getLocale()
-                    )
-            );
-            try {
-                results.put(method, future.get());
-            } catch (InterruptedException | ExecutionException ex) {
-                Logger.getLogger(TextController.class.getName()).log(Level.SEVERE, null, ex);
-                throw new RuntimeException(ex);//TODO better exception handling
+        for (DecoderMethod method : methods) {
+            if (methodsToUse.get(method)) {
+                // System.out.println(method.getName());
+                Future<DecoderResult> future;
+                future = decoder.decode(
+                        new DecoderRequest(
+                                type,
+                                cipher,
+                                method,
+                                passwords,
+                                localecon.getLocale()
+                        )
+                );
+                try {
+                    results.put(method, future.get());
+                } catch (InterruptedException | ExecutionException ex) {
+                    Logger.getLogger(TextController.class.getName()).log(Level.SEVERE, null, ex);
+                    throw new RuntimeException(ex);//TODO better exception handling
+                }
             }
         }
         if(methodsToUse!=null)methodsToUse.clear();
-    }
-
-    /**
-     * Creates a new instance of TextController
-     */
-    public TextController() {
     }
 
     public String getCipher() {
@@ -114,6 +146,14 @@ public class TextController implements Serializable {
 
     public void setResults(Map<DecoderMethod, DecoderResult> results) {
         this.results = results;
+    }
+
+    public UploadedFile getPasswordFile() {
+        return passwordFile;
+    }
+
+    public void setPasswordFile(UploadedFile passwordFile) {
+        this.passwordFile = passwordFile;
     }
 
 }

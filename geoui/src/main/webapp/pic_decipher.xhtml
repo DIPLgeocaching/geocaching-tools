@@ -14,48 +14,49 @@ and open the template in the editor.
 
     <ui:composition template="/WEB-INF/template.xhtml">
         <ui:define name="content">
-            <body>
-                <h:form>
-                    <h:dataTable class="table table-striped table-hover ">
-                        <h:column headerClass="selectAll">
-                            <f:facet name="header"><h:selectBooleanCheckbox value=""/><h:outputLabel value="Select All"/></f:facet>
+            <h:form>
+                <h:dataTable class="table table-striped table-hover ">
+                    <h:column headerClass="selectAll">
+                        <f:facet name="header"><h:selectBooleanCheckbox value=""/><h:outputLabel value="Select All"/></f:facet>
 
-                        </h:column>
-                        <h:column>
-                            <f:facet name="header">Verfahren</f:facet>
-                        </h:column>
-                        <h:column>
-                            <f:facet name="header">Ergebnis</f:facet>
-                        </h:column>
-                    </h:dataTable>
-                </h:form>
-            </body>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Verfahren</f:facet>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Ergebnis</f:facet>
+                    </h:column>
+                </h:dataTable>
+            </h:form>
         </ui:define>
 
         <ui:define name="topBar">
             <div class="containter">
                 <h2><h:outputText value="#{i18n['bildEnt']}"/></h2>
                 <div class="row">
-                    <h:form>
+                    <h:form enctype="multipart/form-data">
+                        <p:growl id="bildMessages" showDetail="true" />
                         <div class="col-sm-1"></div>
                         <div class="col-sm-6">
                             <h3><h:outputText value="#{i18n['uploadPicture']}"/></h3>
 
-                            <p:fileUpload fileUploadListener="#{userController.handleFileUpload}" 
+                            <p:fileUpload fileUploadListener="#{picCon.justDoIt}" 
                                           mode="advanced" 
                                           dragDropSupport="true"
-                                          update="bildMessages" 
-                                          sizeLimit="100000" 
+                                          update="bildMessages"
                                           auto="false" 
                                           fileLimit="1" 
-                                          allowTypes="/(\.|\/)(gif|jpe?g|png)$/" 
-                                          style="width: 60%;
-                                          "/>
+                                          style="width: 85%;"
+                                          />
                             <br/>
-                            <h:inputText value="URL"/>
-                            <p:button value="Submit" class="btn btn-primary btn-xs"/>
-                            <p:growl id="bildMessages" showDetail="true" />
+
+                            <h:inputText value="URL" />
+                            
+                            <h:commandButton value="Submit"
+                                             action="#{picCon.upload}"
+                                             class="btn btn-primary btn-xs"/>
                         </div>
+
                         <div class="col-sm-5">
                             <h3><h:outputText value="#{i18n['passwortListe']}"/></h3>
                             <p:inputTextarea id="passwordListArea" rows="3" cols="50" />
@@ -63,18 +64,10 @@ and open the template in the editor.
                                        for="passwordListArea" 
                                        value="Passwörter werden per Zeilenumbruch getrennt" 
                                        showEvent="focus" 
-                                       hideEvent="blur" 
-                                       position="bottom"/>
+                                       hideEvent="blur"/>
                             <br/>
-                            <p:fileUpload fileUploadListener="#{userController.handleFileUpload}" 
-                                          mode="simple" 
-                                          skinSimple="true" 
-                                          dragDropSupport="false"
-                                          update="passwortListeMessage" 
-                                          sizeLimit="100000" 
-                                          auto="true" 
-                                          allowTypes="/(\.|\/)(txt)$/" 
-                                          multiple="false"/>
+                            <p:fileUpload mode="simple"
+                                          value="#{picCon.passwordFile}"/>
 
                             <p:growl id="passwortListeMessage" showDetail="true" />
                         </div>

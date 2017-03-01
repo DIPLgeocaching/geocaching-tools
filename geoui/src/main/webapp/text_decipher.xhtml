@@ -9,7 +9,8 @@
 
     <ui:composition template="/WEB-INF/template.xhtml">
         <ui:define name="content">
-            <h:form>
+            <h:form enctype="multipart/form-data">
+                <p:growl id="bildMessages" showDetail="true" />
                 <div class="containter">
                     <h2><h:outputText value="#{i18n['textEnt']}"/></h2>
                     <div class="row">
@@ -26,13 +27,12 @@
                                        hideEvent="blur" 
                                        />
                             <br/>
-                            <p:commandButton value="Submit" 
+                            <h:commandButton value="Submit" 
                                              action="#{textcon.submit}" 
-                                             update="methodtable"
-
                                              class="btn btn-primary btn-xs"/>
+
+
                             <br/>
-                            <p:growl id="bildMessages" showDetail="true" />
                         </div>
                         <div class="col-sm-5">
                             <h3><h:outputText value="#{i18n['passwortListe']}"/></h3>
@@ -44,17 +44,11 @@
                                        hideEvent="blur" 
                                        />
                             <br/>
-                            <!--http://www.primefaces.org/showcase/ui/file/upload/auto.xhtml-->
-                            <p:fileUpload fileUploadListener="#{userController.handleFileUpload}"  
-                                          mode="simple" 
-                                          skinSimple="true" 
-                                          dragDropSupport="false"
-                                          update="passwortListeMessage" 
-                                          sizeLimit="100000" 
-                                          auto="false" 
-                                          allowTypes="/(\.|\/)(txt)$/" 
-                                          multiple="false"/>
 
+                            <!--Passwortliste upload-->
+                            <p:fileUpload mode="simple"
+                                          value="#{textcon.passwordFile}"/>
+                            
                         </div>
                     </div>
                 </div> 
