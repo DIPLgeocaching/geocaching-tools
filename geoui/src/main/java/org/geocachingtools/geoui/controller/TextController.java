@@ -41,11 +41,6 @@ public class TextController implements Serializable {
 
     private UploadedFile passwordFile;
 
-    @PostConstruct
-    public void init() {
-
-    }
-
     @Inject
     private LocaleController localecon;
 
