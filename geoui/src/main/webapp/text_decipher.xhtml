@@ -21,7 +21,7 @@
 
                             <p:tooltip id="textDecryptAreaTooltip" 
                                        for="textDecryptArea" 
-                                       value="Passw�rter werden per Zeilenumbruch getrennt" 
+                                       value="Enter ciphertext here" 
                                        showEvent="focus" 
                                        hideEvent="blur" 
                                        />
@@ -39,7 +39,7 @@
                             <p:inputTextarea value="#{textcon.passwordText}" id="passwordListArea2" rows="3" cols="50" />
                             <p:tooltip id="passwordListTooltip2" 
                                        for="passwordListArea2" 
-                                       value="Passw�rter werden per Zeilenumbruch getrennt" 
+                                       value="Press Enter to write the next password." 
                                        showEvent="focus" 
                                        hideEvent="blur" 
                                        />
@@ -61,21 +61,22 @@
                 <p:dataTable id="methodtable"
                              var="method"
                              value="#{textcon.methods}"
+                             
+                             selection="#{textcon.methodsToUse}"
+                             rowKey="#{method}"
                              class="table table-striped table-hover">
-                    <p:column pt:headerClass="selectAll">
-                        <f:facet name="header">USE</f:facet>
-                        <h:selectBooleanCheckbox value="#{textcon.methodsToUse[method]}"/>
-                    </p:column>
-                    <p:column>
-                        <f:facet name="header">Verfahren</f:facet>
+                    <p:column selectionMode="multiple" style="width:40px;text-align:center"/>
+                    <p:column headerText="Verfahren">
                             #{method.name}
                     </p:column>
 
-                    <p:column>
-                        <f:facet name="header">Result</f:facet>
+                    <p:column headerText="Resultat">
                         <h:outputText value="#{textcon.results[method].briefResult}" escape="false"/>
                     </p:column>
                      <p:column>
+                         <f:facet name="header">
+                            <p:commandButton type="button" onclick="jQuery('.ui-row-toggler').click()" value="Toggle All" />
+                         </f:facet>
                          <p:rowToggler></p:rowToggler>
                     </p:column>
                     <p:rowExpansion>
