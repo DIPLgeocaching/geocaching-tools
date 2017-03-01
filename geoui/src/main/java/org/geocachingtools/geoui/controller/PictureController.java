@@ -71,7 +71,7 @@ public class PictureController implements Serializable {
 
                 String line = "";
                 while ((line = br.readLine()) != null) {
-                   //Add Passwords to list here
+                    //Add Passwords to list here
                 }
 
             } catch (IOException ex) {
@@ -83,8 +83,13 @@ public class PictureController implements Serializable {
         }
     }
 
-    public void justDoIt() {
-        System.out.println("Swag");
+    public void justDoIt(FileUploadEvent event) {
+        System.out.println("Success");
+
+        FacesMessage message = new FacesMessage(event.getFile().getFileName());
+        FacesContext.getCurrentInstance().addMessage(null, message);
+        
+        //Do openstego here
     }
 
     public UploadedFile getPasswordFile() {
@@ -95,5 +100,4 @@ public class PictureController implements Serializable {
         this.passwordFile = passwordFile;
     }
 
-    
 }
