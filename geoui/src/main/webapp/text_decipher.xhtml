@@ -9,7 +9,8 @@
 
     <ui:composition template="/WEB-INF/template.xhtml">
         <ui:define name="content">
-            <h:form>
+            <h:form enctype="multipart/form-data">
+                <p:growl id="bildMessages" showDetail="true" />
                 <div class="containter">
                     <h2><h:outputText value="#{i18n['textEnt']}"/></h2>
                     <div class="row">
@@ -21,61 +22,56 @@
 
                             <p:tooltip id="textDecryptAreaTooltip" 
                                        for="textDecryptArea" 
-                                       value="Passw�rter werden per Zeilenumbruch getrennt" 
+                                       value="Enter ciphertext here" 
                                        showEvent="focus" 
                                        hideEvent="blur" 
                                        />
                             <br/>
-                            <p:commandButton value="Submit" 
+                            <h:commandButton value="Submit" 
                                              action="#{textcon.submit}" 
-                                             update="methodtable"
-
                                              class="btn btn-primary btn-xs"/>
+
+
                             <br/>
-                            <p:growl id="bildMessages" showDetail="true" />
                         </div>
                         <div class="col-sm-5">
                             <h3><h:outputText value="#{i18n['passwortListe']}"/></h3>
                             <p:inputTextarea value="#{textcon.passwordText}" id="passwordListArea2" rows="3" cols="50" />
                             <p:tooltip id="passwordListTooltip2" 
                                        for="passwordListArea2" 
-                                       value="Passw�rter werden per Zeilenumbruch getrennt" 
+                                       value="Press Enter to write the next password." 
                                        showEvent="focus" 
                                        hideEvent="blur" 
                                        />
                             <br/>
-                            <!--http://www.primefaces.org/showcase/ui/file/upload/auto.xhtml-->
-                            <p:fileUpload fileUploadListener="#{userController.handleFileUpload}"  
-                                          mode="simple" 
-                                          skinSimple="true" 
-                                          dragDropSupport="false"
-                                          update="passwortListeMessage" 
-                                          sizeLimit="100000" 
-                                          auto="false" 
-                                          allowTypes="/(\.|\/)(txt)$/" 
-                                          multiple="false"/>
 
+                            <!--Passwortliste upload-->
+                            <p:fileUpload mode="simple"
+                                          skinSimple="true"
+                                          value="#{textcon.passwordFile}"/>
+                            
                         </div>
                     </div>
                 </div> 
                 <p:dataTable id="methodtable"
                              var="method"
                              value="#{textcon.methods}"
+                             
+                             selection="#{textcon.methodsToUse}"
+                             rowKey="#{method}"
                              class="table table-striped table-hover">
-                    <p:column pt:headerClass="selectAll">
-                        <f:facet name="header">USE</f:facet>
-                        <h:selectBooleanCheckbox value="#{textcon.methodsToUse[method]}"/>
-                    </p:column>
-                    <p:column>
-                        <f:facet name="header">Verfahren</f:facet>
+                    <p:column selectionMode="multiple" style="width:40px;text-align:center"/>
+                    <p:column headerText="Verfahren">
                             #{method.name}
                     </p:column>
 
-                    <p:column>
-                        <f:facet name="header">Result</f:facet>
+                    <p:column headerText="Resultat">
                         <h:outputText value="#{textcon.results[method].briefResult}" escape="false"/>
                     </p:column>
                      <p:column>
+                         <f:facet name="header">
+                            <p:commandButton type="button" onclick="jQuery('.ui-row-toggler').click()" value="Toggle All" />
+                         </f:facet>
                          <p:rowToggler></p:rowToggler>
                     </p:column>
                     <p:rowExpansion>

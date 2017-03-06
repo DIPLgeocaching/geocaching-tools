@@ -7,7 +7,7 @@
          id="WebApp_ID" version="2.5">
 
     <display-name>JavaServerFaces</display-name>
-
+    
     <!--    <error-page>     
         <exception-type>javax.faces.application.ViewExpiredException</exception-type>     
         <location>/home.xhtml</location> 
@@ -24,6 +24,17 @@
         <param-value>true</param-value>
     </context-param>
 
+    <!--Filter-->
+    <filter>
+        <filter-name>primeFacesFileUploadFilter</filter-name>
+        <filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>primeFacesFileUploadFilter</filter-name>
+        <servlet-name>Faces Servlet</servlet-name>
+    </filter-mapping>
+
+
     <!-- Welcome page -->
     <welcome-file-list>
         <welcome-file>home.xhtml</welcome-file>
@@ -37,14 +48,6 @@
     </servlet>
 
     <!-- Map these files with JSF -->
-    <servlet-mapping>
-        <servlet-name>Faces Servlet</servlet-name>
-        <url-pattern>*.jsf</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>Faces Servlet</servlet-name>
-        <url-pattern>*.faces</url-pattern>
-    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
