@@ -83,7 +83,7 @@ public class PictureController implements Serializable {
         }
     }
 
-    public void justDoIt(FileUploadEvent event) {
+    public void uploadPicture(FileUploadEvent event) {
         System.out.println("Success");
 
         FacesMessage message = new FacesMessage(event.getFile().getFileName());
