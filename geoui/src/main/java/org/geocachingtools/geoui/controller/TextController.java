@@ -50,7 +50,7 @@ public class TextController implements Serializable {
         });
     }
 
-    public void upload() {
+    private void upload() {
 
         if (passwordFile.getSize() > 0) {
             FacesMessage message = new FacesMessage("Succesfull", passwordFile.getFileName() + " is uploaded.");
@@ -61,7 +61,10 @@ public class TextController implements Serializable {
 
                 String line = "";
                 while ((line = br.readLine()) != null) {
-                    passwords.add(line);
+                    line = line.trim();
+                    if (!line.isEmpty()) {
+                        passwords.add(line);
+                    }
                 }
 
             } catch (IOException ex) {
@@ -75,9 +78,11 @@ public class TextController implements Serializable {
 
     public void submit() {
         results.clear();
-        passwords = new ArrayList<>(Arrays.asList(passwordText.split(",")));
-
-        upload();
+        passwords = new ArrayList<>();
+        if (!passwordText.trim().isEmpty()) {
+            passwords.addAll(Arrays.asList(passwordText.split(",")));
+        }
+        upload();//Adds passwords from file to passwordlist
 
         System.out.println(methodsToUse);
         System.out.println(passwordText);
