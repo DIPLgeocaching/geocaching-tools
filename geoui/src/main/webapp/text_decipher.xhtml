@@ -9,7 +9,18 @@
 
     <ui:composition template="/WEB-INF/template.xhtml">
         <ui:define name="content">
-            <h:form enctype="multipart/form-data">
+            <script>
+                $(document).ready(function () {
+
+                    function onchangeTagInput() {
+                        var box1 = $('#passwortInput');
+                        var box2 = $('#textform\\:textHidden');
+                        box2.val(box1.val());
+                    }
+                    $('#passwortInput').on('change', onchangeTagInput);
+                });
+            </script>
+            <h:form id="textform" enctype="multipart/form-data">
                 <p:growl id="bildMessages" showDetail="true" />
                 <div class="containter">
                     <h2><h:outputText value="#{i18n['textEnt']}"/></h2>
@@ -27,7 +38,7 @@
                                        hideEvent="blur" 
                                        />
                             <br/>
-                            <h:commandButton value="Submit" 
+                            <h:commandLink value="Submit" 
                                              action="#{textcon.submit}" 
                                              class="btn btn-primary btn-xs"/>
 
@@ -36,9 +47,17 @@
                         </div>
                         <div class="col-sm-5">
                             <h3><h:outputText value="#{i18n['passwortListe']}"/></h3>
-                            <p:inputTextarea value="#{textcon.passwordText}" id="passwordListArea2" rows="3" cols="50" />
-                            <p:tooltip id="passwordListTooltip2" 
-                                       for="passwordListArea2" 
+                            <input id="passwortInput" 
+                                   type="text"  
+                                   data-role="tagsinput" 
+                                   class="form-control"
+                                   /><br/>
+
+                            <h:inputHidden id="textHidden" value="#{textcon.passwordText}" />
+                            <br/>
+
+                            <p:tooltip id="passowrtInput" 
+                                       for="passowrtInput" 
                                        value="Press Enter to write the next password." 
                                        showEvent="focus" 
                                        hideEvent="blur" 
@@ -49,30 +68,30 @@
                             <p:fileUpload mode="simple"
                                           skinSimple="true"
                                           value="#{textcon.passwordFile}"/>
-                            
+
                         </div>
                     </div>
                 </div> 
                 <p:dataTable id="methodtable"
                              var="method"
                              value="#{textcon.methods}"
-                             
+
                              selection="#{textcon.methodsToUse}"
                              rowKey="#{method}"
                              class="table table-striped table-hover">
                     <p:column selectionMode="multiple" style="width:40px;text-align:center"/>
                     <p:column headerText="Verfahren">
-                            #{method.name}
+                        #{method.name}
                     </p:column>
 
                     <p:column headerText="Resultat">
                         <h:outputText value="#{textcon.results[method].briefResult}" escape="false"/>
                     </p:column>
-                     <p:column>
-                         <f:facet name="header">
+                    <p:column>
+                        <f:facet name="header">
                             <p:commandButton type="button" onclick="jQuery('.ui-row-toggler').click()" value="Toggle All" />
-                         </f:facet>
-                         <p:rowToggler></p:rowToggler>
+                        </f:facet>
+                        <p:rowToggler></p:rowToggler>
                     </p:column>
                     <p:rowExpansion>
                         <h:outputText value="#{textcon.results[method].fullResult}" escape="false"/>
