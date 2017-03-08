@@ -33,11 +33,14 @@ import com.google.zxing.Result;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import org.geocachingtools.decoder.DecoderMethod;
 import org.geocachingtools.decoder.DecoderMethod.ExecutionTime;
 import org.geocachingtools.decoder.DecoderRequest;
@@ -52,9 +55,9 @@ import org.geocachingtools.decoder.Method;
         name = "Barcode",
         expectedExecutionTime = ExecutionTime.SLOW,
         requiresPassword = false,
-        type = BufferedImage.class
+        type = InputStream.class
 )
-public class Barcode extends DecoderMethod<BufferedImage> {
+public class Barcode extends DecoderMethod<InputStream> {
 
     Map<DecodeHintType, Object> hints = new EnumMap<>(DecodeHintType.class);
 
@@ -65,25 +68,24 @@ public class Barcode extends DecoderMethod<BufferedImage> {
     }
 
     @Override
-    public DecoderResult decode(DecoderRequest<BufferedImage> request) {
-        BufferedImage img = request.getData();
-        MultiFormatReader reader = new MultiFormatReader();
-        BufferedImageLuminanceSource source = new BufferedImageLuminanceSource(img);
-        BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
-        Result result;
+    public DecoderResult decode(DecoderRequest<InputStream> request) {
         try {
-             result= reader.decode(bitmap,hints);
-        } catch (NotFoundException ex) {
-            System.out.println("nothing found");
+            BufferedImage img = ImageIO.read(request.getData());
+            MultiFormatReader reader = new MultiFormatReader();
+            BufferedImageLuminanceSource source = new BufferedImageLuminanceSource(img);
+            BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+            Result result = reader.decode(bitmap, hints);
+
+            BarcodeFormat barcodeFormat = result.getBarcodeFormat();
+            StringBuilder fullResult = new StringBuilder();
+            fullResult.append("Found Barcode of type ").append(barcodeFormat.toString()).append("\n");
+            fullResult.append("Content:\n");
+            fullResult.append(result.getText());
+
+            return new DecoderResult(this, barcodeFormat.toString(), fullResult.toString(), 1.0);
+        } catch (IOException | NotFoundException ex) {
             return new DecoderResult(this, "nothing found", 0.0);
         }
-        BarcodeFormat barcodeFormat = result.getBarcodeFormat();
-        StringBuilder fullResult = new StringBuilder();
-        fullResult.append("Found Barcode of type ").append(barcodeFormat.toString()).append("\n");
-        fullResult.append("Content:\n");
-        fullResult.append(result.getText());
-        System.out.println(fullResult);
-        return new DecoderResult(this,barcodeFormat.toString(),fullResult.toString(), 1.0);
     }
 
 }
