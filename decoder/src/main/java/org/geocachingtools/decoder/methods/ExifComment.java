@@ -24,46 +24,48 @@
  */
 package org.geocachingtools.decoder.methods;
 
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.Metadata;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import org.apache.tika.Tika;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.geocachingtools.decoder.DecoderMethod;
 import org.geocachingtools.decoder.DecoderRequest;
 import org.geocachingtools.decoder.DecoderResult;
-import org.geocachingtools.decoder.I18n;
 import org.geocachingtools.decoder.Method;
 
 /**
  *
- * @author lukas
+ * @author 20120093
  */
-@Method(name = "FileType",
-        type = InputStream.class,
+@Method(
+        name = "EXIF",
+        expectedExecutionTime = DecoderMethod.ExecutionTime.FAST,
         requiresPassword = false,
-        expectedExecutionTime = DecoderMethod.ExecutionTime.FAST
+        type = InputStream.class
 )
-public class FileType extends DecoderMethod<InputStream> {
+public class ExifComment extends DecoderMethod<InputStream> {
 
-    private I18n i18n;
-    
     @Override
     public DecoderResult decode(DecoderRequest<InputStream> request) {
-        i18n = new I18n(request.getLocale());
-        double releveance = 0;
-        String fullResult;
         try {
-            Tika t = new Tika();
-            String type = t.detect(request.getData());
-            if(!type.matches(".*(jpe?g|gif|png).*")) {
-                releveance = 1;
-                fullResult = i18n.get("POSSIBLE-FILETYPE") + " " + type;
-            } else {
-                fullResult = i18n.get("POSSIBLE-FILETYPE") + " " + type;
+            Metadata metadata = ImageMetadataReader.readMetadata(request.getData());
+            StringBuilder builder = new StringBuilder();
+            for (com.drew.metadata.Directory directory : metadata.getDirectories()) {
+                builder.append(" -- ").append(directory.getName()).append(" -- \n");
+                for (com.drew.metadata.Tag tag : directory.getTags()) {
+                    builder.append(tag).append("\n");
+                }
             }
-        } catch (IOException ex) {
-            return new DecoderResult(this, i18n.get("DECODER-EXCEPTION"),"", 0.0);
+            //TODO: relevance nach häufig vorhandenen comment directories? z.B. Canon Makernote wird wohl keine wichtigen infos drinnen haben
+            return new DecoderResult(this, "Exif-Metadata detected", builder.toString(), 0.6);
+        } catch (ImageProcessingException | IOException ex) {
+            Logger.getLogger(ExifComment.class.getName()).log(Level.SEVERE, null, ex);
+            return new DecoderResult(this, "no result found", 0.0);
         }
-        return new DecoderResult(this, fullResult, releveance);
     }
 
 }

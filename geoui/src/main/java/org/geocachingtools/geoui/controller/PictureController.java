@@ -31,11 +31,23 @@ import java.io.InputStreamReader;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import org.geocachingtools.decoder.Decoder;
+import org.geocachingtools.decoder.DecoderMethod;
+import org.geocachingtools.decoder.DecoderRequest;
+import org.geocachingtools.decoder.DecoderResult;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
@@ -47,11 +59,24 @@ import org.primefaces.model.UploadedFile;
 @SessionScoped
 public class PictureController implements Serializable {
 
+    private final Class<?> type = InputStream.class;
     private UploadedFile passwordFile;
+    private String passwordText;//The Textfield for passwords
+    private List<String> passwords;
+    private List<DecoderMethod> methods = new ArrayList<>();//Available Methods
+    private List<DecoderMethod> methodsToUse;//Selected Methods
+    private Map<DecoderMethod, DecoderResult> results = new HashMap<>();
+    private final Decoder decoder = Decoder.getInstance();
+    private UploadedFile uploadedPic;
+
+    @Inject
+    private LocaleController localecon;
 
     @PostConstruct
     public void init() {
-
+        decoder.getMethods(type).stream().forEach(o -> {
+            methods.add(o);
+        });
     }
 
     public void handlePictureUpload(FileUploadEvent event) {
@@ -61,35 +86,67 @@ public class PictureController implements Serializable {
     }
 
     public void upload() {
+        FacesMessage message = new FacesMessage("Succesfull", passwordFile.getFileName() + " is uploaded.");
+        FacesContext.getCurrentInstance().addMessage(null, message);
+        
+        try (InputStream is = passwordFile.getInputstream();
+                BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
 
-        if (passwordFile.getSize() > 0) {
-            FacesMessage message = new FacesMessage("Succesfull", passwordFile.getFileName() + " is uploaded.");
-            FacesContext.getCurrentInstance().addMessage(null, message);
+            String line = "";
+            while ((line = br.readLine()) != null) {
+                passwords.add(line);
+            }
 
-            try (InputStream is = passwordFile.getInputstream();
-                    BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+        } catch (IOException ex) {
+            Logger.getLogger(TextController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
-                String line = "";
-                while ((line = br.readLine()) != null) {
-                    //Add Passwords to list here
+    public void submit() throws IOException {
+        results.clear();
+        passwords = new ArrayList<>(Arrays.asList(passwordText.split(",")));
+        
+        System.out.println(methodsToUse);
+        System.out.println(passwordText);
+        System.out.println(passwords);
+        System.out.println("cipher: " + uploadedPic.getFileName());
+
+        if (uploadedPic != null) {
+            for (DecoderMethod method : methodsToUse) {
+                // System.out.println(method.getName());
+                Future<DecoderResult> future;
+                future = decoder.decode(
+                        new DecoderRequest(
+                                type,
+                                uploadedPic.getInputstream(),
+                                method,
+                                passwords,
+                                localecon.getLocale()
+                        )
+                );
+                try {
+                    results.put(method, future.get());
+                } catch (InterruptedException | ExecutionException ex) {
+                    throw new RuntimeException(ex);//TODO better exception handling
                 }
-
-            } catch (IOException ex) {
-                Logger.getLogger(TextController.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
             FacesMessage message = new FacesMessage("Kein File gefunden...");
             FacesContext.getCurrentInstance().addMessage(null, message);
         }
+
+        if (methodsToUse != null) {
+            methodsToUse.clear();
+        }
     }
 
-    public void justDoIt(FileUploadEvent event) {
+    public void uploadPicture(FileUploadEvent event) throws IOException {
         System.out.println("Success");
 
         FacesMessage message = new FacesMessage(event.getFile().getFileName());
         FacesContext.getCurrentInstance().addMessage(null, message);
-        
-        //Do openstego here
+
+        uploadedPic = event.getFile();
     }
 
     public UploadedFile getPasswordFile() {
@@ -98,6 +155,46 @@ public class PictureController implements Serializable {
 
     public void setPasswordFile(UploadedFile passwordFile) {
         this.passwordFile = passwordFile;
+    }
+
+    public String getPasswordText() {
+        return passwordText;
+    }
+
+    public void setPasswordText(String passwordText) {
+        this.passwordText = passwordText;
+    }
+
+    public List<DecoderMethod> getMethods() {
+        return methods;
+    }
+
+    public void setMethods(List<DecoderMethod> methods) {
+        this.methods = methods;
+    }
+
+    public List<DecoderMethod> getMethodsToUse() {
+        return methodsToUse;
+    }
+
+    public void setMethodsToUse(List<DecoderMethod> methodsToUse) {
+        this.methodsToUse = methodsToUse;
+    }
+
+    public Map<DecoderMethod, DecoderResult> getResults() {
+        return results;
+    }
+
+    public void setResults(Map<DecoderMethod, DecoderResult> results) {
+        this.results = results;
+    }
+
+    public UploadedFile getUploadedPic() {
+        return uploadedPic;
+    }
+
+    public void setUploadedPic(UploadedFile uploadedPic) {
+        this.uploadedPic = uploadedPic;
     }
 
 }
