@@ -24,9 +24,9 @@
  */
 package org.geocachingtools.decoder.methods;
 
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,7 +34,7 @@ import javax.imageio.ImageIO;
 import net.sourceforge.openstego.OpenStegoConfig;
 import net.sourceforge.openstego.OpenStegoException;
 import net.sourceforge.openstego.OpenStegoPlugin;
-import net.sourceforge.openstego.util.PluginManager;
+import net.sourceforge.openstego.plugin.lsb.LSBPlugin;
 import org.geocachingtools.decoder.DecoderMethod;
 import org.geocachingtools.decoder.DecoderRequest;
 import org.geocachingtools.decoder.DecoderResult;
@@ -48,18 +48,18 @@ import org.geocachingtools.validator.ValidatorResult;
  *
  * @author lukas
  */
-@Method(name = "OpenStego",
-        type = BufferedImage.class,
+@Method(name = "OpenStego LSB",
+        type = InputStream.class,
         requiresPassword = false,
         expectedExecutionTime = DecoderMethod.ExecutionTime.SLOW
 )
-public class OpenStego extends DecoderMethod<BufferedImage> {
+public class OpenStegoLSB extends DecoderMethod<InputStream> {
 
-    private Validator validator = Validator.getInstance();
+    private final Validator validator = Validator.getInstance();
     private I18n i18n;
 
     @Override
-    public DecoderResult decode(DecoderRequest<BufferedImage> request) {
+    public DecoderResult decode(DecoderRequest<InputStream> request) {
         String briefResult = "";
         String fullResult = "";
 
@@ -68,26 +68,26 @@ public class OpenStego extends DecoderMethod<BufferedImage> {
         double partialRelevance;
         i18n = new I18n(request.getLocale());
 
-        OpenStegoConfig config = null;
-        net.sourceforge.openstego.OpenStego openStego = null;
+        OpenStegoConfig config;
+        net.sourceforge.openstego.OpenStego openStego;
 
         try {
-            PluginManager.loadPlugins();
-            OpenStegoPlugin extractPlugin = PluginManager.getPluginByName("RandomLSB");
+            OpenStegoPlugin extractPlugin = new LSBPlugin();
             config = extractPlugin.createConfig();
             openStego = new net.sourceforge.openstego.OpenStego(extractPlugin, config);
             config = openStego.getConfig();
 
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            ImageIO.write(request.getData(), "png", out);
+            
+            ImageIO.write(ImageIO.read(request.getData()), "png", out);
 
-            List<?> stegoOutput = null;
+            List<?> stegoOutput;
             try {
                 stegoOutput = openStego.extractData(out.toByteArray(), "Image");
                 result = new String((byte[]) stegoOutput.get(1));
                 partialRelevance = validator.check(new ValidatorRequest(result)).getRelevance();
                 if (partialRelevance >= ValidatorResult.THRESHOLD) {
-                    briefResult += "Ohne Passwort => " + result + " <br/>";
+                    briefResult += "Ohne Passwort => " + result + "<br/>";
                     relevance = Math.max(relevance, partialRelevance);
                 }
             } catch (OpenStegoException ex) {
@@ -103,7 +103,7 @@ public class OpenStego extends DecoderMethod<BufferedImage> {
                         result = new String((byte[]) stegoOutput.get(1));
                         partialRelevance = validator.check(new ValidatorRequest(result)).getRelevance();
                         if (partialRelevance >= ValidatorResult.THRESHOLD) {
-                            briefResult += pwd + " => " + result + " <br/>";
+                            briefResult += pwd + " => " + result + "<br/>";
                             relevance = Math.max(relevance, partialRelevance);
                         }
                     } catch (OpenStegoException ex) {
@@ -119,7 +119,8 @@ public class OpenStego extends DecoderMethod<BufferedImage> {
             }
             return new DecoderResult(this, briefResult, fullResult, 0.0);
         } catch (IOException | OpenStegoException ex) {
-            Logger.getLogger(OpenStego.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OpenStegoLSB.class.getName()).log(Level.SEVERE, null, ex);
+            briefResult = i18n.get("DECODER-EXCEPTION");
         }
         return new DecoderResult(this, briefResult, fullResult, Double.MAX_VALUE);
     }

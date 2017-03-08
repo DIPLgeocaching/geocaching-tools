@@ -24,17 +24,6 @@
         <param-value>true</param-value>
     </context-param>
 
-    <!--Filter-->
-    <filter>
-        <filter-name>primeFacesFileUploadFilter</filter-name>
-        <filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>primeFacesFileUploadFilter</filter-name>
-        <servlet-name>Faces Servlet</servlet-name>
-    </filter-mapping>
-
-
     <!-- Welcome page -->
     <welcome-file-list>
         <welcome-file>home.xhtml</welcome-file>
