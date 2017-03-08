@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import org.geocachingtools.decoder.DecoderRequest;
 import org.geocachingtools.decoder.DecoderResult;
-import org.geocachingtools.decoder.methods.Navajo;
 import org.geocachingtools.decoder.methods.OpenStego;
 
 
@@ -57,7 +56,6 @@ public class Main {
             DecoderResult decode = openStego.decode(
                     new DecoderRequest<>(BufferedImage.class, ImageIO.read(file), openStego, pwdList));
             System.out.println(decode.getFullResult());
-            
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
