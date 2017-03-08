@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="windows-1252"?>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:f="http://xmlns.jcp.org/jsf/core"     
@@ -11,69 +6,83 @@ and open the template in the editor.
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://xmlns.jcp.org/jsf/html">
 
-
     <ui:composition template="/WEB-INF/template.xhtml">
         <ui:define name="content">
-            <h:form>
-                <h:dataTable class="table table-striped table-hover ">
-                    <h:column headerClass="selectAll">
-                        <f:facet name="header"><h:selectBooleanCheckbox value=""/><h:outputLabel value="Select All"/></f:facet>
+            <h:form enctype="multipart/form-data">
+                <p:growl id="bildMessages" showDetail="true" />
+                <div class="containter">
+                    <h2><h:outputText value="#{i18n['bildEnt']}"/></h2>
+                    <div class="row">
 
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Verfahren</f:facet>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Ergebnis</f:facet>
-                    </h:column>
-                </h:dataTable>
-            </h:form>
-        </ui:define>
-
-        <ui:define name="topBar">
-            <div class="containter">
-                <h2><h:outputText value="#{i18n['bildEnt']}"/></h2>
-                <div class="row">
-                    <h:form enctype="multipart/form-data">
-                        <p:growl id="bildMessages" showDetail="true" />
                         <div class="col-sm-1"></div>
                         <div class="col-sm-6">
                             <h3><h:outputText value="#{i18n['uploadPicture']}"/></h3>
-
                             <p:fileUpload fileUploadListener="#{picCon.uploadPicture}" 
-                                          mode="advanced" 
-                                          dragDropSupport="true"
+                                          mode="simple"
+                                          skinSimple="true"
                                           update="bildMessages"
-                                          auto="false" 
-                                          fileLimit="1" 
+                                          allowTypes="/(\.|\/)(gif|jpe?g|png)$/" 
+                                          fileLimit="1"
+                                          fileLimitMessage="i18n Es darf nur 1 Bild hochgeladen werden"
+                                          dragDropSupport="true"
                                           style="width: 85%;"
+                                          value="#{picCon.uploadedPic}"
                                           />
                             <br/>
-
-                            <h:inputText value="URL" />
+                            <h:inputText value="URL"/>
                             
                             <h:commandButton value="Submit"
-                                             action="#{picCon.upload}"
+                                             action="#{picCon.submit}"
                                              class="btn btn-primary btn-xs"/>
                         </div>
 
                         <div class="col-sm-5">
                             <h3><h:outputText value="#{i18n['passwortListe']}"/></h3>
-                            <p:inputTextarea id="passwordListArea" rows="3" cols="50" />
-                            <p:tooltip id="passwordListTooltip" 
-                                       for="passwordListArea" 
-                                       value="Passwörter werden per Zeilenumbruch getrennt" 
+                            <p:inputTextarea value="#{picCon.passwordText}" id="passwordListArea2" rows="3" cols="50" />
+                            <p:tooltip id="passwordListTooltip2" 
+                                       for="passwordListArea2" 
+                                       value="Press Enter to write the next password." 
                                        showEvent="focus" 
-                                       hideEvent="blur"/>
+                                       hideEvent="blur" 
+                                       />
                             <br/>
-                            <p:fileUpload mode="simple"
-                                          value="#{picCon.passwordFile}"/>
 
-                            <p:growl id="passwortListeMessage" showDetail="true" />
+                            <!--Passwortliste upload-->
+                            <p:fileUpload mode="simple"
+                                          skinSimple="true"
+                                          value="#{textcon.passwordFile}"
+                                          fileUploadListener="#{picCon.upload()}"/>
+
                         </div>
-                    </h:form>
+                    </div>
                 </div>
-            </div> 
+
+                <p:dataTable id="methodtable"
+                             var="method"
+                             value="#{picCon.methods}"
+
+                             selection="#{picCon.methodsToUse}"
+                             rowKey="#{method}"
+                             class="table table-striped table-hover">
+                    <p:column selectionMode="multiple" style="width:40px;text-align:center"/>
+                    <p:column headerText="Verfahren">
+                        #{method.name}
+                    </p:column>
+
+                    <p:column headerText="Resultat">
+                        <h:outputText value="#{picCon.results[method].briefResult}" escape="false"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <p:commandButton type="button" onclick="jQuery('.ui-row-toggler').click()" value="Toggle All" />
+                        </f:facet>
+                        <p:rowToggler></p:rowToggler>
+                    </p:column>
+                    <p:rowExpansion>
+                        <h:outputText value="#{picCon.results[method].fullResult}" escape="false"/>
+                    </p:rowExpansion>
+                </p:dataTable>
+            </h:form>
         </ui:define>
 
     </ui:composition>

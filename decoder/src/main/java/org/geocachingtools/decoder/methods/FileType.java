@@ -24,25 +24,9 @@
  */
 package org.geocachingtools.decoder.methods;
 
-import java.awt.PageAttributes;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URLConnection;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.spi.FileTypeDetector;
-import java.util.Enumeration;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.activation.MimeType;
 import org.apache.tika.Tika;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.mime.MimeTypes;
 import org.geocachingtools.decoder.DecoderMethod;
 import org.geocachingtools.decoder.DecoderRequest;
 import org.geocachingtools.decoder.DecoderResult;
@@ -70,11 +54,11 @@ public class FileType extends DecoderMethod<InputStream> {
         try {
             Tika t = new Tika();
             String type = t.detect(request.getData());
-            if(!type.matches("\\.jpg$|\\.gif$|\\.png$")) {
+            if(!type.matches(".*(jpe?g|gif|png).*")) {
                 releveance = 1;
                 fullResult = i18n.get("POSSIBLE-FILETYPE") + " " + type;
             } else {
-                fullResult = i18n.get("LOW-VALIDATOR-RESULT");
+                fullResult = i18n.get("POSSIBLE-FILETYPE") + " " + type;
             }
         } catch (IOException ex) {
             return new DecoderResult(this, i18n.get("DECODER-EXCEPTION"),"", 0.0);
