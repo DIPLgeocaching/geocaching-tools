@@ -39,28 +39,21 @@
                                        />
                             <br/>
                             <h:commandLink value="Submit" 
-                                             action="#{textcon.submit}" 
-                                             class="btn btn-primary btn-xs"/>
+                                           action="#{textcon.submit}" 
+                                           class="btn btn-primary btn-xs"/>
 
 
                             <br/>
                         </div>
                         <div class="col-sm-5">
                             <h3><h:outputText value="#{i18n['passwortListe']}"/></h3>
-                            <input id="passwortInput" 
+                            <input id="passwortInput"
                                    type="text"  
                                    data-role="tagsinput" 
                                    class="form-control"
                                    /><br/>
 
                             <h:inputHidden id="textHidden" value="#{textcon.passwordText}" />
-                            <br/>
-
-                            <p:tooltip for="passwortInput" 
-                                       value="Press Enter to write the next password." 
-                                       showEvent="focus" 
-                                       hideEvent="blur" 
-                                       />
                             <br/>
 
                             <!--Passwortliste upload-->
@@ -80,6 +73,9 @@
                              class="table table-striped table-hover">
                     <p:column selectionMode="multiple" style="width:40px;text-align:center"/>
                     <p:column headerText="Verfahren">
+                        <p:outputPanel style="display: inline;" rendered="#{method.requiresPassword}">
+                            <i title="Password required" class="fa fa-fw fa-key"></i>
+                        </p:outputPanel>
                         #{method.name}
                     </p:column>
 

@@ -8,21 +8,16 @@ import java.lang.Math;
  *
  * @author AwesomeDragon42
  */
-@Method(name = "Vigenere on ROT0 basis",
+@Method(name = "Vigenere ROT0",
         type = String.class,
         requiresPassword = true,
         expectedExecutionTime = DecoderMethod.ExecutionTime.FAST
 )
 public class Vigenere extends DecoderMethod<String> {
 
-    private Validator validator = Validator.getInstance();
+    private final Validator validator = Validator.getInstance();
     private I18n i18n;
-    private char shiftTable[][] = new char[26][26];
-
-    static {
-
-    }
-
+    
     /**
      * The Method that is called by the Decoder. Multi-threading etc. has to be
      * managed by upper layers of the software.
@@ -39,13 +34,16 @@ public class Vigenere extends DecoderMethod<String> {
         String result;
         double partialRelevance;
         for (String key : request.getPasswords()) {
-            result = decode(request.getData(), key.trim());
-            partialRelevance = validator.check(new ValidatorRequest(result)).getRelevance();
-            if (partialRelevance >= ValidatorResult.THRESHOLD) {
-                briefResult += "<b>" + key + "</b> => " + result + " <br/>";
-                relevance = Math.max(relevance, partialRelevance);
+            key = key.trim();
+            if (!key.isEmpty()) {
+                result = decode(request.getData(), key);
+                partialRelevance = validator.check(new ValidatorRequest(result)).getRelevance();
+                if (partialRelevance >= ValidatorResult.THRESHOLD) {
+                    briefResult += "<b>" + key + "</b> => " + result + " <br/>";
+                    relevance = Math.max(relevance, partialRelevance);
+                }
+                fullResult += "<b>" + key + "</b> => " + result + "<br/>";
             }
-            fullResult += "<b>" + key + "</b> => " + result + "<br/>";
         }
 
         if (relevance < ValidatorResult.THRESHOLD) {//No suitable result found

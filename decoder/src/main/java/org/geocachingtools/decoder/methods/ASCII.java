@@ -8,7 +8,7 @@ import org.geocachingtools.validator.*;
  *
  * @author AwesomeDragon42
  */
-@Method(name = "ASCII",
+@Method(name = "ASCII Base10",
         type = String.class,
         requiresPassword = false,
         expectedExecutionTime = DecoderMethod.ExecutionTime.FAST
