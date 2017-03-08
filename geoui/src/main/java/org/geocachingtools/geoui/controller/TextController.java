@@ -44,7 +44,8 @@ public class TextController implements Serializable {
     @Inject
     private LocaleController localecon;
 
-    {
+    @PostConstruct
+    public void init(){
         decoder.getMethods(type).stream().forEach(o -> {
             methods.add(o);
         });

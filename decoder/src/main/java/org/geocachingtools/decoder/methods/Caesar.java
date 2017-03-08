@@ -1,4 +1,5 @@
 package org.geocachingtools.decoder.methods;
+
 import org.geocachingtools.decoder.*;
 import org.geocachingtools.validator.*;
 import java.lang.Math;
@@ -15,32 +16,33 @@ public class Caesar extends DecoderMethod<String> {
 
     private final Validator validator = Validator.getInstance();
     private I18n i18n;
-    
+
     /**
-     * The Method that is called by the Decoder. 
-     * Multi-threading etc. has to be managed by upper layers of the software.
+     * The Method that is called by the Decoder. Multi-threading etc. has to be
+     * managed by upper layers of the software.
+     *
      * @param request Object
      * @return result Object
      */
     @Override
     public DecoderResult decode(DecoderRequest<String> request) {
         i18n = new I18n(request.getLocale());
-        String briefResult="", fullResult="";
-        double relevance=0;
+        String briefResult = "", fullResult = "";
+        double relevance = 0;
 
         String result;
         double partialRelevance;
-        for (int key=1; key<=25; key++) {
+        for (int key = 1; key <= 25; key++) {
 
-                result = decode(request.getData(), key);
-                partialRelevance = validator.check(new ValidatorRequest(result)).getRelevance();
-                result = String.format("<b>ROT-%02d</b> => %s <br/>", key, result);
-                if (partialRelevance >= ValidatorResult.THRESHOLD) {
-                    briefResult += result;
-                    relevance = Math.max(relevance, partialRelevance);
-                }
-                fullResult += result;
-            
+            result = decode(request.getData(), key);
+            partialRelevance = validator.check(new ValidatorRequest(result)).getRelevance();
+            result = String.format("<b>ROT-%02d</b> => %s <br/>", key, result);
+            if (partialRelevance >= ValidatorResult.THRESHOLD) {
+                briefResult += result;
+                relevance = Math.max(relevance, partialRelevance);
+            }
+            fullResult += result;
+
         }
 
         if (relevance < ValidatorResult.THRESHOLD) {//No suitable result found
@@ -50,13 +52,24 @@ public class Caesar extends DecoderMethod<String> {
     }
 
     /**
-     * The actual decoding     *
+     * The actual decoding
+     *
+     *
      * @param ciphertext
      * @param key
      * @return plaintext
      */
     private String decode(String cipher, int key) {
-        //IMPLEMENT DECODER FUNKTIONALITY HERE
-        return cipher+" - "+key;
+        StringBuilder result = new StringBuilder();
+        for (char ch : cipher.toCharArray()) {
+            if (Character.isUpperCase(ch)) {
+                result.append((char) ((((ch - 'A') + key) % 26) + 'A'));
+            } else if (Character.isLowerCase(ch)) {
+                result.append((char) ((((ch - 'a') + key) % 26) + 'a'));
+            } else {
+                result.append(ch);
+            }
+        }
+        return result.toString();
     }
 }
