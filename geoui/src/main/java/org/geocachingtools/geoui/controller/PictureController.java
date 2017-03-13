@@ -42,6 +42,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import org.geocachingtools.decoder.Decoder;
@@ -68,6 +69,7 @@ public class PictureController implements Serializable {
     private Map<DecoderMethod, DecoderResult> results = new HashMap<>();
     private final Decoder decoder = Decoder.getInstance();
     private UploadedFile uploadedPic;
+    private UIComponent pwd;
 
     @Inject
     private LocaleController localecon;
@@ -86,25 +88,34 @@ public class PictureController implements Serializable {
     }
 
     public void upload() {
-        FacesMessage message = new FacesMessage("Succesfull", passwordFile.getFileName() + " is uploaded.");
-        FacesContext.getCurrentInstance().addMessage(null, message);
-        
-        try (InputStream is = passwordFile.getInputstream();
-                BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+        if (passwordFile != null) {
+            FacesMessage message = new FacesMessage("Succesfull", passwordFile.getFileName() + " is uploaded.");
+            FacesContext.getCurrentInstance().addMessage(null, message);
 
-            String line = "";
-            while ((line = br.readLine()) != null) {
-                passwords.add(line);
+            try (InputStream is = passwordFile.getInputstream();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+
+                String line;
+                while ((line = br.readLine()) != null) {
+                    line = line.trim();
+                    if (!line.isEmpty()) {
+                        passwords.add(line);
+                    }
+                }
+
+            } catch (IOException ex) {
+                Logger.getLogger(TextController.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-        } catch (IOException ex) {
-            Logger.getLogger(TextController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public void submit() throws IOException {
         results.clear();
-        passwords = new ArrayList<>(Arrays.asList(passwordText.split(",")));
+        passwords = new ArrayList<>();
+        if (!passwordText.trim().isEmpty()) {
+            passwords.addAll(Arrays.asList(passwordText.split(",")));
+        }
+        upload();//Adds passwords from file to passwordlist
         
         System.out.println(methodsToUse);
         System.out.println(passwordText);
@@ -113,7 +124,12 @@ public class PictureController implements Serializable {
 
         if (uploadedPic != null) {
             for (DecoderMethod method : methodsToUse) {
-                // System.out.println(method.getName());
+            // System.out.println(method.getName());
+            if (passwords.isEmpty() && method.getRequiresPassword()) {
+                results.put(method, new DecoderResult(method, "Das ausgewählte Verfahren verlangt ein Passwort!", 1.0));
+                FacesMessage message = new FacesMessage("Eines der ausgewählten Verfahren verlangen ein Passwort!");
+                FacesContext.getCurrentInstance().addMessage(pwd.getClientId(FacesContext.getCurrentInstance()), message);
+            } else {
                 Future<DecoderResult> future;
                 future = decoder.decode(
                         new DecoderRequest(
@@ -127,9 +143,11 @@ public class PictureController implements Serializable {
                 try {
                     results.put(method, future.get());
                 } catch (InterruptedException | ExecutionException ex) {
+                    Logger.getLogger(TextController.class.getName()).log(Level.SEVERE, null, ex);
                     throw new RuntimeException(ex);//TODO better exception handling
                 }
             }
+        }
         } else {
             FacesMessage message = new FacesMessage("Kein File gefunden...");
             FacesContext.getCurrentInstance().addMessage(null, message);
@@ -195,6 +213,14 @@ public class PictureController implements Serializable {
 
     public void setUploadedPic(UploadedFile uploadedPic) {
         this.uploadedPic = uploadedPic;
+    }
+
+    public UIComponent getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(UIComponent pwd) {
+        this.pwd = pwd;
     }
 
 }
