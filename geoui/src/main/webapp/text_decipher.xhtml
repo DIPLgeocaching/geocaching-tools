@@ -29,20 +29,20 @@
                         <div class="col-sm-6">
 
                             <h3><h:outputText value="#{i18n['solveText']}"/></h3>
-                            <p:inputTextarea value="#{textCon.cipher}" id="textDecryptArea" rows="3" cols="50" />
-
+                            <p:inputTextarea value="#{textCon.cipher}" id="textDecryptArea" rows="3" cols="50">
+                                <p:ajax event="keyup" update="submit"/>
+                            </p:inputTextarea>
                             <p:tooltip id="textDecryptAreaTooltip" 
                                        for="textDecryptArea" 
                                        value="Enter ciphertext here" 
                                        showEvent="focus" 
-                                       hideEvent="blur" 
-                                       />
+                                       hideEvent="blur"/>
                             <br/>
-                            <h:commandLink value="Submit" 
-                                           action="#{textCon.submit}" 
-                                           class="btn btn-primary btn-xs"/>
-
-
+                            <h:commandButton id="submit"
+                                             value="Submit" 
+                                             action="#{textCon.submit}" 
+                                             class="btn btn-primary btn-xs"
+                                             disabled="#{textCon.disableSubmit()}"/>
                             <br/><br/>
                         </div>
                         <div class="col-sm-5">
