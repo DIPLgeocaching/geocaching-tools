@@ -28,24 +28,43 @@
                         <h2><h:outputText value="#{i18n['bildEnt']}"/></h2>
                         <div class="col-sm-6">
 
-                            <h3><h:outputText value="#{i18n['uploadPicture']}"/></h3>
-                            <p:fileUpload fileUploadListener="#{picCon.uploadPicture}" 
-                                          mode="simple"
+                            <h3><h:outputText value="#{i18n['uploadPicture']}"/></h3>                   
+                            <p:fileUpload id="picInput"
+                                          fileUploadListener="#{picCon.uploadPicture}" 
+                                          mode="advanced"
                                           skinSimple="true"
-                                          update="bildMessages"
                                           allowTypes="/(\.|\/)(gif|jpe?g|png)$/" 
                                           fileLimit="1"
                                           fileLimitMessage="i18n Es darf nur 1 Bild hochgeladen werden"
                                           dragDropSupport="true"
-                                          style="width: 85%;"
+                                          style="width: 100%;"
                                           value="#{picCon.uploadedPic}"
-                                          />
+                                          binding="#{picCon.pic}"
+                                          oncomplete="update()"
+                                          disabled="#{not empty picCon.url}"/>
+                            <h:outputText id="picName" value="File: #{picCon.uploadedPic.fileName}" rendered="#{not picCon.picEmpty}"/>
+                            <p:commandButton id="picRemove"
+                                             value="Remove Image"
+                                             icon="fa fa-fw fa-remove"
+                                             actionListener="#{picCon.clearPic()}" 
+                                             rendered="#{not picCon.picEmpty}"
+                                             update="bildform"/>
+                            <p:remoteCommand name="update" update="bildform"/>
                             <br/>
-                            <h:inputText value="URL"/>
-
-                            <h:commandLink value="Submit"
-                                           action="#{picCon.submit}"
-                                           class="btn btn-primary btn-xs"/>
+                            <h:outputText value="oder"/>
+                            <br/>
+                            <br/>
+                            URL: 
+                            <h:inputText id="url" value="#{picCon.url}" disabled="#{not empty picCon.uploadedPic}">
+                                <p:ajax event="keyup" update="submit picInput"/>
+                            </h:inputText>
+                            <br/>
+                            <br/>
+                            <h:commandButton id="submit"
+                                             value="Submit"
+                                             action="#{picCon.submit}"
+                                             class="btn btn-primary btn-xs"
+                                             disabled="#{picCon.disableSubmit()}"/>
                             <br/><br/>
                         </div>
                         <div class="col-sm-5">
@@ -64,7 +83,7 @@
                                           skinSimple="true"
                                           value="#{picCon.passwordFile}"/>
                             <br/>
-                            <h:outputText binding="#{textcon.pwd}" id="bildMessage" style="display:hidden"/>
+                            <h:outputText binding="#{picCon.pwd}" id="bildMessage" style="display:hidden"/>
                             <h:message for="bildMessage" style="color:orange"/>
                         </div>
                     </div>

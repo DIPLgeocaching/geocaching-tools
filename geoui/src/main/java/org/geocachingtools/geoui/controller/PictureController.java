@@ -68,8 +68,10 @@ public class PictureController implements Serializable {
     private List<DecoderMethod> methodsToUse;//Selected Methods
     private Map<DecoderMethod, DecoderResult> results = new HashMap<>();
     private final Decoder decoder = Decoder.getInstance();
-    private UploadedFile uploadedPic;
+    private UploadedFile uploadedPic = null;
     private UIComponent pwd;
+    private UIComponent pic;
+    private String url;
 
     @Inject
     private LocaleController localecon;
@@ -116,14 +118,13 @@ public class PictureController implements Serializable {
             passwords.addAll(Arrays.asList(passwordText.split(",")));
         }
         upload();//Adds passwords from file to passwordlist
-        
+
         System.out.println(methodsToUse);
         System.out.println(passwordText);
         System.out.println(passwords);
-        System.out.println("cipher: " + uploadedPic.getFileName());
 
-        if (uploadedPic != null) {
-            for (DecoderMethod method : methodsToUse) {
+        System.out.println("cipher: " + uploadedPic.getFileName());
+        for (DecoderMethod method : methodsToUse) {
             // System.out.println(method.getName());
             if (passwords.isEmpty() && method.getRequiresPassword()) {
                 results.put(method, new DecoderResult(method, "Das ausgewählte Verfahren verlangt ein Passwort!", 1.0));
@@ -147,10 +148,6 @@ public class PictureController implements Serializable {
                     throw new RuntimeException(ex);//TODO better exception handling
                 }
             }
-        }
-        } else {
-            FacesMessage message = new FacesMessage("Kein File gefunden...");
-            FacesContext.getCurrentInstance().addMessage(null, message);
         }
 
         if (methodsToUse != null) {
@@ -223,4 +220,32 @@ public class PictureController implements Serializable {
         this.pwd = pwd;
     }
 
+    public UIComponent getPic() {
+        return pic;
+    }
+
+    public void setPic(UIComponent pic) {
+        this.pic = pic;
+    }
+
+    public boolean disableSubmit() {
+        return uploadedPic == null && (url == null || url.length() <= 0);
+    }
+    
+    public void clearPic() {
+        uploadedPic = null;
+        System.out.println("remove");
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+    
+    public boolean isPicEmpty() {
+        return uploadedPic == null;
+    }
 }
