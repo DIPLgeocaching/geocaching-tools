@@ -1,5 +1,6 @@
 package org.geocachingtools.decoder.methods;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import org.geocachingtools.decoder.*;
@@ -81,7 +82,6 @@ public class ADFGX extends DecoderMethod<String> {
     /**
      * The actual decoding
      *
-     * @see www.geocachingtoolbox.com/index.php?page=adfgvxCipher
      * @param ciphertext
      * @param sKey Substitution Key
      * @param tKey Transposition Key
@@ -89,7 +89,7 @@ public class ADFGX extends DecoderMethod<String> {
      */
     public String decode(String cipher, String sKey, String tKey, boolean reverseAlphabet) {
         cipher = cipher.toUpperCase().replaceAll("[^ADFGX]", "");
-        String result = "";
+        
         //------ Transposition ---------
 
         //------ Build Substitution Key ---------
@@ -115,10 +115,67 @@ public class ADFGX extends DecoderMethod<String> {
         }
         sKey = sKeyBuilder.toString();
         System.err.println(sKey);
+        StringBuilder result = new StringBuilder();
         //------ Substitution ---------
         for (String c : cipher.split("(?<=\\G.{2})")) {
-            result += sKey.charAt(substitutionMap.get(c));
+            result.append(sKey.charAt(substitutionMap.get(c)));
         }
-        return result;
+        return result.toString();
+    }
+    
+    
+    
+//    //@see https://programmingcode4life.blogspot.co.at/2015/09/columnar-transposition-cipher.html
+//    public static String decryptCT(String text, String key) {
+//        int[] arrange = arrangeKey(key);
+//        int keylen = arrange.length;
+//        int textlen = text.length();
+////
+////        int row = (int) Math.ceil((double) lentext / lenkey);
+////
+////        String regex = "(?<=\\G.{" + row + "})";
+////        String[] get = text.split(regex);
+////        System.out.println("--------------");
+////        Arrays.stream(get).forEach(System.out::println);
+////        System.out.println("--------------");
+////        
+////
+//        char[][] grid = new char[row][lenkey];
+////
+////        for (int x = 0; x < lenkey; x++) {
+////            for (int y = 0; y < lenkey; y++) {
+////                if (arrange[x] == y) {
+////                    for (int z = 0; z < row; z++) {
+////                        grid[z][y] = get[arrange[y]].charAt(z);
+////                    }
+////                }
+////            }
+////        }
+//
+//        String dec = "";
+//        for (int x = 0; x < row; x++) {
+//            for (int y = 0; y < lenkey; y++) {
+//                dec = dec + grid[x][y];
+//            }
+//        }
+//
+//        return dec;
+//    }
+    
+    public static int[] arrangeKey(String key) {//TODO make more beautiful
+        //arrange position of grid
+        String[] keys = key.split("");
+        Arrays.sort(keys);
+        int[] num = new int[key.length()];
+        for (int x = 0; x < keys.length; x++) {
+            for (int y = 0; y < key.length(); y++) {
+                if (keys[x].equals(key.charAt(y) + "")) {
+                    num[y] = x;
+                    break;
+                }
+            }
+        }
+
+        return num;
     }
 }
