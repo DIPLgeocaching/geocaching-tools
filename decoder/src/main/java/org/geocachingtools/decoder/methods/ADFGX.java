@@ -106,7 +106,6 @@ public class ADFGX extends DecoderMethod<String> {
      */
     public String decode(String cipher, String sKey, String tKey, boolean reverseAlphabet) {
         cipher = cipher.toUpperCase().replaceAll("[^ADFGX]", "");
-        //Remove double chars in Keys
 
         //------ Transposition ---------
         int keylen = tKey.length();
