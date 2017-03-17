@@ -1,17 +1,6 @@
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.geocachingtools.decoder.DecoderRequest;
-import org.geocachingtools.decoder.DecoderResult;
 import org.geocachingtools.decoder.methods.ADFGX;
-import org.geocachingtools.decoder.methods.OpenStegoLSB;
 
 
 /**
@@ -48,9 +37,18 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Arrays.stream(ADFGX.arrangeKey("HTLSP")).forEach(System.out::println);
-        System.out.println("----DECODER-----------");
-        //ADFGX.decryptCT("behadgxcfi", "key");
+        //System.out.println(new ADFGX().decode("behadgcfi", "geocaching", "key", true));
+        System.out.println("-------------");
+        String cipher="AGAAG GFAAG DDAXF GADGD DFADD FFXAXXXDDA FDAAA AADDX DFXXD DGGDF DAXDXFGAAA FDGGX FXXXD DFDGG AAAAD AFDAXFFFXF GADGF DAGAF DGFXF XFFDD FDAFAADGAA FFAAX GGDFA DFDDX FXXGG DAFDAGGFD";
+        System.out.println(new ADFGX().decode(cipher, "geocahin", "travelbug", true));
+        
+        System.out.println("-------------");
+        System.out.println(new ADFGX().decode("AADFAAAAXDDAGDADAGAADAFDDDAADDGDDAAAAGAFAD","geocahin","travelbug",true));
+        
+        System.out.println("-------------");
+        System.out.println(new ADFGX().decode("AAADAXADDADAGDDAAAFAADADADGDFGADGDAD","geocahin","trave",true));
+
+
     }
     
 }

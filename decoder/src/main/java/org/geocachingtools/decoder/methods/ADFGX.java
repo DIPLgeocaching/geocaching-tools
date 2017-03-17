@@ -1,8 +1,6 @@
 package org.geocachingtools.decoder.methods;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import org.geocachingtools.decoder.*;
 import org.geocachingtools.validator.*;
 
@@ -19,7 +17,7 @@ public class ADFGX extends DecoderMethod<String> {
     private Validator validator = Validator.getInstance();
     private I18n i18n;
 
-    private static Map<String, Character> substitutionMap;
+    private static Map<String, Integer> substitutionMap;
     private static final String[] encryptedValues = new String[]{
         "AA", "AD", "AF", "AG", "AX",
         "DA", "DD", "DF", "DG", "DX",
@@ -30,7 +28,7 @@ public class ADFGX extends DecoderMethod<String> {
 
     static {
         substitutionMap = new HashMap<>();
-        char c = 0;
+        int c = 0;
         for (String s : encryptedValues) {
             substitutionMap.put(s, c++);
         }
@@ -51,8 +49,27 @@ public class ADFGX extends DecoderMethod<String> {
 
         String result;
         double partialRelevance;
-        for (String sKey : request.getPasswords()) {
-            for (String tKey : request.getPasswords()) {
+
+        List<String> passwords = new ArrayList<>();
+        char[] chars;        
+        Set<Character> charSet = new LinkedHashSet<Character>();
+        StringBuilder pwdBuilder;
+        
+        for (String s : request.getPasswords()) {//remove duplicates from passwords
+            chars = s.toCharArray();
+            charSet.clear();
+            for (char c : chars) {
+                charSet.add(c);
+            }
+            pwdBuilder = new StringBuilder();
+            for (Character character : charSet) {
+                pwdBuilder.append(character);
+            }
+            passwords.add(pwdBuilder.toString());
+        }
+
+        for (String sKey : passwords) {
+            for (String tKey : passwords) {
                 result = decode(request.getData(), sKey, tKey, false);
                 partialRelevance = validator.check(new ValidatorRequest(result)).getRelevance();
                 result = "<b>" + sKey + ", " + tKey + ", A-Z</b> => " + result + " <br/>";
@@ -89,8 +106,43 @@ public class ADFGX extends DecoderMethod<String> {
      */
     public String decode(String cipher, String sKey, String tKey, boolean reverseAlphabet) {
         cipher = cipher.toUpperCase().replaceAll("[^ADFGX]", "");
-        
+        //Remove double chars in Keys
+
         //------ Transposition ---------
+        int keylen = tKey.length();
+        int textlen = cipher.length();
+        System.out.println("TextLEN: " + textlen + " KEYLEN: " + keylen + " mod" + textlen % keylen);
+
+        char[] keyArray = tKey.toCharArray();
+        Arrays.sort(keyArray);
+        String sortedKey = new String(keyArray);
+        System.out.println("SORTED: " + sortedKey);
+
+        int rows = (int) Math.ceil((double) textlen / keylen);
+        System.out.println("ROWS: " + rows);
+        char[][] plain = new char[rows][keylen];
+
+        int cipherPointer = 0;
+        for (int i = 0; i < keylen; i++) {
+            int targetColumn = tKey.indexOf(sortedKey.charAt(i));
+            int targetColumnSize = rows - ((textlen % keylen != 0 && targetColumn + 1 > textlen % keylen) ? 1 : 0);
+            for (int j = 0; j < targetColumnSize; j++, cipherPointer++) {
+                //System.out.println(j +"-"+targetColumn+"-"+targetColumnSize);
+                plain[j][targetColumn] = cipher.charAt(cipherPointer);
+            }
+        }
+
+        //Build intermediate text
+        StringBuilder result = new StringBuilder();
+        for (int x = 0; x < rows; x++) {
+            for (int y = 0; y < keylen; y++) {
+                if (plain[x][y] != 0) {
+                    result.append(plain[x][y]);
+                }
+            }
+        }
+        String tmp = result.toString();
+        System.out.println("TMP: " + tmp);
 
         //------ Build Substitution Key ---------
         StringBuilder sKeyBuilder = new StringBuilder(sKey);
@@ -114,68 +166,14 @@ public class ADFGX extends DecoderMethod<String> {
             }
         }
         sKey = sKeyBuilder.toString();
-        System.err.println(sKey);
-        StringBuilder result = new StringBuilder();
+        System.out.println("SKEY: " + sKey);
+
         //------ Substitution ---------
-        for (String c : cipher.split("(?<=\\G.{2})")) {
+        result = new StringBuilder();
+        for (String c : tmp.split("(?<=\\G.{2})")) {
+            System.out.println("_" + c);
             result.append(sKey.charAt(substitutionMap.get(c)));
         }
         return result.toString();
-    }
-    
-    
-    
-//    //@see https://programmingcode4life.blogspot.co.at/2015/09/columnar-transposition-cipher.html
-//    public static String decryptCT(String text, String key) {
-//        int[] arrange = arrangeKey(key);
-//        int keylen = arrange.length;
-//        int textlen = text.length();
-////
-////        int row = (int) Math.ceil((double) lentext / lenkey);
-////
-////        String regex = "(?<=\\G.{" + row + "})";
-////        String[] get = text.split(regex);
-////        System.out.println("--------------");
-////        Arrays.stream(get).forEach(System.out::println);
-////        System.out.println("--------------");
-////        
-////
-//        char[][] grid = new char[row][lenkey];
-////
-////        for (int x = 0; x < lenkey; x++) {
-////            for (int y = 0; y < lenkey; y++) {
-////                if (arrange[x] == y) {
-////                    for (int z = 0; z < row; z++) {
-////                        grid[z][y] = get[arrange[y]].charAt(z);
-////                    }
-////                }
-////            }
-////        }
-//
-//        String dec = "";
-//        for (int x = 0; x < row; x++) {
-//            for (int y = 0; y < lenkey; y++) {
-//                dec = dec + grid[x][y];
-//            }
-//        }
-//
-//        return dec;
-//    }
-    
-    public static int[] arrangeKey(String key) {//TODO make more beautiful
-        //arrange position of grid
-        String[] keys = key.split("");
-        Arrays.sort(keys);
-        int[] num = new int[key.length()];
-        for (int x = 0; x < keys.length; x++) {
-            for (int y = 0; y < key.length(); y++) {
-                if (keys[x].equals(key.charAt(y) + "")) {
-                    num[y] = x;
-                    break;
-                }
-            }
-        }
-
-        return num;
     }
 }
