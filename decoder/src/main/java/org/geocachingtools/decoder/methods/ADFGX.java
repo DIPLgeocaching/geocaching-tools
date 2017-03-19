@@ -110,15 +110,12 @@ public class ADFGX extends DecoderMethod<String> {
         //------ Transposition ---------
         int keylen = tKey.length();
         int textlen = cipher.length();
-        System.out.println("TextLEN: " + textlen + " KEYLEN: " + keylen + " mod" + textlen % keylen);
 
         char[] keyArray = tKey.toCharArray();
         Arrays.sort(keyArray);
         String sortedKey = new String(keyArray);
-        System.out.println("SORTED: " + sortedKey);
 
         int rows = (int) Math.ceil((double) textlen / keylen);
-        System.out.println("ROWS: " + rows);
         char[][] plain = new char[rows][keylen];
 
         int cipherPointer = 0;
@@ -126,7 +123,6 @@ public class ADFGX extends DecoderMethod<String> {
             int targetColumn = tKey.indexOf(sortedKey.charAt(i));
             int targetColumnSize = rows - ((textlen % keylen != 0 && targetColumn + 1 > textlen % keylen) ? 1 : 0);
             for (int j = 0; j < targetColumnSize; j++, cipherPointer++) {
-                //System.out.println(j +"-"+targetColumn+"-"+targetColumnSize);
                 plain[j][targetColumn] = cipher.charAt(cipherPointer);
             }
         }
@@ -141,7 +137,6 @@ public class ADFGX extends DecoderMethod<String> {
             }
         }
         String tmp = result.toString();
-        System.out.println("TMP: " + tmp);
 
         //------ Build Substitution Key ---------
         StringBuilder sKeyBuilder = new StringBuilder(sKey);
@@ -165,12 +160,10 @@ public class ADFGX extends DecoderMethod<String> {
             }
         }
         sKey = sKeyBuilder.toString();
-        System.out.println("SKEY: " + sKey);
 
         //------ Substitution ---------
         result = new StringBuilder();
         for (String c : tmp.split("(?<=\\G.{2})")) {
-            System.out.println("_" + c);
             result.append(sKey.charAt(substitutionMap.get(c)));
         }
         return result.toString();
