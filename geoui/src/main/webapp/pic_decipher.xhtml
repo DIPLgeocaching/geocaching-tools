@@ -8,75 +8,120 @@
 
     <ui:composition template="/WEB-INF/template.xhtml">
         <ui:define name="content">
-            <h:form enctype="multipart/form-data">
-                <p:growl id="bildMessages" showDetail="true" />
-                <div class="containter">
-                    <h2><h:outputText value="#{i18n['bildEnt']}"/></h2>
+            <script>
+                $(document).ready(function () {
+
+                    function onchangeTagInput() {
+                        var box1 = $('#passwortInput');
+                        var box2 = $('#bildform\\:textHidden');
+                        box2.val(box1.val());
+                    }
+                    $('#passwortInput').on('change', onchangeTagInput);
+                });
+            </script>
+            <h:form id="bildform" enctype="multipart/form-data">
+                <div class="containter" style="margin:auto; width: 80%">
+
                     <div class="row">
 
-                        <div class="col-sm-1"></div>
+                        <div class="col-sm-1"/>
+                        <h2><h:outputText value="#{i18n['bildEnt']}"/></h2>
                         <div class="col-sm-6">
-                            <h3><h:outputText value="#{i18n['uploadPicture']}"/></h3>
-                            <p:fileUpload fileUploadListener="#{picCon.uploadPicture}" 
-                                          mode="simple"
+
+                            <h3><h:outputText value="#{i18n['uploadPicture']}"/></h3>                   
+                            <p:fileUpload id="picInput"
+                                          fileUploadListener="#{picCon.uploadPicture}" 
+                                          mode="advanced"
                                           skinSimple="true"
-                                          update="bildMessages"
                                           allowTypes="/(\.|\/)(gif|jpe?g|png)$/" 
                                           fileLimit="1"
                                           fileLimitMessage="i18n Es darf nur 1 Bild hochgeladen werden"
                                           dragDropSupport="true"
-                                          style="width: 85%;"
+                                          style="width: 100%;"
                                           value="#{picCon.uploadedPic}"
-                                          />
+                                          binding="#{picCon.pic}"
+                                          oncomplete="update()"
+                                          disabled="#{not empty picCon.url}"/>
+                            <h:outputText id="picName" value="File: #{picCon.uploadedPic.fileName}" rendered="#{not picCon.picEmpty}"/>
+                            <p:commandButton id="picRemove"
+                                             value="Remove Image"
+                                             icon="fa fa-fw fa-remove"
+                                             actionListener="#{picCon.clearPic()}" 
+                                             rendered="#{not picCon.picEmpty}"
+                                             update="bildform"/>
+                            <p:remoteCommand name="update" update="bildform"/>
                             <br/>
-                            <h:inputText value="URL"/>
-                            
-                            <h:commandButton value="Submit"
+                            <h:outputText value="oder"/>
+                            <br/>
+                            <br/>
+                            URL: 
+                            <h:inputText id="url" value="#{picCon.url}" disabled="#{not empty picCon.uploadedPic}">
+                                <p:ajax event="keyup" update="submit picInput"/>
+                            </h:inputText>
+                            <br/>
+                            <br/>
+                            <h:commandButton id="submit"
+                                             value="Submit"
                                              action="#{picCon.submit}"
-                                             class="btn btn-primary btn-xs"/>
+                                             class="btn btn-primary btn-xs"
+                                             disabled="#{picCon.disableSubmit()}"/>
+                            <br/><br/>
                         </div>
-
                         <div class="col-sm-5">
                             <h3><h:outputText value="#{i18n['passwortListe']}"/></h3>
-                            <p:inputTextarea value="#{picCon.passwordText}" id="passwordListArea2" rows="3" cols="50" />
-                            <p:tooltip id="passwordListTooltip2" 
-                                       for="passwordListArea2" 
-                                       value="Press Enter to write the next password." 
-                                       showEvent="focus" 
-                                       hideEvent="blur" 
-                                       />
+                            <input id="passwortInput"
+                                   type="text"  
+                                   data-role="tagsinput" 
+                                   class="form-control"
+                                   /><br/>
+
+                            <h:inputHidden id="textHidden" value="#{picCon.passwordText}" />
                             <br/>
 
                             <!--Passwortliste upload-->
                             <p:fileUpload mode="simple"
                                           skinSimple="true"
-                                          value="#{textcon.passwordFile}"
-                                          fileUploadListener="#{picCon.upload()}"/>
-
+                                          value="#{picCon.passwordFile}"/>
+                            <br/>
+                            <h:outputText binding="#{picCon.pwd}" id="bildMessage" style="display:hidden"/>
+                            <h:message for="bildMessage" style="color:orange"/>
                         </div>
                     </div>
                 </div>
-
                 <p:dataTable id="methodtable"
                              var="method"
                              value="#{picCon.methods}"
-
                              selection="#{picCon.methodsToUse}"
                              rowKey="#{method}"
-                             class="table table-striped table-hover">
+                             class="table table-striped table-hover"
+                             resizableColumns="true"
+                             liveResize="true"
+                             reflow="true"
+                             style="padding: auto;
+                             margin:auto; 
+                             width: 50%;
+                             table-layout: fixed;">
                     <p:column selectionMode="multiple" style="width:40px;text-align:center"/>
-                    <p:column headerText="Verfahren">
+                    <p:column headerText="Verfahren" style="width:200px">
+                        <p:outputPanel style="display: inline;" rendered="#{method.requiresPassword}">
+                            <i title="Password required" class="fa fa-fw fa-key"></i>
+                        </p:outputPanel>
                         #{method.name}
                     </p:column>
 
                     <p:column headerText="Resultat">
-                        <h:outputText value="#{picCon.results[method].briefResult}" escape="false"/>
+                        <span style="width: inherit;
+                              word-wrap: break-word;
+                              word-break: break-all;
+                              white-space: pre-wrap;">
+                            <h:outputText value="#{picCon.results[method].briefResult}" escape="false"/>
+                        </span>
                     </p:column>
-                    <p:column>
+                    <p:column style="width:125px">
                         <f:facet name="header">
                             <p:commandButton type="button" onclick="jQuery('.ui-row-toggler').click()" value="Toggle All" />
                         </f:facet>
-                        <p:rowToggler></p:rowToggler>
+                        <p:rowToggler expandLabel="&#10145; Show full result" collapseLabel="&#11015; Hide full result"></p:rowToggler>
                     </p:column>
                     <p:rowExpansion>
                         <h:outputText value="#{picCon.results[method].fullResult}" escape="false"/>
