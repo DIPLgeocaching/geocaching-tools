@@ -22,17 +22,10 @@
             </script>
             <h:form id="textform" enctype="multipart/form-data">
                 <p:growl id="bildMessages" showDetail="true" />
-                <div class="containter" style="margin:auto; width: 80%">
-                    
-                    
-                        <h2><h:outputText value="#{i18n['textEnt']}"/></h2>
-                        
-                            
-                            <h3><h:outputText value="#{i18n['solveText']}"/></h3>
-                            <p:inputTextarea value="#{textcon.cipher}" id="textDecryptArea" rows="3" cols="50" />
+                <div class="containter" style="margin:auto; width: 50%;padding-bottom: 15px;">
 
                     <h3><h:outputText value="#{i18n['solveText']}"/></h3>
-                    <p:inputTextarea value="#{textcon.cipher}" id="textDecryptArea" rows="3" cols="70" />
+                    <p:inputTextarea value="#{textcon.cipher}" id="textDecryptArea" rows="3" cols="50" />
 
                     <p:tooltip id="textDecryptAreaTooltip" 
                                for="textDecryptArea" 
@@ -40,15 +33,6 @@
                                showEvent="focus" 
                                hideEvent="blur" 
                                />
-
-
-                        
-                            <h3><h:outputText value="#{i18n['passwortListe']}"/></h3>
-                            <input id="passwortInput"
-                                   type="text"  
-                                   data-role="tagsinput" 
-                                   class="form-control"
-                                   /><br/>
 
                     <h3><h:outputText value="#{i18n['passwortListe']}"/></h3>
                     <input id="passwortInput"
