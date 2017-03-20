@@ -20,13 +20,7 @@
                 });
             </script>
             <h:form id="textform" enctype="multipart/form-data">
-                <div class="containter" style="margin:auto; width: 80%">
-
-                    <div class="row">
-
-                        <div class="col-sm-1"/>
-                        <h2><h:outputText value="#{i18n['textEnt']}"/></h2>
-                        <div class="col-sm-6">
+                <div class="containter" style="margin:auto; width: 50%;padding-bottom: 15px;">                      
 
                             <h3><h:outputText value="#{i18n['solveText']}"/></h3>
                             <p:inputTextarea value="#{textCon.cipher}" id="textDecryptArea" rows="3" cols="50">
@@ -37,15 +31,8 @@
                                        value="Enter ciphertext here" 
                                        showEvent="focus" 
                                        hideEvent="blur"/>
-                            <br/>
-                            <h:commandButton id="submit"
-                                             value="Submit" 
-                                             action="#{textCon.submit}" 
-                                             class="btn btn-primary btn-xs"
-                                             disabled="#{textCon.disableSubmit()}"/>
-                            <br/><br/>
-                        </div>
-                        <div class="col-sm-5">
+                  <br/>
+                        
                             <h3><h:outputText value="#{i18n['passwortListe']}"/></h3>
                             <input id="passwortInput"
                                    type="text"  
@@ -61,11 +48,15 @@
                                           skinSimple="true"
                                           value="#{textCon.passwordFile}"/>
                             <br/>
+                            <h:commandButton id="submit"
+                                             value="Submit" 
+                                             action="#{textCon.submit}" 
+                                             class="btn btn-primary btn-xs"
+                                             disabled="#{textCon.disableSubmit()}"/>
                             <h:outputText binding="#{textCon.pwd}" id="textMessage" style="display:hidden"/>
                             <h:message for="textMessage" style="color:orange"/>
-                        </div>
-                    </div>
                 </div> 
+                  
                 <p:dataTable id="methodtable"
                              var="method"
                              value="#{textCon.methods}"
