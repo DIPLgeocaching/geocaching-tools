@@ -71,9 +71,9 @@ public class Braille extends DecoderMethod<String> {
         brailleMap.put(1234, "P");
         brailleMap.put(12345, "Q");
         brailleMap.put(1235, "R");
-        brailleMap.put(235, "S");
+        brailleMap.put(234, "S");
         brailleMap.put(2345, "T");
-        brailleMap.put(236, "U");
+        brailleMap.put(136, "U");
         brailleMap.put(1236, "V");
         brailleMap.put(2456, "W");
         brailleMap.put(1346, "X");
@@ -106,9 +106,6 @@ public class Braille extends DecoderMethod<String> {
         brailleMap.put(6, "'");
         brailleMap.put(35, "*");
 
-        brailleMap.put(3456, "#");//AUF ZAHL UMSCHALTEN
-
-        brailleZahlenMap.put(3456, "#");//AUF ZAHL UMSCHALTEN
         brailleZahlenMap.put(1, "1");
         brailleZahlenMap.put(12, "2");
         brailleZahlenMap.put(13, "3");
@@ -120,29 +117,49 @@ public class Braille extends DecoderMethod<String> {
         brailleZahlenMap.put(24, "9");
         brailleZahlenMap.put(245, "0");
 
+        brailleZahlenMap.put(236, "\"");
+        brailleZahlenMap.put(356, "\"");
+        brailleZahlenMap.put(235, "!");
+        brailleZahlenMap.put(26, "?");
+        brailleZahlenMap.put(36, "-");
+        brailleZahlenMap.put(3, "'");
+        brailleZahlenMap.put(2, ",");
+        brailleZahlenMap.put(25, ":");
+        brailleZahlenMap.put(23, ";");
+        brailleZahlenMap.put(35, "*");
     }
 
     private String decode(String cipher) {
-        cipher = cipher.replace("\n", "");
-        String[] brailleSting = cipher.split(",");
+        System.err.println(cipher);
+        cipher = cipher.replace("\n", " ");
+        cipher = cipher.replace("\\r", " ");
+        System.err.println("CALL");
         String result = "";
         boolean zahlenMode = false;
+        for (String word : cipher.split(" ")) {
 
-        for (String s : brailleSting) {
-            if (s.equals("3456")) {
-                zahlenMode = true;
-            } else if (s.contains(" ")) {
-                s = s.replace(" ", "");
-                zahlenMode = false;
+            for (String c : word.split(",")) {
+                if (c.equals("3456")) {
+                    zahlenMode = !zahlenMode;
+
+                }
+                else if (zahlenMode) {
+                    String temp = brailleZahlenMap.get(Integer.parseInt(c));
+                    if (temp == null) {
+                        //result += "<" + c + ">";
+                    } else {
+                        result += temp;
+                    }
+                } else {
+                    System.err.println("c:" +c);
+                    result += brailleMap.get(Integer.parseInt(c));
+                }
             }
-            if (zahlenMode) {
-                result += brailleZahlenMap.get(Integer.parseInt(s));
-            } else {
-                result += brailleMap.get(Integer.parseInt(s));
-            }
+            result += " ";
+            zahlenMode = false;
+
         }
-
         return result;
-    }
 
+    }
 }
