@@ -24,7 +24,7 @@
         <param-value>true</param-value>
     </context-param>
 
-    <!--Filter-->
+<!--    Filter
     <filter>
         <filter-name>primeFacesFileUploadFilter</filter-name>
         <filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
@@ -32,7 +32,7 @@
     <filter-mapping>
         <filter-name>primeFacesFileUploadFilter</filter-name>
         <servlet-name>Faces Servlet</servlet-name>
-    </filter-mapping>
+    </filter-mapping>-->
 
 
     <!-- Welcome page -->

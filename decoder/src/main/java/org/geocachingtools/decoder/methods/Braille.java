@@ -132,12 +132,10 @@ public class Braille extends DecoderMethod<String> {
     private String decode(String cipher) {
         System.err.println(cipher);
         cipher = cipher.replace("\n", " ");
-        cipher = cipher.replace("\\r", " ");
-        System.err.println("CALL");
+        cipher = cipher.replace("\r", "");
         String result = "";
         boolean zahlenMode = false;
         for (String word : cipher.split(" ")) {
-
             for (String c : word.split(",")) {
                 if (c.equals("3456")) {
                     zahlenMode = !zahlenMode;
