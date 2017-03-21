@@ -130,7 +130,6 @@ public class Braille extends DecoderMethod<String> {
     }
 
     private String decode(String cipher) {
-        System.err.println(cipher);
         cipher = cipher.replace("\n", " ");
         cipher = cipher.replace("\r", "");
         String result = "";
@@ -140,16 +139,12 @@ public class Braille extends DecoderMethod<String> {
                 if (c.equals("3456")) {
                     zahlenMode = !zahlenMode;
 
-                }
-                else if (zahlenMode) {
+                } else if (zahlenMode) {
                     String temp = brailleZahlenMap.get(Integer.parseInt(c));
-                    if (temp == null) {
-                        //result += "<" + c + ">";
-                    } else {
+                    if (temp != null) {
                         result += temp;
                     }
                 } else {
-                    System.err.println("c:" +c);
                     result += brailleMap.get(Integer.parseInt(c));
                 }
             }
