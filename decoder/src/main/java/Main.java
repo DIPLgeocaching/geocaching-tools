@@ -2,7 +2,6 @@
 import java.util.Arrays;
 import org.geocachingtools.decoder.methods.ADFGX;
 
-
 /**
  * The MIT License (MIT)
  *
@@ -37,6 +36,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+
         //System.out.println(new ADFGX().decode("behadgcfi", "geocaching", "key", true));
         System.out.println("-------------");
         String cipher="AGAAG GFAAG DDAXF GADGD DFADD FFXAXXXDDA FDAAA AADDX DFXXD DGGDF DAXDXFGAAA FDGGX FXXXD DFDGG AAAAD AFDAXFFFXF GADGF DAGAF DGFXF XFFDD FDAFAADGAA FFAAX GGDFA DFDDX FXXGG DAFDAGGFD";
@@ -50,5 +50,5 @@ public class Main {
 
 
     }
-    
+
 }
