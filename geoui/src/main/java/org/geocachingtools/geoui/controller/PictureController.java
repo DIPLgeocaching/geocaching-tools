@@ -127,8 +127,8 @@ public class PictureController implements Serializable {
         for (DecoderMethod method : methodsToUse) {
             // System.out.println(method.getName());
             if (passwords.isEmpty() && method.getRequiresPassword()) {
-                results.put(method, new DecoderResult(method, "Das ausgewählte Verfahren verlangt ein Passwort!", 1.0));
-                FacesMessage message = new FacesMessage("Eines der ausgewählten Verfahren verlangen ein Passwort!");
+                results.put(method, new DecoderResult(method, "Das ausgewaehlte Verfahren verlangt ein Passwort!", 1.0));
+                FacesMessage message = new FacesMessage("Eines der ausgewaehlten Verfahren verlangen ein Passwort!");
                 FacesContext.getCurrentInstance().addMessage(pwd.getClientId(FacesContext.getCurrentInstance()), message);
             } else {
                 Future<DecoderResult> future;

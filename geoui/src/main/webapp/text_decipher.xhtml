@@ -38,15 +38,16 @@
                                    type="text"  
                                    data-role="tagsinput" 
                                    class="form-control"
-                                   /><br/>
+                                   />
 
                             <h:inputHidden id="textHidden" value="#{textCon.passwordText}" />
-                            <br/>
+
 
                             <!--Passwortliste upload-->
                             <p:fileUpload mode="simple"
                                           skinSimple="true"
-                                          value="#{textCon.passwordFile}"/>
+                                          value="#{textCon.passwordFile}"
+                                          label="Upload Passwortlist in a file"/>
                             <br/>
                             <h:commandButton id="submit"
                                              value="Submit" 
