@@ -97,7 +97,7 @@ public class Ook extends DecoderMethod<String> {
             } else if(code.charAt(i) == '.') {
                 output.append((char) mem[dataPointer]);
             } else if(code.charAt(i) == ',') {
-                throw new UnsupportedOperationException();
+                throw new UnsupportedOperationException("No input for brainfuck supported");
             } else if(code.charAt(i) == '[') {
                 if(mem[dataPointer] == 0) {
                     i++;

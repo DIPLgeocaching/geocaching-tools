@@ -33,11 +33,29 @@
             <artifactId>tika-core</artifactId>
             <version>1.14</version>
         </dependency>
-      
         <dependency>                 
             <groupId>open-stego</groupId>                 
             <artifactId>open-stego</artifactId>                 
             <version>1.0</version>           
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.google.zxing/core -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.3.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.google.zxing/javase -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>3.2.0</version>
+            <type>jar</type>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.drewnoakes/metadata-extractor -->
+        <dependency>
+            <groupId>com.drewnoakes</groupId>
+            <artifactId>metadata-extractor</artifactId>
+            <version>2.10.0</version>
         </dependency>
     </dependencies>
     

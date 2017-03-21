@@ -20,6 +20,12 @@
             <!--Tags Input-->
             <link rel="stylesheet" href="./res/css/bootstrap-tagsinput.css"/>
             <script src="./res/js/bootstrap-tagsinput.js"></script>
+            <style>
+                td{
+                    word-wrap: break-word;
+                    white-space: pre-wrap;
+                }
+            </style>
         </h:head>
 
         <h:body>
@@ -66,10 +72,8 @@
             <div class="top_menue">
                 <ui:insert name="topBar"/>
             </div>
-
-            <div >
-                <ui:insert name="content"/>
-            </div>
+        
+            <ui:insert name="content"/>
 
         </h:body>
     </f:view>

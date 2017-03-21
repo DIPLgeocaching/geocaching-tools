@@ -18,22 +18,16 @@
         <param-name>javax.faces.PROJECT_STAGE</param-name>
         <param-value>Development</param-value>
     </context-param>
-    
+    <!-- Enable Font Awesome Icons-->
+    <context-param>
+        <param-name>primefaces.FONT_AWESOME</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <!-- Enable comments in JSF files -->
     <context-param>
         <param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
         <param-value>true</param-value>
     </context-param>
-
-<!--    Filter
-    <filter>
-        <filter-name>primeFacesFileUploadFilter</filter-name>
-        <filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>primeFacesFileUploadFilter</filter-name>
-        <servlet-name>Faces Servlet</servlet-name>
-    </filter-mapping>-->
-
 
     <!-- Welcome page -->
     <welcome-file-list>
@@ -53,4 +47,32 @@
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
  
+    <mime-mapping>
+        <extension>eot</extension>
+        <mime-type>application/vnd.ms-fontobject</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>otf</extension>
+        <mime-type>font/opentype</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>svg</extension>
+        <mime-type>image/svg+xml</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>ttf</extension>
+        <mime-type>application/x-font-ttf</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>woff</extension>
+        <mime-type>application/x-font-woff</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>woff2</extension>
+        <mime-type>application/x-font-woff2</mime-type>
+    </mime-mapping>
+ 
+    <session-config>
+        <session-timeout>600</session-timeout>
+    </session-config>
 </web-app>

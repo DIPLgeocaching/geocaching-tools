@@ -1,8 +1,6 @@
 package org.geocachingtools.geoui.controller;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -16,68 +14,67 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import org.geocachingtools.decoder.*;
-
 import org.primefaces.model.UploadedFile;
 
 /**
  *
  * @author 20120451
  */
-@Named(value = "textcon")
+@Named(value = "textCon")
 @SessionScoped
 public class TextController implements Serializable {
 
-    private Class<?> type = String.class;
+    private final Class<?> type = String.class;
     private String cipher;
     private String passwordText;//The Textfield for passwords
     private List<String> passwords;
     private List<DecoderMethod> methods = new ArrayList<>();//Available Methods
     private List<DecoderMethod> methodsToUse;//Selected Methods
     private Map<DecoderMethod, DecoderResult> results = new HashMap<>();
-    private Decoder decoder = Decoder.getInstance();
-
+    private final Decoder decoder = Decoder.getInstance();
     private UploadedFile passwordFile;
+    private UIComponent pwd;
 
     @Inject
     private LocaleController localecon;
 
-    {
+    @PostConstruct
+    public void init() {
         decoder.getMethods(type).stream().forEach(o -> {
             methods.add(o);
         });
     }
 
-    public void upload() {
-
-        if (passwordFile.getSize() > 0) {
-            FacesMessage message = new FacesMessage("Succesfull", passwordFile.getFileName() + " is uploaded.");
-            FacesContext.getCurrentInstance().addMessage(null, message);
-
+    private void upload() {
+        if (passwordFile != null) {
             try (InputStream is = passwordFile.getInputstream();
                     BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
 
-                String line = "";
+                String line;
                 while ((line = br.readLine()) != null) {
-                    passwords.add(line);
+                    line = line.trim();
+                    if (!line.isEmpty()) {
+                        passwords.add(line);
+                    }
                 }
 
             } catch (IOException ex) {
                 Logger.getLogger(TextController.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } else {
-            FacesMessage message = new FacesMessage("Kein File gefunden...");
-            FacesContext.getCurrentInstance().addMessage(null, message);
         }
     }
 
     public void submit() {
         results.clear();
-        passwords = new ArrayList<>(Arrays.asList(passwordText.split(",")));
-
-        upload();
+        passwords = new ArrayList<>();
+        if (!passwordText.trim().isEmpty()) {
+            passwords.addAll(Arrays.asList(passwordText.split(",")));
+        }
+        upload();//Adds passwords from file to passwordlist
 
         System.out.println(methodsToUse);
         System.out.println(passwordText);
@@ -86,21 +83,27 @@ public class TextController implements Serializable {
 
         for (DecoderMethod method : methodsToUse) {
             // System.out.println(method.getName());
-            Future<DecoderResult> future;
-            future = decoder.decode(
-                    new DecoderRequest(
-                            type,
-                            cipher,
-                            method,
-                            passwords,
-                            localecon.getLocale()
-                    )
-            );
-            try {
-                results.put(method, future.get());
-            } catch (InterruptedException | ExecutionException ex) {
-                Logger.getLogger(TextController.class.getName()).log(Level.SEVERE, null, ex);
-                throw new RuntimeException(ex);//TODO better exception handling
+            if (passwords.isEmpty() && method.getRequiresPassword()) {
+                results.put(method, new DecoderResult(method, "Das ausgewaehlte Verfahren verlangt ein Passwort!", 1.0));
+                FacesMessage message = new FacesMessage("Eines der ausgewaehlten Verfahren verlangen ein Passwort!");
+                FacesContext.getCurrentInstance().addMessage(pwd.getClientId(FacesContext.getCurrentInstance()), message);
+            } else {
+                Future<DecoderResult> future;
+                future = decoder.decode(
+                        new DecoderRequest(
+                                type,
+                                cipher,
+                                method,
+                                passwords,
+                                localecon.getLocale()
+                        )
+                );
+                try {
+                    results.put(method, future.get());
+                } catch (InterruptedException | ExecutionException ex) {
+                    Logger.getLogger(TextController.class.getName()).log(Level.SEVERE, null, ex);
+                    throw new RuntimeException(ex);//TODO better exception handling
+                }
             }
         }
         if (methodsToUse != null) {
@@ -156,4 +159,15 @@ public class TextController implements Serializable {
         this.passwordFile = passwordFile;
     }
 
+    public UIComponent getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(UIComponent pwd) {
+        this.pwd = pwd;
+    }
+
+    public boolean disableSubmit() {
+        return cipher == null || cipher.length() <= 0; 
+    }
 }
