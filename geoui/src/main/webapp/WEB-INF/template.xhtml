@@ -16,7 +16,7 @@
             <!--Favicon-->
             <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
             <link rel="icon" href="res/favicon.ico" type="image/x-icon"/>
-          
+
             <!--Tags Input-->
             <link rel="stylesheet" href="./res/css/bootstrap-tagsinput.css"/>
             <script src="./res/js/bootstrap-tagsinput.js"></script>
@@ -29,6 +29,30 @@
         </h:head>
 
         <h:body>
+
+            <div id="debugstuff" style="position: absolute;z-index: 100; width: 100%;height: 100%;">
+                <style>
+                    .infofield {
+                        text-align:center;
+                        position:absolute;
+                        bottom:0;left:0;
+                        height:45px;width:45px;
+                        background-color:grey;
+                        border: 1px solid;
+                        text-align: center;
+                        font-size: xx-small;
+                        vertical-align: middle;
+                        line-height: 45px;
+                        font-weight: bolder;
+                    }
+                </style>
+                <div class="infofield" style="left:0px;background-color: #{userCon.loggedIn ? 'green':'red'};">
+                    logged in
+                </div>
+                <div class="infofield" style="left:50px;">
+                    google
+                </div>
+            </div>
             <nav class="navbar navbar-inverse">
                 <div class="container-fluid" style="background-color: #4974FF">
 
@@ -72,7 +96,7 @@
             <div class="top_menue">
                 <ui:insert name="topBar"/>
             </div>
-        
+
             <ui:insert name="content"/>
 
         </h:body>
