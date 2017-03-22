@@ -24,8 +24,6 @@
  */
 package org.geocachingtools.geoui.auth;
 
-import com.google.gson.Gson;
-import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,7 +35,6 @@ import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.client.response.OAuthResourceResponse;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
-import org.geocachingtools.geoui.models.User;
 
 /**
  *
@@ -62,7 +59,7 @@ public abstract class AuthProvider {
 
     public abstract OAuthClientRequest buildTokenRequestByRefreshToken(String refreshToken) throws OAuthSystemException;
 
-    public abstract JsonUserResourceResponse loadUserData(String accessToken) throws OAuthSystemException, OAuthProblemException;
+    public abstract UserData loadUserData(String accessToken) throws OAuthSystemException, OAuthProblemException;
 
     private String get(String name) {
         return prop.get(this.getClass().getCanonicalName() + "." + name).toString();
@@ -89,7 +86,14 @@ public abstract class AuthProvider {
         request.setHeader("accept", "application/json");
         return oAuthClient.resource(request, "GET", OAuthResourceResponse.class);
     }
+    
+    public OAuthClientRequest buildBearerRequest(String url,String accessToken) throws OAuthSystemException {
+        return  new OAuthBearerClientRequest(url)
+                .setAccessToken(accessToken)
+                .buildQueryMessage();
+    }
 
+    
     
 
 }

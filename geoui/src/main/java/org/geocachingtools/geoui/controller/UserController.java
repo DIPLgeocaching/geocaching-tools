@@ -23,7 +23,8 @@ import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.geocachingtools.geoui.auth.AuthProvider;
-import org.geocachingtools.geoui.auth.JsonUserResourceResponse;
+import org.geocachingtools.geoui.auth.GoogleJsonUserData;
+import org.geocachingtools.geoui.auth.UserData;
 import org.geocachingtools.geoui.auth.provider.GithubAuthProvider;
 import org.geocachingtools.geoui.auth.provider.GoogleAuthProvider;
 
@@ -35,13 +36,23 @@ import org.geocachingtools.geoui.auth.provider.GoogleAuthProvider;
 @SessionScoped
 public class UserController implements Serializable {
 
+    /**
+     * The persistent part of the user (id, provider, access-token,
+     * invite-key-validation)
+     */
     private User user;
-    private JsonUserResourceResponse jsonuser;
-    private AuthProvider provider;
+    /**
+     * The transient part of the user (name, profile-pic, email). All things
+     * which can change from one day to another. These informations are saved on
+     * the corresponding providers server.
+     */
+    private UserData userdata;
 
-    @PostConstruct
-    public void init() {
-    }
+    /**
+     * The provider which is currently used (TODO: ändern so das er nicht mehr
+     * über mehrere requests hier gemerkt werden muss)
+     */
+    private AuthProvider provider;
 
     public void initiateAuthRequest(String name) throws OAuthSystemException, IOException {
         switch (name) {
@@ -66,19 +77,15 @@ public class UserController implements Serializable {
             return;
         }
         OAuthJSONAccessTokenResponse token = this.provider.requestToken(provider.buildTokenRequestByCode(code));
-        this.jsonuser = provider.loadUserData(token.getAccessToken());
-        this.user = new User(jsonuser.getId(), GoogleAuthProvider.class.getCanonicalName());
+        this.userdata = provider.loadUserData(token.getAccessToken());
+        this.user = new User(userdata.getId(), GoogleAuthProvider.class.getCanonicalName());
         this.user.setAccessToken(token.getAccessToken());
         this.user.setRefreshToken(token.getRefreshToken());//may be null
-    }
-    
-    public String getPictureUrl() {
-        return jsonuser != null ? jsonuser.getPictureUrl() : "";
     }
 
     public void logoutRequest() {
         this.user = null;
-        this.jsonuser = null;
+        this.userdata = null;
     }
 
     public boolean isLoggedIn() {
@@ -88,5 +95,9 @@ public class UserController implements Serializable {
     public User getUser() {
         return user;
     }
-    
+
+    public UserData getUserdata() {
+        return userdata;
+    }
+
 }

@@ -25,7 +25,6 @@
 package org.geocachingtools.geoui.auth.provider;
 
 import com.google.gson.Gson;
-import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.OAuthResourceResponse;
 import org.apache.oltu.oauth2.common.OAuthProviderType;
@@ -33,14 +32,16 @@ import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.geocachingtools.geoui.auth.AuthProvider;
-import org.geocachingtools.geoui.auth.JsonUserResourceResponse;
-import org.geocachingtools.geoui.models.User;
+import org.geocachingtools.geoui.auth.GithubJsonUserData;
+import org.geocachingtools.geoui.auth.UserData;
 
 /**
  *
  * @author Simon
  */
 public class GithubAuthProvider extends AuthProvider {
+
+    private Gson gson = new Gson();
 
     @Override
     public OAuthClientRequest buildAuthRequest() throws OAuthSystemException {
@@ -78,13 +79,14 @@ public class GithubAuthProvider extends AuthProvider {
     }
 
     @Override
-    public JsonUserResourceResponse loadUserData(String accessToken) throws OAuthSystemException, OAuthProblemException {
-        OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest("https://api.github.com/user")
-                .setAccessToken(accessToken)
-                .buildQueryMessage();
-        OAuthResourceResponse resource = requestResource(bearerClientRequest);
-        Gson gson = new Gson();
-        return gson.fromJson(resource.getBody(), JsonUserResourceResponse.class);
+    public UserData loadUserData(String accessToken) throws OAuthSystemException, OAuthProblemException {
+        OAuthResourceResponse userResource = requestResource(buildBearerRequest("https://api.github.com/user", accessToken));
+        OAuthResourceResponse userMailResource = requestResource(buildBearerRequest("https://api.github.com/user/emails", accessToken));
+
+        GithubJsonUserData data = new GithubJsonUserData();
+        data.setUser(gson.fromJson(userResource.getBody(), GithubJsonUserData.User.class));
+        data.setMails(gson.fromJson(userMailResource.getBody(), GithubJsonUserData.UserEmail[].class));
+        return data;
     }
 
     @Override

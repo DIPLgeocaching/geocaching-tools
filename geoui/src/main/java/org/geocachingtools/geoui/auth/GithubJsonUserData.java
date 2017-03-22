@@ -24,59 +24,56 @@
  */
 package org.geocachingtools.geoui.auth;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
  *
  * @author Simon
  */
-public class JsonUserResourceResponse {
+public class GithubJsonUserData  implements UserData{
+
+    public static class User {
+        public String id;
+        public String login;
+        public String avatar_url;
+    };
+    public static class UserEmail {
+        public String email;
+        public boolean primary;
+        public boolean verified;
+        public boolean visibility;
+    }
     
+    private User user;
+    private UserEmail mail;
+
+    public void setMails(UserEmail[] mail) {
+        for(UserEmail m : mail) {
+            if(m.primary)
+                this.mail = m;
+        }
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
     
-    private String id;
-    @SerializedName(value = "name", alternate = {"login"})
-    private String name;
-    @SerializedName(value = "pictureUrl", alternate = {"avatar_url","picture"})
-    private String pictureUrl;
-    
-    private String email;
+    @Override
+    public String getEmail() {
+        return mail.email;
+    }
 
     @Override
-    public String toString() {
-        return "JsonUser{" + "email=" + getEmail() + ", name=" + getName() + ", picture=" + getPictureUrl() + '}';
-    }
-
     public String getId() {
-        return id;
+        return user.id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
+    @Override
     public String getName() {
-        return name;
+        return user.login;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    @Override
     public String getPictureUrl() {
-        return pictureUrl;
+        return user.avatar_url;
     }
-
-    public void setPictureUrl(String pictureUrl) {
-        this.pictureUrl = pictureUrl;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    
     
 }

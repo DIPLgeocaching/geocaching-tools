@@ -49,9 +49,11 @@
                 <h:outputLabel value="Access Token"/>
                 <h:outputText value="#{userCon.user.accessToken}"/>
                 <h:outputLabel value="Image Url"/>
-                <h:outputText value="#{userCon.pictureUrl}"/>
+                <h:outputText value="#{userCon.userdata.pictureUrl}"/>
+                <h:outputLabel value="Name"/>
+                <h:outputText value="#{userCon.userdata.name}"/>
                 <h:outputLabel value="Image"/>
-                <img src='#{userCon.pictureUrl}' style="width:64px; height:64px;"/>
+                <img src='#{userCon.userdata.pictureUrl}' style="width:64px; height:64px;"/>
             </h:panelGrid>
         </h:form>
     </body>

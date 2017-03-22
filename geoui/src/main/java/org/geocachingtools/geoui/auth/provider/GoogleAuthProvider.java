@@ -25,29 +25,23 @@
 package org.geocachingtools.geoui.auth.provider;
 
 import com.google.gson.Gson;
-import java.io.IOException;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
-import org.apache.oltu.oauth2.client.OAuthClient;
-import org.apache.oltu.oauth2.client.URLConnectionClient;
-import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
-import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.client.response.OAuthResourceResponse;
 import org.apache.oltu.oauth2.common.OAuthProviderType;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.geocachingtools.geoui.auth.AuthProvider;
-import org.geocachingtools.geoui.auth.JsonUserResourceResponse;
-import org.geocachingtools.geoui.models.User;
+import org.geocachingtools.geoui.auth.GoogleJsonUserData;
+import org.geocachingtools.geoui.auth.UserData;
 
 /**
  *
  * @author Simon
  */
 public class GoogleAuthProvider extends AuthProvider {
+
+    private Gson gson = new Gson();
 
     @Override
     public OAuthClientRequest buildAuthRequest() throws OAuthSystemException {
@@ -85,13 +79,9 @@ public class GoogleAuthProvider extends AuthProvider {
     }
 
     @Override
-    public JsonUserResourceResponse loadUserData(String accessToken) throws OAuthSystemException, OAuthProblemException {
-        OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest("https://www.googleapis.com/oauth2/v1/userinfo?alt=json")
-                .setAccessToken(accessToken)
-                .buildQueryMessage();
-        OAuthResourceResponse resource = requestResource(bearerClientRequest);
-        Gson gson = new Gson();
-        return gson.fromJson(resource.getBody(), JsonUserResourceResponse.class);
+    public UserData loadUserData(String accessToken) throws OAuthSystemException, OAuthProblemException {
+        OAuthResourceResponse resource = requestResource(buildBearerRequest("https://www.googleapis.com/oauth2/v1/userinfo?alt=json", accessToken));
+        return gson.fromJson(resource.getBody(), GoogleJsonUserData.class);
     }
 
     @Override
