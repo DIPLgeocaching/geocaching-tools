@@ -7,11 +7,11 @@ import org.geocachingtools.validator.*;
  *
  * @author AwesomeDragon42
  */
-@Method(name = "Binary",
+@Method(name = "ASCII Base8",
         type = String.class,
         requiresPassword = false
 )
-public class Binary extends DecoderMethod<String> {
+public class ASCIIbase8 extends DecoderMethod<String> {
 
     private Validator validator = Validator.getInstance();
     private I18n i18n;
@@ -48,19 +48,19 @@ public class Binary extends DecoderMethod<String> {
      */
     public String decode(String cipher) {
 
-        String[] array = cipher.split("[^01]");
+        String[] array = cipher.split("[^0-8]");
         String result = "";
 
         for (String s : array) {
 
             if (s.length() <= 8) {
-                result += (char) Integer.parseInt(s, 2);
+                result += (char) Integer.parseInt(s, 8);
 
             } else {
-                String[] chars = cipher.split("(?<=\\G.{8})");
+                String[] chars = cipher.split("(?<=\\G.{3})");
 
                 for (String ss : chars) {
-                    result += (char) Integer.parseInt(ss, 2);
+                    result += (char) Integer.parseInt(ss, 8);
                 }
             }
 
