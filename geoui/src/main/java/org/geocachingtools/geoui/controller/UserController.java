@@ -37,6 +37,11 @@ import org.geocachingtools.geoui.auth.provider.GoogleAuthProvider;
 public class UserController implements Serializable {
 
     /**
+     * 
+     */
+    private String key;
+    
+    /**
      * The persistent part of the user (id, provider, access-token,
      * invite-key-validation)
      */
@@ -54,7 +59,7 @@ public class UserController implements Serializable {
      */
     private AuthProvider provider;
 
-    public void initiateAuthRequest(String name) throws OAuthSystemException, IOException {
+    public void initAuth(String name) throws OAuthSystemException, IOException {
         switch (name) {
             case "google":
                 provider = new GoogleAuthProvider();
@@ -83,6 +88,15 @@ public class UserController implements Serializable {
         this.user.setRefreshToken(token.getRefreshToken());//may be null
     }
 
+    public boolean isKeyValid(String key) {
+        return true;
+    }
+    public void activateUser() {
+        if(isKeyValid(key)) {
+            this.user.setActivated(true);
+        }
+    }
+    
     public void logoutRequest() {
         this.user = null;
         this.userdata = null;
@@ -92,12 +106,24 @@ public class UserController implements Serializable {
         return user != null;
     }
 
+    public boolean isActivated() {
+        return user != null && user.isActivated();
+    }
+    
     public User getUser() {
         return user;
     }
 
     public UserData getUserdata() {
         return userdata;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getKey() {
+        return key;
     }
 
 }

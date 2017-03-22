@@ -31,9 +31,11 @@ and open the template in the editor.
                     <div class="row">
                         <div class="col-sm-4">
                             <h2>Login</h2>
-                            <h4><h:outputText value="Invite Key:  "/></h4>
-                            <h:inputText value="Test"/><br/><br/>
-                            <h:button value="Google Login"/>
+                            <h:form>
+                                <h4><h:outputText value="Invite Key:  "/></h4>
+                                <h:inputText value="#{userCon.key}"/><br/><br/>
+                                <h:commandButton value="Google Login" action="#{userCon.activateUser()}"/>
+                            </h:form>
                         </div>
 
                         <div class="col-sm-6">

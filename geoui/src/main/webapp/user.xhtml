@@ -36,8 +36,8 @@
             </div>
         </div>
         <h:form>
-            <h:commandButton action="#{userCon.initiateAuthRequest('google')}" value="Login via Google"/>
-            <h:commandButton action="#{userCon.initiateAuthRequest('github')}" value="Login via Github"/>
+            <h:commandButton action="#{userCon.initAuth('google')}" value="Login via Google"/>
+            <h:commandButton action="#{userCon.initAuth('github')}" value="Login via Github"/>
             <h:commandButton action="#{userCon.logoutRequest()}" value="Logout"/>
         </h:form>
         <h:form>
@@ -52,6 +52,8 @@
                 <h:outputText value="#{userCon.userdata.pictureUrl}"/>
                 <h:outputLabel value="Name"/>
                 <h:outputText value="#{userCon.userdata.name}"/>
+                <h:outputLabel value="Is User Activated"/>
+                <h:outputText value="#{userCon.user.activated}"/>
                 <h:outputLabel value="Image"/>
                 <img src='#{userCon.userdata.pictureUrl}' style="width:64px; height:64px;"/>
             </h:panelGrid>

@@ -21,6 +21,8 @@ public class User implements Serializable {
     private String refreshToken;
     private String accessToken;
 
+    private boolean activated = false;
+    
     public User(String id, String provider) {
         this.id = id;
         this.provider = provider;
@@ -54,6 +56,14 @@ public class User implements Serializable {
 
     public String getProvider() {
         return provider;
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
     }
 
 }
