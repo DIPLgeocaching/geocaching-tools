@@ -78,7 +78,7 @@ public class UserController implements Serializable {
         }
         OAuthJSONAccessTokenResponse token = this.provider.requestToken(provider.buildTokenRequestByCode(code));
         this.userdata = provider.loadUserData(token.getAccessToken());
-        this.user = new User(userdata.getId(), GoogleAuthProvider.class.getCanonicalName());
+        this.user = new User(userdata.getId(), provider.getClass().getCanonicalName());
         this.user.setAccessToken(token.getAccessToken());
         this.user.setRefreshToken(token.getRefreshToken());//may be null
     }
