@@ -10,9 +10,6 @@ import org.geocachingtools.geoui.model.OAuthData;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -23,10 +20,11 @@ import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.geocachingtools.geoui.auth.AuthProvider;
-import org.geocachingtools.geoui.auth.GoogleJsonUserData;
 import org.geocachingtools.geoui.auth.UserData;
 import org.geocachingtools.geoui.auth.provider.GithubAuthProvider;
 import org.geocachingtools.geoui.auth.provider.GoogleAuthProvider;
+import org.geocachingtools.geoui.model.Gctusr;
+import org.geocachingtools.geoui.util.Dao;
 
 /**
  *
@@ -37,15 +35,21 @@ import org.geocachingtools.geoui.auth.provider.GoogleAuthProvider;
 public class UserController implements Serializable {
 
     /**
-     * 
+     * TODO: rapi anschaffen das er das schöner lösen soll anstatt überall dao
+     * objekte zu erzeugen.
+     */
+    private Dao dao;
+
+    /**
+     *
      */
     private String key;
-    
+
     /**
      * The persistent part of the user (id, provider, access-token,
      * invite-key-validation)
      */
-    private OAuthData user;
+    private Gctusr user;
     /**
      * The transient part of the user (name, profile-pic, email). All things
      * which can change from one day to another. These informations are saved on
@@ -58,6 +62,11 @@ public class UserController implements Serializable {
      * über mehrere requests hier gemerkt werden muss)
      */
     private AuthProvider provider;
+
+    @PostConstruct
+    public void init() {
+        dao = new Dao();
+    }
 
     public void initAuth(String name) throws OAuthSystemException, IOException {
         switch (name) {
@@ -83,20 +92,31 @@ public class UserController implements Serializable {
         }
         OAuthJSONAccessTokenResponse token = this.provider.requestToken(provider.buildTokenRequestByCode(code));
         this.userdata = provider.loadUserData(token.getAccessToken());
-        this.user = new OAuthData(userdata.getId(), provider.getClass().getCanonicalName());
-        this.user.setAccessToken(token.getAccessToken());
-        this.user.setRefreshToken(token.getRefreshToken());//may be null
+//        this.user = new OAuthData(userdata.getId(), provider.getClass().getCanonicalName());
+//        this.user.setAccessToken(token.getAccessToken());
+//        this.user.setRefreshToken(token.getRefreshToken());//may be null
+        this.user = dao.getUserByOAuthData(userdata.getId(), provider.getClass().getCanonicalName());
+        if(this.user == null) {
+            this.user = new Gctusr("", userdata.getName(), false);
+            this.user.setOauth(new OAuthData(userdata.getId(), provider.getClass().getCanonicalName()));
+        }
+        this.user.getOauth().setAccessToken(token.getAccessToken());
+        this.user.getOauth().setRefreshToken(token.getRefreshToken());
+        this.dao.saveOrUpdateGctusr(user);
+        
     }
 
     public boolean isKeyValid(String key) {
-        return true;
+        return this.dao.isInviteKeyValid(key);
     }
+
     public void activateUser() {
-        if(isKeyValid(key)) {
-            this.user.setActivated(true);
+        if (isKeyValid(key)) {
+            this.user.getOauth().setActivated(true);
+            this.dao.saveOrUpdateGctusr(user);
         }
     }
-    
+
     public void logoutRequest() {
         this.user = null;
         this.userdata = null;
@@ -107,11 +127,11 @@ public class UserController implements Serializable {
     }
 
     public boolean isActivated() {
-        return user != null && user.isActivated();
+        return user != null && user.getOauth().isActivated();
     }
-    
+
     public OAuthData getUser() {
-        return user;
+        return user != null ? user.getOauth() : null;
     }
 
     public UserData getUserdata() {

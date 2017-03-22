@@ -89,7 +89,7 @@
                             <h:form>
                                 <h:commandButton action="#{localeCon.setLocaleEN()}"  image="res\flags\eng-flag.ico" style="height: 30px; width: 35px; margin-top: 60px"/>
                                 <h:commandButton action="#{localeCon.setLocaleDE()}"  image="res\flags\ger-flag.ico" style="height: 30px; width: 35px"/>
-                                <h:commandButton action="#{userCon.initiateAuthRequest()}" value="do login"/>
+                                <img src="#{userCon.userdata.pictureUrl}" style="width: 45px; height: 45px;border-radius: 50%;"/>
                                 <!--<a href="#"><h:outputText value="#{i18n['logout']}" class="btn btn-primary" rendered="#{userCon.loggedIn}"/></a>-->
                                 <!--<a href="#"><h:outputText value="{i18n['register']}" class="btn btn-primary" rendered="{not userCon.loggedIn}"/></a>-->
                             </h:form> 

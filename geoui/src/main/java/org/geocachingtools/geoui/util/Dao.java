@@ -11,6 +11,7 @@ import org.geocachingtools.geoui.model.Cache;
 import org.geocachingtools.geoui.model.Gctusr;
 import org.geocachingtools.geoui.model.Hint;
 import org.geocachingtools.geoui.model.Invitekey;
+import org.geocachingtools.geoui.model.OAuthData;
 import org.geocachingtools.geoui.model.SessionAttempts;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -325,5 +326,40 @@ public class Dao {
 
     public void close() {
         HibernateUtil.close();
+    }
+
+    public Gctusr getUserByOAuthData(String id, String provider) {
+        //TODO: eigene Query hinzfügen anstannt alle user zu laden
+        List<Gctusr> all = getAllGctusrs();
+        for (Gctusr usr : all) {
+            OAuthData oauth = usr.getOauth();
+            if (oauth != null) {
+                System.out.println(oauth.getOauthid() + " " + oauth.getProvider());
+            }
+            if (oauth != null
+                    && oauth.getOauthid().equals(id)
+                    && oauth.getProvider().equals(provider)) {
+                return usr;
+            }
+        }
+        return null;
+    }
+
+    public boolean saveOrUpdateGctusr(Gctusr gu) {
+        Session ses = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx;
+        boolean succ = false;
+
+        try {
+            tx = ses.beginTransaction();
+            ses.saveOrUpdate(gu);
+            tx.commit();
+            succ = true;
+        } catch (Exception ex) {
+            System.err.println("Exception in saveOrUpdateGctusr()\n" + ex);
+        } finally {
+            ses.close();
+        }
+        return succ;
     }
 }
