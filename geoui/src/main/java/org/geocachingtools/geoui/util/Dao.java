@@ -21,12 +21,12 @@ import org.hibernate.Transaction;
  * @author Schule
  */
 public class Dao {
-    
+
     private static final String ADMINMAIL = "informatik.gc@gmail.com";
-    
+
     static {
         Gctusr usr1 = new Gctusr(ADMINMAIL, "Admin", true);
-        
+
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx;
 
@@ -288,8 +288,8 @@ public class Dao {
 
         return cache.isEmpty();
     }
-    
-        public void updateCache(Cache cache) {
+
+    public void updateCache(Cache cache) {
         Session ses = HibernateUtil.getSessionFactory().openSession();
         Transaction tx;
 
@@ -299,6 +299,25 @@ public class Dao {
             tx.commit();
         } catch (Exception ex) {
             System.err.println("Exception in getCertianUser\n" + ex);
+        } finally {
+            ses.close();
+        }
+    }
+
+    public boolean isInviteKeyValid(String key) {
+        Session ses = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx;
+        try {
+            tx = ses.beginTransaction();
+            boolean ret = ses.createQuery("from Invitekey where invkey = :key")
+                    .setParameter("key", key)
+                    .setMaxResults(1)
+                    .uniqueResult() != null;
+            tx.commit();
+            return ret;
+        } catch (Exception ex) {
+            System.err.println("Exception in isInviteKeyValid\n" + ex);
+            return false;
         } finally {
             ses.close();
         }
