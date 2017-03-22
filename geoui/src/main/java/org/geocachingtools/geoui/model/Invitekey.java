@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -34,6 +35,9 @@ public class Invitekey implements Serializable{
     @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "invkey_user")
     private Gctusr keyowner;
+    
+    @OneToOne
+    private Gctusr usedby;
 
     public Invitekey() {
     }

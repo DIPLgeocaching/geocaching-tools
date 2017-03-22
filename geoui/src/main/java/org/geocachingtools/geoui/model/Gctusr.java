@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -44,6 +45,9 @@ public class Gctusr implements Serializable{
     @OneToMany(mappedBy = "cacheowner")
     private List<Cache> caches;
 
+    @OneToOne(mappedBy = "usedby")
+    Invitekey usedkey;
+    
     public Gctusr() {
     }
 
@@ -99,4 +103,13 @@ public class Gctusr implements Serializable{
     public void setCaches(List<Cache> caches) {
         this.caches = caches;
     }
+    
+    public boolean isActivated() {
+        return getUsedkey() != null;
+    }
+
+    public Invitekey getUsedkey() {
+        return usedkey;
+    }
+    
 }

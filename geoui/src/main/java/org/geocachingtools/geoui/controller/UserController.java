@@ -25,6 +25,7 @@ import org.geocachingtools.geoui.auth.UserData;
 import org.geocachingtools.geoui.auth.provider.GithubAuthProvider;
 import org.geocachingtools.geoui.auth.provider.GoogleAuthProvider;
 import org.geocachingtools.geoui.model.Gctusr;
+import org.geocachingtools.geoui.model.Invitekey;
 import org.geocachingtools.geoui.util.Dao;
 
 /**
@@ -93,30 +94,20 @@ public class UserController implements Serializable {
         }
         OAuthJSONAccessTokenResponse token = this.provider.requestToken(provider.buildTokenRequestByCode(code));
         this.userdata = provider.loadUserData(token.getAccessToken());
-//        this.user = new OAuthData(userdata.getId(), provider.getClass().getCanonicalName());
-//        this.user.setAccessToken(token.getAccessToken());
-//        this.user.setRefreshToken(token.getRefreshToken());//may be null
         this.user = dao.getUserByOAuthData(userdata.getId(), provider.getClass().getCanonicalName());
-        if(this.user == null) {
+        if (this.user == null) {
             this.user = new Gctusr("", userdata.getName(), false);
             this.user.setOauth(new OAuthData(userdata.getId(), provider.getClass().getCanonicalName()));
         }
         this.user.getOauth().setAccessToken(token.getAccessToken());
         this.user.getOauth().setRefreshToken(token.getRefreshToken());
         this.dao.saveOrUpdateGctusr(user);
-        
-    }
 
-    public boolean isKeyValid(String key) {
-        return this.dao.isInviteKeyValid(key);
     }
 
     public void activateUser() {
-        if (isKeyValid(key)) {
-            this.user.getOauth().setActivated(true);
-            this.dao.saveOrUpdateGctusr(user);
-        } else {
-            FacesContext.getCurrentInstance().addMessage("keyform:key",new FacesMessage("Ungültiger Key"));
+        if (!this.dao.activateUser(this.user, this.key)) {
+            FacesContext.getCurrentInstance().addMessage("keyform:key", new FacesMessage("Ungültiger Key"));
         }
     }
 
@@ -130,9 +121,12 @@ public class UserController implements Serializable {
     }
 
     public boolean isActivated() {
-        return user != null && user.getOauth().isActivated();
+        return user != null && user.isActivated();
     }
 
+    public Gctusr getGctusr() {
+        return user;
+    }
     public OAuthData getUser() {
         return user != null ? user.getOauth() : null;
     }

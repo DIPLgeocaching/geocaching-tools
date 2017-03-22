@@ -306,19 +306,48 @@ public class Dao {
         }
     }
 
-    public boolean isInviteKeyValid(String key) {
+    public Invitekey getInviteKey(String key) {
         Session ses = HibernateUtil.getSessionFactory().openSession();
         Transaction tx;
         try {
             tx = ses.beginTransaction();
-            boolean ret = ses.createQuery("from Invitekey where invkey = :key")
+            Invitekey ret = (Invitekey) ses.createQuery("from Invitekey where invkey = :key")
                     .setParameter("key", key)
                     .setMaxResults(1)
-                    .uniqueResult() != null;
+                    .uniqueResult();
             tx.commit();
             return ret;
         } catch (Exception ex) {
             System.err.println("Exception in isInviteKeyValid\n" + ex);
+            return null;
+        } finally {
+            ses.close();
+        }
+    }
+
+    /**
+     * 
+     * @param usr the user to be activated
+     * @param key the key submitted by the user
+     * @return true if the user got activated by the key
+     */
+    public boolean activateUser(Gctusr usr, String key) {
+        Session ses = HibernateUtil.getSessionFactory().openSession();
+        Transaction tx;
+        try {
+            tx = ses.beginTransaction();
+            Query query = ses.createQuery(""
+                    + "update Invitekey set usedby_id = :userid "
+                    + "where usedby_id = null "
+                    + "and invkey = :key");
+            query.setParameter("userid", usr.getId());
+            query.setParameter("key", key);
+            int result = query.executeUpdate();
+            ses.refresh(usr);
+            tx.commit();
+            return result == 1;
+        } catch (Exception ex) {
+            System.err.println("Exception in activateUser\n" + ex);
             return false;
         } finally {
             ses.close();

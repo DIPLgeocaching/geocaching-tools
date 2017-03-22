@@ -29,8 +29,6 @@ public class OAuthData implements Serializable {
     @Column
     private String accessToken;
     
-    @Column
-    private boolean activated = false;
 
     public OAuthData() {
     }
@@ -62,14 +60,6 @@ public class OAuthData implements Serializable {
 
     public String getProvider() {
         return provider;
-    }
-
-    public boolean isActivated() {
-        return activated;
-    }
-
-    public void setActivated(boolean activated) {
-        this.activated = activated;
     }
 
 }

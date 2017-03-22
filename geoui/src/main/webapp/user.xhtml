@@ -53,7 +53,9 @@
                 <h:outputLabel value="Name"/>
                 <h:outputText value="#{userCon.userdata.name}"/>
                 <h:outputLabel value="Is User Activated"/>
-                <h:outputText value="#{userCon.user.activated}"/>
+                <h:outputText value="#{userCon.activated}"/>
+                <h:outputLabel value="User used key "/>
+                <h:outputText value="#{userCon.gctusr.usedkey.invkey}"/>
                 <h:outputLabel value="Image"/>
                 <img src='#{userCon.userdata.pictureUrl}' style="width:64px; height:64px;"/>
             </h:panelGrid>
