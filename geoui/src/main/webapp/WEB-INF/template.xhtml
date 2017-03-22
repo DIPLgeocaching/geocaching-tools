@@ -30,7 +30,7 @@
 
         <h:body>
 
-            <div id="debugstuff" style="position: absolute;z-index: 100; width: 100%;height: 100%;">
+            <div id="debugstuff" style="position: absolute;z-index: 100; width: 0%;height: 100%;">
                 <style>
                     .infofield {
                         text-align:center;
@@ -49,8 +49,8 @@
                 <div class="infofield" style="left:0px;background-color: #{userCon.loggedIn ? 'green':'red'};">
                     logged in
                 </div>
-                <div class="infofield" style="left:50px;">
-                    google
+                <div class="infofield" style="left:100px;" onclick="window.location='user.xhtml'">
+                    Go To User
                 </div>
             </div>
             <nav class="navbar navbar-inverse">
@@ -86,8 +86,9 @@
                             <h:form>
                                 <h:commandButton action="#{localeCon.setLocaleEN()}"  image="res\flags\eng-flag.ico" style="height: 30px; width: 35px; margin-top: 60px"/>
                                 <h:commandButton action="#{localeCon.setLocaleDE()}"  image="res\flags\ger-flag.ico" style="height: 30px; width: 35px"/>
-                                <a href="#"><h:outputText value="#{i18n['logout']}" class="btn btn-primary" rendered="#{userController.loggedIn}"/></a>
-                                <!--<a href="#"><h:outputText value="{i18n['register']}" class="btn btn-primary" rendered="{not userController.loggedIn}"/></a>-->
+                                <h:commandButton action="#{userCon.initiateAuthRequest()}" value="do login"/>
+                                <!--<a href="#"><h:outputText value="#{i18n['logout']}" class="btn btn-primary" rendered="#{userCon.loggedIn}"/></a>-->
+                                <!--<a href="#"><h:outputText value="{i18n['register']}" class="btn btn-primary" rendered="{not userCon.loggedIn}"/></a>-->
                             </h:form> 
                         </div>
                     </div>
