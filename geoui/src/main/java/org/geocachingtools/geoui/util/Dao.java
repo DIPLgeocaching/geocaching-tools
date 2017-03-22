@@ -27,13 +27,14 @@ public class Dao {
 
     static {
         Gctusr usr1 = new Gctusr(ADMINMAIL, "Admin", true);
-
+        Invitekey key1 = new Invitekey("HalloWelt", usr1);
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx;
 
         try {
             tx = session.beginTransaction();
             session.save(usr1);
+            session.save(key1);
             tx.commit();
         } catch (Exception ex) {
             System.err.println(ex);

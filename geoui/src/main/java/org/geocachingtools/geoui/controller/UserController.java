@@ -11,6 +11,7 @@ import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
@@ -114,6 +115,8 @@ public class UserController implements Serializable {
         if (isKeyValid(key)) {
             this.user.getOauth().setActivated(true);
             this.dao.saveOrUpdateGctusr(user);
+        } else {
+            FacesContext.getCurrentInstance().addMessage("keyform:key",new FacesMessage("Ungültiger Key"));
         }
     }
 

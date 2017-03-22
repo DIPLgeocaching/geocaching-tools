@@ -33,9 +33,11 @@ and open the template in the editor.
                         <div class="row">
                             <div class="col-sm-4">
                                 <h2>Activation</h2>
-                                <h:form>
+                                <h:form id="keyform">
                                     <h4><h:outputText value="Invite Key:  "/></h4>
-                                    <h:inputText value="#{userCon.key}"/><br/><br/>
+                                    <h:inputText id="key" value="#{userCon.key}"/>
+                                    <h:message for="key"/>
+                                    <br/><br/>
                                     <h:commandButton value="Submit Key" action="#{userCon.activateUser()}"/>
                                 </h:form>
                             </div>
