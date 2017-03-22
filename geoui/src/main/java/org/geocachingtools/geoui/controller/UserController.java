@@ -6,7 +6,7 @@
 package org.geocachingtools.geoui.controller;
 
 import java.io.IOException;
-import org.geocachingtools.geoui.models.User;
+import org.geocachingtools.geoui.model.OAuthData;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
@@ -45,7 +45,7 @@ public class UserController implements Serializable {
      * The persistent part of the user (id, provider, access-token,
      * invite-key-validation)
      */
-    private User user;
+    private OAuthData user;
     /**
      * The transient part of the user (name, profile-pic, email). All things
      * which can change from one day to another. These informations are saved on
@@ -83,7 +83,7 @@ public class UserController implements Serializable {
         }
         OAuthJSONAccessTokenResponse token = this.provider.requestToken(provider.buildTokenRequestByCode(code));
         this.userdata = provider.loadUserData(token.getAccessToken());
-        this.user = new User(userdata.getId(), provider.getClass().getCanonicalName());
+        this.user = new OAuthData(userdata.getId(), provider.getClass().getCanonicalName());
         this.user.setAccessToken(token.getAccessToken());
         this.user.setRefreshToken(token.getRefreshToken());//may be null
     }
@@ -110,7 +110,7 @@ public class UserController implements Serializable {
         return user != null && user.isActivated();
     }
     
-    public User getUser() {
+    public OAuthData getUser() {
         return user;
     }
 

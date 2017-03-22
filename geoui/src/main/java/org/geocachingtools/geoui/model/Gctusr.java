@@ -8,6 +8,7 @@ package org.geocachingtools.geoui.model;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,8 +29,8 @@ public class Gctusr implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(name = "googleAccount")
-    private String googleAccount;
+    @Embedded
+    private OAuthData oauth;
     
     @Column(name = "gcUsername")
     private String gcUsername;
@@ -47,7 +48,6 @@ public class Gctusr implements Serializable{
     }
 
     public Gctusr(String googleAccount, String gcUsername, boolean isAdmin) {
-        this.googleAccount = googleAccount;
         this.gcUsername = gcUsername;
         this.isAdmin = isAdmin;
     }
@@ -60,12 +60,12 @@ public class Gctusr implements Serializable{
         this.id = id;
     }
 
-    public String getGoogleAccount() {
-        return googleAccount;
+    public OAuthData getOauth() {
+        return oauth;
     }
 
-    public void setGoogleAccount(String googleAccount) {
-        this.googleAccount = googleAccount;
+    public void setOauth(OAuthData oauth) {
+        this.oauth = oauth;
     }
 
     public String getGcUsername() {

@@ -3,15 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.geocachingtools.geoui.models;
+package org.geocachingtools.geoui.model;
 
 import java.io.Serializable;
+import javax.persistence.Embeddable;
+import javax.persistence.Entity;
 
 /**
  *
  * @author 20120451
  */
-public class User implements Serializable {
+@Embeddable
+public class OAuthData implements Serializable {
 
     //These two variables identify one user.
     private String id;
@@ -22,16 +25,13 @@ public class User implements Serializable {
     private String accessToken;
 
     private boolean activated = false;
-    
-    public User(String id, String provider) {
-        this.id = id;
-        this.provider = provider;
-    }
 
-    public User(String id, String provider, String refreshToken) {
+    public OAuthData() {
+    }
+    
+    public OAuthData(String id, String provider) {
         this.id = id;
         this.provider = provider;
-        this.refreshToken = refreshToken;
     }
 
     public String getAccessToken() {
