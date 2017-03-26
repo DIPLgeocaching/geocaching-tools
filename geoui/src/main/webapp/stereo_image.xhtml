@@ -36,6 +36,7 @@
                     }
                     #overlayCanvas {
                         opacity: 0.8;
+                        cursor: url('data:image/x-icon;base64,AAACAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAEAAAAAAAAAAAAAAAhYWFAPqv6ADgm4sASkpKAJ/l7QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIAAAAAAAAAAAAAAAAAAAEiIAAAAAAAAAAAAAAAAAAxEiIAAAAAAAAAAAAAAAADMxEgAAAAAAAAAAAAAAAAMzMxAAAAAAAAAAAAAAAAAzMzMAAAAAAAAAAAAAAAADMzMwAAAAAAAAAAAAAAAAMzMzAAAAAAAAAAAAAAAAAzMzMAAAAAAAAAAAAAAAADMzMwAAAAAAAAAAAAAAAABTMzAAAAAAAAAAAAAAAAAFVTMAAAAAAAAAAAAAAAAABFVQAAAAAAAAAAAAAAAAAARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///////////////////////////////////////////////////////////////////////////////////////P////h////wP///4H///8D///+B////A////gf///wP///4H///+D////B////w////8///////////////w=='), auto;
                     }
                     .stereocanvas {
                         position:absolute;
@@ -132,10 +133,10 @@
                             ctx.restore();
 
                         };
-                        
+
                         var painting = false;
                         var prev = {x: 0, y: 0};
-                        
+
                         function getMousePos(canvas, evt) {
                             var rect = canvas.getBoundingClientRect();
                             return {
@@ -143,12 +144,12 @@
                                 y: evt.clientY - rect.top
                             };
                         }
-                        
+
                         var startPaint = function (evt) {
                             painting = true;
                             prev = getMousePos(overlay, evt);
                         };
-                        
+
                         var drawWith = function (evt, color, size, op = 'source-over') {
                             if (painting) {
                                 var ctx = overlay.getContext('2d');
@@ -183,7 +184,7 @@
                             main.value = parseInt(parseInt(main.value) + parseInt(prec.value));
                             prec.value = 0;
                         };
-                        
+
                         main.addEventListener("mousemove", render, false);
                         prec.addEventListener("mousemove", render, false);
                         prec.addEventListener("mouseup", resetPrec, false);
@@ -192,9 +193,9 @@
                         overlay.addEventListener("mouseup", endPaint, false);
                         window.addEventListener("mousemove", drawChooser, false);
                         window.addEventListener("mouseup", endPaint, false);
-                        
+
                         //TODO: let the user choose the file, just set img.src again with a js function
-                        
+
                         img.src = 'http://localhost:8080/geoui/res/heart.png';
 //                        img.src = 'http://localhost:8080/geoui/res/ost.jpg';
 //                        img.src = 'http://localhost:8080/geoui/res/nord.jpg';
