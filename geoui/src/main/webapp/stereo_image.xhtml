@@ -57,17 +57,23 @@
                         var sizeChanged = true;
 
                         var downloadButton = document.getElementById('downloadButton');
+                        /**
+                         * encodes the both layers into a png image and downloads it
+                         */
                         var download = function () {
+                            //create temporary canvas
                             var down = document.createElement('canvas');
                             down.width = canvas.width;
                             down.height = canvas.height;
+                            //draw both layers onto temporary canvas
                             var ctx = down.getContext('2d');
                             ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height);
                             ctx.drawImage(overlay, 0, 0, overlay.width, overlay.height);
+                            //encode image into url
                             var dt = down.toDataURL('image/png');
+                            //download the image
                             this.href = dt;
-                        }
-                        ;
+                        };
                         downloadButton.addEventListener('click', download, false);
 
                         /* initialize range inputs */
@@ -84,20 +90,28 @@
                         var renderImage = function (ctx) {
                             var diff = parseInt(main.value) + parseInt(prec.value);
                             debug.innerHTML = diff;
-                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                            //it is important that the image is drawn in its original size on the canvas
+                            //otherwise some stereo images do not cancel themselve out correctly 
+                            //because of some default scalation filtering operations
+                            ctx.drawImage(img, 0, 0, img.width, img.height);
                             ctx.globalCompositeOperation = 'difference';
-                            ctx.drawImage(img, diff, 0, canvas.width, canvas.height);
+                            ctx.drawImage(img, diff, 0, img.width, img.height);
                         };
 
+
+                        /*
+                         * Updates the size's of the elements
+                         */
                         var updateCanvas = function () {
-                            /* update the max value of the main range input */
+                            // update the max value of the main range input
                             main.max = img.width;
-                            /* update height and width for the canvas */
+                            // update height and width for the canvas
                             if (sizeChanged) {
                                 canvas.width = overlay.width = main.clientWidth;
                                 canvas.height = overlay.height = canvas.width * (img.height / img.width);
                                 sizeChanged = false;
                             }
+                            // updates the size of the canvasParent
                             canvasParent.style.width = canvas.width + 'px';
                             canvasParent.style.height = canvas.height + 'px';
                         };
@@ -107,15 +121,21 @@
                          *  
                          */
                         var render = function () {
+                            updateCanvas();
+
+                            var factor = canvas.width / img.width;
                             var ctx = canvas.getContext('2d');
                             ctx.clearRect(0, 0, canvas.width, canvas.height);
-                            updateCanvas();
+                            ctx.save();
+                            ctx.scale(factor, factor);
                             renderImage(ctx);
-                            if (typeof canvasData !== 'undefined')
-                                ctx.putImageData(canvasData, overlay.width, overlay.height);
+                            ctx.restore();
+
                         };
+                        
                         var painting = false;
                         var prev = {x: 0, y: 0};
+                        
                         function getMousePos(canvas, evt) {
                             var rect = canvas.getBoundingClientRect();
                             return {
@@ -123,10 +143,12 @@
                                 y: evt.clientY - rect.top
                             };
                         }
+                        
                         var startPaint = function (evt) {
                             painting = true;
                             prev = getMousePos(overlay, evt);
                         };
+                        
                         var drawWith = function (evt, color, size, op = 'source-over') {
                             if (painting) {
                                 var ctx = overlay.getContext('2d');
@@ -161,17 +183,21 @@
                             main.value = parseInt(parseInt(main.value) + parseInt(prec.value));
                             prec.value = 0;
                         };
+                        
                         main.addEventListener("mousemove", render, false);
                         prec.addEventListener("mousemove", render, false);
                         prec.addEventListener("mouseup", resetPrec, false);
                         img.addEventListener('load', render, false);
                         overlay.addEventListener("mousedown", startPaint, false);
-                        window.addEventListener("mousemove", drawChooser, false);
                         overlay.addEventListener("mouseup", endPaint, false);
+                        window.addEventListener("mousemove", drawChooser, false);
                         window.addEventListener("mouseup", endPaint, false);
-                        //                        img.src = 'http://localhost:8080/geoui/res/heart.png';
-                        img.src = 'http://localhost:8080/geoui/res/ost.jpg';
-                        //                        img.src = 'http://localhost:8080/geoui/res/nord.jpg
+                        
+                        //TODO: let the user choose the file, just set img.src again with a js function
+                        
+                        img.src = 'http://localhost:8080/geoui/res/heart.png';
+//                        img.src = 'http://localhost:8080/geoui/res/ost.jpg';
+//                        img.src = 'http://localhost:8080/geoui/res/nord.jpg';
                         //                        img.src = 'http://localhost:8080/geoui/res/stereo.jpg';
 //                        img.src = 'http://localhost:8080/geoui/res/large.gif';
                     };
