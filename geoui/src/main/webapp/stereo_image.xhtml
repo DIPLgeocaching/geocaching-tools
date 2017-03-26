@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"     
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <h:body>
+        <ui:composition template="/WEB-INF/template.xhtml">
+
+            <ui:define name="content">
+                <div class="container">
+                    <div class="row">
+                        <h2>Settings</h2>
+                        <div id="debug"></div>
+                        <div>
+                            <input type="button" value="use pensil" onclick="currentTool = 'pensil';"/>
+                            <input type="button" value="use rubber" onclick="currentTool = 'rubber';"/>
+                            <a id="downloadButton" download="Canvas.png">Download Canvas</a>
+                        </div>
+                        <h2>Controll</h2>
+                        <div>
+                            <input id="mainControll" type="range"/>
+                            <input id="precisionControll" type="range"/>
+                        </div>
+                        <div id="canvasParent">
+                            <canvas id="mainCanvas" class="stereocanvas" width="800" height="400" style="z-index: 1;"/>
+                            <canvas id="overlayCanvas" class="stereocanvas" width="800" height="400" style="z-index: 2;"/>
+                        </div>
+                    </div>
+                </div>
+                <style>
+                    #canvasParent {
+                        position:relative;
+                    }
+                    #overlayCanvas {
+                        opacity: 0.8;
+                    }
+                    .stereocanvas {
+                        position:absolute;
+                        left:0px;
+                        top:0px;
+                    }
+                </style>
+                <script>
+                    var currentTool = 'pensil';
+                    window.onload = function () {
+                        ;
+                        /* get elements */
+                        var img = new Image();
+                        var canvasParent = document.getElementById('canvasParent');
+                        var canvas = document.getElementById('mainCanvas');
+                        var overlay = document.getElementById('overlayCanvas');
+                        var main = document.getElementById('mainControll');
+                        var prec = document.getElementById('precisionControll');
+                        var sizeChanged = true;
+
+                        var downloadButton = document.getElementById('downloadButton');
+                        var download = function () {
+                            var down = document.createElement('canvas');
+                            down.width = canvas.width;
+                            down.height = canvas.height;
+                            var ctx = down.getContext('2d');
+                            ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height);
+                            ctx.drawImage(overlay, 0, 0, overlay.width, overlay.height);
+                            var dt = down.toDataURL('image/png');
+                            this.href = dt;
+                        }
+                        ;
+                        downloadButton.addEventListener('click', download, false);
+
+                        /* initialize range inputs */
+                        main.min = 0;
+                        prec.max = +20;
+                        prec.min = -20;
+                        prec.value = 0;
+
+                        /*
+                         * This functions renders image two times shifted by 'diff' onto the provided context
+                         * @param {CanvasRenderingContext2D} ctx 
+                         * @param {Image} img
+                         */
+                        var renderImage = function (ctx) {
+                            var diff = parseInt(main.value) + parseInt(prec.value);
+                            debug.innerHTML = diff;
+                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                            ctx.globalCompositeOperation = 'difference';
+                            ctx.drawImage(img, diff, 0, canvas.width, canvas.height);
+                        };
+
+                        var updateCanvas = function () {
+                            /* update the max value of the main range input */
+                            main.max = img.width;
+                            /* update height and width for the canvas */
+                            if (sizeChanged) {
+                                canvas.width = overlay.width = main.clientWidth;
+                                canvas.height = overlay.height = canvas.width * (img.height / img.width);
+                                sizeChanged = false;
+                            }
+                            canvasParent.style.width = canvas.width + 'px';
+                            canvasParent.style.height = canvas.height + 'px';
+                        };
+
+
+                        /*
+                         *  
+                         */
+                        var render = function () {
+                            var ctx = canvas.getContext('2d');
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            updateCanvas();
+                            renderImage(ctx);
+                            if (typeof canvasData !== 'undefined')
+                                ctx.putImageData(canvasData, overlay.width, overlay.height);
+                        };
+                        var painting = false;
+                        var prev = {x: 0, y: 0};
+                        function getMousePos(canvas, evt) {
+                            var rect = canvas.getBoundingClientRect();
+                            return {
+                                x: evt.clientX - rect.left,
+                                y: evt.clientY - rect.top
+                            };
+                        }
+                        var startPaint = function (evt) {
+                            painting = true;
+                            prev = getMousePos(overlay, evt);
+                        };
+                        var drawWith = function (evt, color, size, op = 'source-over') {
+                            if (painting) {
+                                var ctx = overlay.getContext('2d');
+                                var pos = getMousePos(overlay, evt);
+
+                                ctx.strokeStyle = color;
+                                ctx.globalCompositeOperation = op;
+                                ctx.lineWidth = size;
+                                ctx.lineJoin = 'round';
+                                ctx.beginPath();
+                                ctx.moveTo(prev.x, prev.y);
+                                ctx.lineTo(pos.x, pos.y);
+                                ctx.closePath();
+                                ctx.stroke();
+
+                                prev = pos;
+                        }
+                        };
+                        var endPaint = function (e) {
+                            painting = false;
+                        };
+                        var drawChooser = function (evt) {
+                            if (currentTool === 'rubber') {
+                                drawWith(evt, '#fff', 53, 'destination-out');
+                            }
+                            if (currentTool === 'pensil') {
+                                drawWith(evt, '#df4b26', 5);
+                            }
+                        };
+
+                        var resetPrec = function () {
+                            main.value = parseInt(parseInt(main.value) + parseInt(prec.value));
+                            prec.value = 0;
+                        };
+                        main.addEventListener("mousemove", render, false);
+                        prec.addEventListener("mousemove", render, false);
+                        prec.addEventListener("mouseup", resetPrec, false);
+                        img.addEventListener('load', render, false);
+                        overlay.addEventListener("mousedown", startPaint, false);
+                        window.addEventListener("mousemove", drawChooser, false);
+                        overlay.addEventListener("mouseup", endPaint, false);
+                        window.addEventListener("mouseup", endPaint, false);
+                        //                        img.src = 'http://localhost:8080/geoui/res/heart.png';
+                        img.src = 'http://localhost:8080/geoui/res/ost.jpg';
+                        //                        img.src = 'http://localhost:8080/geoui/res/nord.jpg
+                        //                        img.src = 'http://localhost:8080/geoui/res/stereo.jpg';
+//                        img.src = 'http://localhost:8080/geoui/res/large.gif';
+                    };
+                </script>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
