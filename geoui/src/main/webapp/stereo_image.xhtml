@@ -15,8 +15,8 @@
                         <h2>Settings</h2>
                         <div id="debug"></div>
                         <div>
-                            <input type="button" value="use pensil" onclick="currentTool = 'pensil';"/>
-                            <input type="button" value="use rubber" onclick="currentTool = 'rubber';"/>
+                            <input id="pensilButton" type="button" value="use pensil"/>
+                            <input id="rubberButton" type="button" value="use rubber"/>
                             <a id="downloadButton" download="Canvas.png">Download Canvas</a>
                         </div>
                         <h2>Controll</h2>
@@ -45,8 +45,8 @@
                     }
                 </style>
                 <script>
-                    var currentTool = 'pensil';
                     window.onload = function () {
+                        
                         ;
                         /* get elements */
                         var img = new Image();
@@ -56,8 +56,15 @@
                         var main = document.getElementById('mainControll');
                         var prec = document.getElementById('precisionControll');
                         var sizeChanged = true;
+                        var currentTool = 'pensil';
 
                         var downloadButton = document.getElementById('downloadButton');
+                        var rubberButton = document.getElementById('rubberButton');
+                        var pensilButton = document.getElementById('pensilButton');
+                        rubberButton.addEventListener('click', function() {currentTool = 'rubber';}, false);
+                        pensilButton.addEventListener('click', function() {currentTool = 'pensil';}, false);
+                        
+                        
                         /**
                          * encodes the both layers into a png image and downloads it
                          */
