@@ -40,9 +40,9 @@
                                           style="width: 100%;"
                                           value="#{picCon.uploadedPic}"
                                           binding="#{picCon.pic}"
-                                          oncomplete="update()"
-                                          disabled="#{not empty picCon.url}"/>
+                                          oncomplete="update()"/>
                             <h:outputText id="picName" value="File: #{picCon.uploadedPic.fileName}" rendered="#{not picCon.picEmpty}"/>
+
                             <p:commandButton id="picRemove"
                                              value="Remove Image"
                                              icon="fa fa-fw fa-remove"
@@ -55,16 +55,13 @@
                             <br/>
                             <br/>
                             URL: 
-                            <h:inputText id="url" value="#{picCon.url}" disabled="#{not empty picCon.uploadedPic}">
-                                <p:ajax event="keyup" update="submit picInput"/>
-                            </h:inputText>
+                            <h:inputText id="url" value="#{picCon.url}"/>
                             <br/>
                             <br/>
-                            <h:commandButton id="submit"
-                                             value="Submit"
-                                             action="#{picCon.submit}"
-                                             class="btn btn-primary btn-xs"
-                                             disabled="#{picCon.disableSubmit()}"/>
+                            <h:commandLink id="submit"
+                                           value="Submit"
+                                           action="#{picCon.submit}"
+                                           class="btn btn-primary btn-xs"/>
                             <br/><br/>
                         </div>
                         <div class="col-sm-5">
@@ -72,10 +69,9 @@
                             <input id="passwortInput"
                                    type="text"  
                                    data-role="tagsinput" 
-                                   class="form-control"
-                                   /><br/>
+                                   class="form-control"/>
 
-                            <h:inputHidden id="textHidden" value="#{picCon.passwordText}" />
+                            <h:inputHidden id="textHidden" value="#{picCon.passwordText}"/>
                             <br/>
 
                             <!--Passwortliste upload-->

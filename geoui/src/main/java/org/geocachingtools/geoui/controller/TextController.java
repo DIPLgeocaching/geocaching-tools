@@ -38,6 +38,7 @@ public class TextController implements Serializable {
     private final Decoder decoder = Decoder.getInstance();
     private UploadedFile passwordFile;
     private UIComponent pwd;
+    private boolean pwdRequired = false;
 
     @Inject
     private LocaleController localecon;
@@ -69,45 +70,59 @@ public class TextController implements Serializable {
     }
 
     public void submit() {
-        results.clear();
-        passwords = new ArrayList<>();
-        if (!passwordText.trim().isEmpty()) {
-            passwords.addAll(Arrays.asList(passwordText.split(",")));
-        }
-        upload();//Adds passwords from file to passwordlist
+        if (methodsToUse.isEmpty()) {
+            FacesMessage message = new FacesMessage("Es muss ein Verfahren ausgwählt werden!");
+            FacesContext.getCurrentInstance().addMessage(pwd.getClientId(FacesContext.getCurrentInstance()), message);
+        } else {
+            results.clear();
+            passwords = new ArrayList<>();
+            if (!passwordText.trim().isEmpty()) {
+                passwords.addAll(Arrays.asList(passwordText.split(",")));
+            }
+            upload();//Adds passwords from file to passwordlist
 
-        System.out.println(methodsToUse);
-        System.out.println(passwordText);
-        passwords.stream().forEach(System.out::println);
-        System.out.println("cipher: " + cipher);
+            System.out.println(methodsToUse);
+            System.out.println(passwordText);
+            passwords.stream().forEach(System.out::println);
 
-        for (DecoderMethod method : methodsToUse) {
-            // System.out.println(method.getName());
-            if (passwords.isEmpty() && method.getRequiresPassword()) {
-                results.put(method, new DecoderResult(method, "Das ausgewaehlte Verfahren verlangt ein Passwort!", 1.0));
+            if (!cipher.isEmpty()) {
+                System.out.println("cipher: " + cipher);
+                for (DecoderMethod method : methodsToUse) {
+                    // System.out.println(method.getName());
+                    if (passwords.isEmpty() && method.getRequiresPassword()) {
+                        results.put(method, new DecoderResult(method, "Das ausgewaehlte Verfahren verlangt ein Passwort!", 1.0));
+                        pwdRequired = true;
+                    } else {
+                        Future<DecoderResult> future;
+                        future = decoder.decode(
+                                new DecoderRequest(
+                                        type,
+                                        cipher,
+                                        method,
+                                        passwords,
+                                        localecon.getLocale()
+                                )
+                        );
+                        try {
+                            results.put(method, future.get());
+                        } catch (InterruptedException | ExecutionException ex) {
+                            Logger.getLogger(TextController.class.getName()).log(Level.SEVERE, null, ex);
+                            throw new RuntimeException(ex);//TODO better exception handling
+                        }
+                    }
+                }
+                if (methodsToUse != null) {
+                    methodsToUse.clear();
+                }
+            } else {
+                FacesMessage message = new FacesMessage("Es muss ein Ciphertext eingegeben werden!");
+                FacesContext.getCurrentInstance().addMessage(pwd.getClientId(FacesContext.getCurrentInstance()), message);
+            }
+            if (pwdRequired) {
                 FacesMessage message = new FacesMessage("Eines der ausgewaehlten Verfahren verlangen ein Passwort!");
                 FacesContext.getCurrentInstance().addMessage(pwd.getClientId(FacesContext.getCurrentInstance()), message);
-            } else {
-                Future<DecoderResult> future;
-                future = decoder.decode(
-                        new DecoderRequest(
-                                type,
-                                cipher,
-                                method,
-                                passwords,
-                                localecon.getLocale()
-                        )
-                );
-                try {
-                    results.put(method, future.get());
-                } catch (InterruptedException | ExecutionException ex) {
-                    Logger.getLogger(TextController.class.getName()).log(Level.SEVERE, null, ex);
-                    throw new RuntimeException(ex);//TODO better exception handling
-                }
+                pwdRequired = false;
             }
-        }
-        if (methodsToUse != null) {
-            methodsToUse.clear();
         }
     }
 
@@ -165,9 +180,5 @@ public class TextController implements Serializable {
 
     public void setPwd(UIComponent pwd) {
         this.pwd = pwd;
-    }
-
-    public boolean disableSubmit() {
-        return cipher == null || cipher.length() <= 0; 
     }
 }
