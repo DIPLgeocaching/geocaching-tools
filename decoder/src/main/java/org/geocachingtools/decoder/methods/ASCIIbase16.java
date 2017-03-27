@@ -48,6 +48,8 @@ public class ASCIIbase16 extends DecoderMethod<String> {
      */
     public String decode(String cipher) {
 
+        cipher = cipher.replace("\r", "");
+        cipher = cipher.replace("\n", "");
         cipher = cipher.toUpperCase();
         String[] array = cipher.split("[^0-9A-F]");
         String result = "";
@@ -58,7 +60,7 @@ public class ASCIIbase16 extends DecoderMethod<String> {
                 result += (char) Integer.parseInt(s, 16);
 
             } else {
-                String[] chars = cipher.split("(?<=\\G.{2})");
+                String[] chars = s.split("(?<=\\G.{2})");
 
                 for (String ss : chars) {
                     result += (char) Integer.parseInt(ss, 16);

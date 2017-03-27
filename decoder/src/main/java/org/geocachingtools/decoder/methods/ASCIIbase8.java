@@ -48,6 +48,8 @@ public class ASCIIbase8 extends DecoderMethod<String> {
      */
     public String decode(String cipher) {
 
+        cipher= cipher.replace("\r", "");
+        cipher= cipher.replace("\n", "");
         String[] array = cipher.split("[^0-8]");
         String result = "";
 
@@ -57,7 +59,7 @@ public class ASCIIbase8 extends DecoderMethod<String> {
                 result += (char) Integer.parseInt(s, 8);
 
             } else {
-                String[] chars = cipher.split("(?<=\\G.{3})");
+                String[] chars = s.split("(?<=\\G.{3})");
 
                 for (String ss : chars) {
                     result += (char) Integer.parseInt(ss, 8);
