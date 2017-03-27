@@ -11,7 +11,8 @@ import org.geocachingtools.decoder.DecoderRequest;
 import org.geocachingtools.decoder.DecoderResult;
 import org.geocachingtools.decoder.methods.OpenStegoLSB;
 import org.geocachingtools.decoder.methods.OpenStegoRandomLSB;
-
+import java.util.Arrays;
+import org.geocachingtools.decoder.methods.ADFGX;
 
 /**
  * The MIT License (MIT)
@@ -47,20 +48,31 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        try {
-            OpenStegoRandomLSB openStego = new OpenStegoRandomLSB();
-            File file = new File("C:/Users/lukas/Downloads/Ochsenburg.png");
-            List<String> pwdList = new ArrayList<>();
-            pwdList.add("Koenigsberg");
-            pwdList.add("Franz Schubert");
-            
-            DecoderResult decode = openStego.decode(
-                    new DecoderRequest<>(InputStream.class, new FileInputStream(file), openStego, pwdList));
-            System.out.println(decode.getBriefResult());
-            System.out.println(decode.getFullResult());
-        } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            OpenStegoRandomLSB openStego = new OpenStegoRandomLSB();
+//            File file = new File("C:/Users/lukas/Downloads/Ochsenburg.png");
+//             List<String> pwdList = new ArrayList<>();
+//             pwdList.add("Koenigsberg");
+//             pwdList.add("Franz Schubert");
+//             
+//             DecoderResult decode = openStego.decode(
+//                     new DecoderRequest<>(InputStream.class, new FileInputStream(file), openStego, pwdList));
+//             System.out.println(decode.getBriefResult());
+//             System.out.println(decode.getFullResult());
+//         } catch (IOException ex) {
+//             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+//         }
+
+        //System.out.println(new ADFGX().decode("behadgcfi", "geocaching", "key", true));
+        System.out.println("-------------");
+        String cipher="AGAAG GFAAG DDAXF GADGD DFADD FFXAXXXDDA FDAAA AADDX DFXXD DGGDF DAXDXFGAAA FDGGX FXXXD DFDGG AAAAD AFDAXFFFXF GADGF DAGAF DGFXF XFFDD FDAFAADGAA FFAAX GGDFA DFDDX FXXGG DAFDAGGFD";
+        System.out.println(new ADFGX().decode(cipher, "geocahin", "travelbug", true));
+        
+        System.out.println("-------------");
+        System.out.println(new ADFGX().decode("AADFAAAAXDDAGDADAGAADAFDDDAADDGDDAAAAGAFAD","geocahin","travelbug",true));
+        
+        System.out.println("-------------");
+        System.out.println(new ADFGX().decode("AAADAXADDADAGDDAAAFAADADADGDFGADGDAD","geocahin","trave",true));
     }
-    
+
 }

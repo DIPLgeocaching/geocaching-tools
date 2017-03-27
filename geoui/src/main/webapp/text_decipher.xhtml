@@ -20,52 +20,40 @@
                 });
             </script>
             <h:form id="textform" enctype="multipart/form-data">
-                <div class="containter" style="margin:auto; width: 80%">
+                <div class="containter" style="margin:auto; width: 50%;padding-bottom: 15px;">                      
 
-                    <div class="row">
+                    <h3><h:outputText value="#{i18n['solveText']}"/></h3>
+                    <p:inputTextarea value="#{textCon.cipher}" id="textDecryptArea" rows="3" cols="50"/>
+                    <p:tooltip id="textDecryptAreaTooltip" 
+                               for="textDecryptArea" 
+                               value="Enter ciphertext here" 
+                               showEvent="focus" 
+                               hideEvent="blur"/>
+                    <br/>
 
-                        <div class="col-sm-1"/>
-                        <h2><h:outputText value="#{i18n['textEnt']}"/></h2>
-                        <div class="col-sm-6">
+                    <h3><h:outputText value="#{i18n['passwortListe']}"/></h3>
+                    <input id="passwortInput"
+                           type="text"  
+                           data-role="tagsinput" 
+                           class="form-control"/>
 
-                            <h3><h:outputText value="#{i18n['solveText']}"/></h3>
-                            <p:inputTextarea value="#{textCon.cipher}" id="textDecryptArea" rows="3" cols="50">
-                                <p:ajax event="keyup" update="submit"/>
-                            </p:inputTextarea>
-                            <p:tooltip id="textDecryptAreaTooltip" 
-                                       for="textDecryptArea" 
-                                       value="Enter ciphertext here" 
-                                       showEvent="focus" 
-                                       hideEvent="blur"/>
-                            <br/>
-                            <h:commandButton id="submit"
-                                             value="Submit" 
-                                             action="#{textCon.submit}" 
-                                             class="btn btn-primary btn-xs"
-                                             disabled="#{textCon.disableSubmit()}"/>
-                            <br/><br/>
-                        </div>
-                        <div class="col-sm-5">
-                            <h3><h:outputText value="#{i18n['passwortListe']}"/></h3>
-                            <input id="passwortInput"
-                                   type="text"  
-                                   data-role="tagsinput" 
-                                   class="form-control"
-                                   /><br/>
+                    <h:inputHidden id="textHidden" value="#{textCon.passwordText}"/>
 
-                            <h:inputHidden id="textHidden" value="#{textCon.passwordText}" />
-                            <br/>
 
-                            <!--Passwortliste upload-->
-                            <p:fileUpload mode="simple"
-                                          skinSimple="true"
-                                          value="#{textCon.passwordFile}"/>
-                            <br/>
-                            <h:outputText binding="#{textCon.pwd}" id="textMessage" style="display:hidden"/>
-                            <h:message for="textMessage" style="color:orange"/>
-                        </div>
-                    </div>
+                    <!--Passwortliste upload-->
+                    <p:fileUpload mode="simple"
+                                  skinSimple="true"
+                                  value="#{textCon.passwordFile}"
+                                  label="Upload Passwortlist in a file"/>
+                    <br/>
+                    <h:commandLink id="submit"
+                                   value="Submit" 
+                                   action="#{textCon.submit}" 
+                                   class="btn btn-primary btn-xs"/>
+                    <h:outputText binding="#{textCon.pwd}" id="textMessage" style="display:hidden"/>
+                    <h:message for="textMessage" style="color:orange"/>
                 </div> 
+
                 <p:dataTable id="methodtable"
                              var="method"
                              value="#{textCon.methods}"
