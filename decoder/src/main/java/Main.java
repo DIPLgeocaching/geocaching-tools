@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import org.geocachingtools.decoder.DecoderRequest;
 import org.geocachingtools.decoder.DecoderResult;
 import org.geocachingtools.decoder.methods.OpenStegoLSB;
+import org.geocachingtools.decoder.methods.OpenStegoRandomLSB;
 
 
 /**
@@ -47,11 +48,11 @@ public class Main {
      */
     public static void main(String[] args) {
         try {
-            OpenStegoLSB openStego = new OpenStegoLSB();
-            File file = new File("C:/Users/lukas/Downloads/Download3.png");
+            OpenStegoRandomLSB openStego = new OpenStegoRandomLSB();
+            File file = new File("C:/Users/lukas/Downloads/Ochsenburg.png");
             List<String> pwdList = new ArrayList<>();
-            pwdList.add("1234");
-            pwdList.add("12");
+            pwdList.add("Koenigsberg");
+            pwdList.add("Franz Schubert");
             
             DecoderResult decode = openStego.decode(
                     new DecoderRequest<>(InputStream.class, new FileInputStream(file), openStego, pwdList));

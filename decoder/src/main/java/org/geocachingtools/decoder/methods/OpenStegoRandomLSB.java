@@ -27,6 +27,7 @@ package org.geocachingtools.decoder.methods;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Base64;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,8 +42,6 @@ import org.geocachingtools.decoder.DecoderResult;
 import org.geocachingtools.decoder.I18n;
 import org.geocachingtools.decoder.Method;
 import org.geocachingtools.validator.Validator;
-import org.geocachingtools.validator.ValidatorRequest;
-import org.geocachingtools.validator.ValidatorResult;
 
 /**
  *
@@ -55,7 +54,6 @@ import org.geocachingtools.validator.ValidatorResult;
 )
 public class OpenStegoRandomLSB extends DecoderMethod<InputStream> {
 
-    private final Validator validator = Validator.getInstance();
     private I18n i18n;
 
     @Override
@@ -63,9 +61,7 @@ public class OpenStegoRandomLSB extends DecoderMethod<InputStream> {
         String briefResult = "";
         String fullResult = "";
 
-        double relevance = 0;
         String result;
-        double partialRelevance;
         i18n = new I18n(request.getLocale());
 
         OpenStegoConfig config;
@@ -78,43 +74,43 @@ public class OpenStegoRandomLSB extends DecoderMethod<InputStream> {
             config = openStego.getConfig();
 
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            
+
             ImageIO.write(ImageIO.read(request.getData()), "png", out);
 
             List<?> stegoOutput;
             try {
                 stegoOutput = openStego.extractData(out.toByteArray(), "Image");
-                result = new String((byte[]) stegoOutput.get(1));
-                partialRelevance = validator.check(new ValidatorRequest(result)).getRelevance();
-                if (partialRelevance >= ValidatorResult.THRESHOLD) {
-                    briefResult += "Ohne Passwort => " + result + "<br/>";
-                    relevance = Math.max(relevance, partialRelevance);
-                }
+
+                String filename = (String) stegoOutput.get(0);
+                byte[] output = (byte[]) stegoOutput.get(1);
+                String base64 = Base64.getEncoder().encodeToString(output);
+                result = "<a download=\"" + filename + "\" href=\"data:content-type;base64," + base64 + "\">" + filename + "</a>";
+                briefResult += i18n.get("WITHOUT-PASSWORD") + " => " + result + "<br/>";
             } catch (OpenStegoException ex) {
-                result = "Nicht möglich";
+                result = i18n.get("NOT-POSSIBLE");
             }
-            fullResult += "Ohne Passwort => " + result + "<br/>";
+            fullResult += i18n.get("WITHOUT-PASSWORD") + " => " + result + "<br/>";
 
             if (!request.getPasswords().isEmpty()) {
                 for (String pwd : request.getPasswords()) {
                     config.setPassword(pwd);
                     try {
                         stegoOutput = openStego.extractData(out.toByteArray(), "Image");
-                        result = new String((byte[]) stegoOutput.get(1));
-                        partialRelevance = validator.check(new ValidatorRequest(result)).getRelevance();
-                        if (partialRelevance >= ValidatorResult.THRESHOLD) {
-                            briefResult += pwd + " => " + result + "<br/>";
-                            relevance = Math.max(relevance, partialRelevance);
-                        }
+
+                        String filename = (String) stegoOutput.get(0);
+                        byte[] output = (byte[]) stegoOutput.get(1);
+                        String base64 = Base64.getEncoder().encodeToString(output);
+                        result = "<a download=\"" + filename + "\" href=\"data:content-type;base64," + base64 + "\">" + filename + "</a>";
+                        briefResult += pwd + " => " + result + "<br/>";
                     } catch (OpenStegoException ex) {
-                        result = "Nicht möglich";
+                        result = i18n.get("NOT-POSSIBLE");
                     }
                     fullResult += pwd + " => " + result + "<br/>";
                 }
             }
             out.close();
 
-            if (relevance < ValidatorResult.THRESHOLD) {//No suitable result found
+            if (briefResult.isEmpty()) {//No suitable result found
                 briefResult = i18n.get("LOW-VALIDATOR-RESULT");
             }
             return new DecoderResult(this, briefResult, fullResult, 0.0);
