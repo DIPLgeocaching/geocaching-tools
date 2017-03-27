@@ -350,23 +350,34 @@
                             };
                         };
                         var markComponents = function (pixels, id, colors, x, y, color = randomColor()) {
-                            var index = (y * pixels.width + x) * 4;
-                            var grey = (pixels.data[index] + pixels.data[index + 1] + pixels.data[index + 2]) / 3;
-                            if (grey > 127 && colors[index] === -1) {
-                                if (x >= 0 && y >= 0 && x < pixels.width && y < pixels.height) {
-                                    colors[index] = id;
-                                    pixels.data[index] = color.r;
-                                    pixels.data[index + 1] = color.g;
-                                    pixels.data[index + 2] = color.b;
-                                    pixels.data[index + 3] = color.a;
-                                    markComponents(pixels, id, colors, x + 1, y, color);
-                                    markComponents(pixels, id, colors, x, y + 1, color);
-                                    markComponents(pixels, id, colors, x - 1, y, color);
-                                    markComponents(pixels, id, colors, x, y - 1, color);
-                                    return true;
+                            var q = [{x: x, y: y}];
+                            var size = 0;
+                            while (q.length) {
+                                var pos = q.pop();
+                                var index = (pos.y * pixels.width + pos.x) * 4;
+                                var grey = (pixels.data[index] + pixels.data[index + 1] + pixels.data[index + 2]) / 3;
+                                if (grey > 127 && colors[index] === -1) {
+                                    if (pos.x >= 0 && pos.y >= 0 && pos.x < pixels.width && pos.y < pixels.height) {
+
+                                        colors[index] = id;
+                                        size += 1;
+
+                                        pixels.data[index] = color.r;
+                                        pixels.data[index + 1] = color.g;
+                                        pixels.data[index + 2] = color.b;
+                                        pixels.data[index + 3] = color.a;
+
+                                        q.push({x: pos.x + 1, y: pos.y});
+                                        q.push({x: pos.x - 1, y: pos.y});
+                                        q.push({x: pos.x, y: pos.y + 1});
+                                        q.push({x: pos.x, y: pos.y - 1});
+                                    }
                                 }
-                            }
-                            return false;
+                        }
+                            return {
+                                size: size,
+                                id: id
+                            };
                         };
 
                         var findComponents = function (pixels) {
@@ -376,8 +387,13 @@
                             var colors = fillArrayWith(pixels.data.length, -1);
                             for (var x = 0; x < width; x++) {
                                 for (var y = 0; y < height; y++) {
-                                    if (markComponents(pixels, id, colors, x, y))
-                                        id += 1;
+                                    var component = markComponents(pixels, id, colors, x, y);
+                                    if(component.size) {
+                                        id++;
+                                    }
+                                    if(component.size === 1) {
+                                        console.log("found a 1 sized component");
+                                    }
                                 }
                             }
                             console.log('i found ' + id);
