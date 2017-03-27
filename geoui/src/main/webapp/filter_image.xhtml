@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"     
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <h:body>
+        <ui:composition template="/WEB-INF/template.xhtml">
+
+            <ui:define name="content">
+                <div class="container">
+                    <div class="row">
+                        <h2>Settings</h2>
+                        <div id="debug"></div>
+                        <div>
+                            <input id="pensilButton" type="button" value="use pensil"/>
+                            <input id="rubberButton" type="button" value="use rubber"/>
+                            <input id="markButton" type="button" value="mark"/>
+                            <input id="sobelButton" type="button" value="show sobel"/>
+                            <input id="pickButton" type="button" value="show pick color"/>
+                            <input id="clearButton" type="button" value="show clear"/>
+                            <a id="downloadButton" download="Canvas.png">Download Canvas</a>
+                        </div>
+                        <div>
+
+                            tolerance: <input id="toleranceControll" min="0" max="255" type="range"/>
+
+                            red: <input id="redControll"  min="0" max="255" type="range"/>
+                            green: <input id="greenControll"  min="0" max="255" type="range"/>
+                            blue: <input id="blueControll"  min="0" max="255" type="range"/>
+
+                        </div>
+                        <div id="canvasParent">
+                            <canvas id="originalCanvas" class="stereocanvas" width="800" height="400" style="z-index: 1;"/>
+                            <canvas id="mainCanvas" class="stereocanvas" width="800" height="400" style="z-index: 2;"/>
+                            <canvas id="overlayCanvas" class="stereocanvas" width="800" height="400" style="z-index: 3;"/>
+                        </div>
+                    </div>
+                </div>
+                <style>
+                    #canvasParent {
+                        position:relative;
+                    }
+                    #overlayCanvas {
+                        opacity: 0.8;
+                        cursor: url('data:image/x-icon;base64,AAACAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAEAAAAAAAAAAAAAAAhYWFAPqv6ADgm4sASkpKAJ/l7QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIAAAAAAAAAAAAAAAAAAAEiIAAAAAAAAAAAAAAAAAAxEiIAAAAAAAAAAAAAAAADMxEgAAAAAAAAAAAAAAAAMzMxAAAAAAAAAAAAAAAAAzMzMAAAAAAAAAAAAAAAADMzMwAAAAAAAAAAAAAAAAMzMzAAAAAAAAAAAAAAAAAzMzMAAAAAAAAAAAAAAAADMzMwAAAAAAAAAAAAAAAABTMzAAAAAAAAAAAAAAAAAFVTMAAAAAAAAAAAAAAAAABFVQAAAAAAAAAAAAAAAAAARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///////////////////////////////////////////////////////////////////////////////////////P////h////wP///4H///8D///+B////A////gf///wP///4H///+D////B////w////8///////////////w=='), auto;
+                    }
+                    #mainCanvas {
+                        opacity: 0.7;
+                    }
+                    .stereocanvas {
+                        position:absolute;
+                        left:0px;
+                        top:0px;
+                    }
+                </style>
+                <script>
+                    //<![CDATA[
+                    window.onload = function () {
+
+                        ;
+                        /* get elements */
+                        var img = new Image();
+                        var canvasParent = document.getElementById('canvasParent');
+                        var originalCanvas = document.getElementById('originalCanvas');
+                        var canvas = document.getElementById('mainCanvas');
+                        var overlay = document.getElementById('overlayCanvas');
+                        var currentTool = 'pensil';
+                        var currentMethod = 'clear';
+                        var sizeChanged = true;
+                        var downloadButton = document.getElementById('downloadButton');
+                        var rubberButton = document.getElementById('rubberButton');
+                        var pensilButton = document.getElementById('pensilButton');
+                        var markButton = document.getElementById('markButton');
+                        var sobelButton = document.getElementById('sobelButton');
+                        var clearButton = document.getElementById('clearButton');
+                        var pickButton = document.getElementById('pickButton');
+                        var toleranceControll = document.getElementById('toleranceControll');
+                        var redControll = document.getElementById('redControll');
+                        var greenControll = document.getElementById('greenControll');
+                        var blueControll = document.getElementById('blueControll');
+                        sobelButton.addEventListener('click', function () {
+                            currentMethod = 'sobel';
+                        }, false);
+                        clearButton.addEventListener('click', function () {
+                            currentMethod = 'clear';
+                        }, false);
+                        pickButton.addEventListener('click', function () {
+                            currentMethod = 'pick';
+                        }, false);
+                        rubberButton.addEventListener('click', function () {
+                            currentTool = 'rubber';
+                        }, false);
+                        pensilButton.addEventListener('click', function () {
+                            currentTool = 'pensil';
+                        }, false);
+                        /**
+                         * encodes the both layers into a png image and downloads it
+                         */
+                        var download = function () {
+                            //create temporary canvas
+                            var down = document.createElement('canvas');
+                            down.width = canvas.width;
+                            down.height = canvas.height;
+                            //draw both layers onto temporary canvas
+                            var ctx = down.getContext('2d');
+                            ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height);
+                            ctx.drawImage(overlay, 0, 0, overlay.width, overlay.height);
+                            //encode image into url
+//                            var dt = down.toDataURL('image/png');
+                            //download the image
+                            down.toBlob(function (blob) {
+                                downloadButton.href = URL.createObjectURL(blob);
+                            });
+//                            this.href = dt;
+                        };
+                        downloadButton.addEventListener('click', download, false);
+                        var filterGreyscale = function (pixels) {
+                            var d = pixels.data;
+                            for (var i = 0; i < d.length; i += 4) {
+                                var r = d[i];
+                                var g = d[i + 1];
+                                var b = d[i + 2];
+                                // CIE luminance for the RGB
+                                // The human eye is bad at seeing red and blue, so we de-emphasize them.
+                                var v = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+                                d[i] = d[i + 1] = d[i + 2] = v
+                            }
+                            return pixels;
+                        };
+                        var filterPickColor = function (pixels, rr, gg, bb, tolerance) {
+                            var d = pixels.data;
+                            var count = 0;
+                            for (var i = 0; i < d.length; i += 4) {
+                                var r = d[i] - rr;
+                                var g = d[i + 1] - gg;
+                                var b = d[i + 2] - bb;
+                                var distance = Math.cbrt((r * r) + (g * g) + (b * b));
+                                var found = distance <= tolerance;
+
+                                d[i] = d[i + 1] = d[i + 2] = found ? 255 : 0;
+                                d[i + 3] = 255;
+                                count += found ? 1 : 0;
+                            }
+                            console.log('i found ' + count + ' pixel');
+                            return pixels;
+                        };
+                        var filterConvoluteCalculateSum = function (pixels, conv, sx, sy) {
+                            var width = pixels.width;
+                            var height = pixels.height;
+                            var size = Math.round(Math.sqrt(conv.length));
+                            var result = {r: 0, g: 0, b: 0, a: 0};
+                            for (var x = 0; x < size; x++) {
+                                for (var y = 0; y < size; y++) {
+                                    var index = ((sy + y) * width + (sx + x)) * 4;
+                                    var weight = conv[y * size + x];
+                                    result.r += pixels.data[index + 0] * weight;
+                                    result.g += pixels.data[index + 1] * weight;
+                                    result.b += pixels.data[index + 2] * weight;
+                                    result.a += pixels.data[index + 3] * weight;
+                                }
+                            }
+                            return result;
+                        };
+                        var filterConvolute = function (pixels, conv) {
+                            var tmpcanvas = document.createElement('canvas');
+                            var ctx = tmpcanvas.getContext('2d');
+                            var width = pixels.width;
+                            var height = pixels.height;
+                            var result = ctx.createImageData(width, height);
+                            var size = Math.round(Math.sqrt(conv.length));
+                            var sizehalf = Math.floor(size / 2);
+                            for (var x = sizehalf; x < width - sizehalf; x++) {
+                                for (var y = sizehalf; y < height - sizehalf; y++) {
+                                    var index = (y * width + x) * 4;
+                                    var color = filterConvoluteCalculateSum(pixels, conv, x - sizehalf, y - sizehalf);
+                                    result.data[index + 0] = color.r;
+                                    result.data[index + 1] = color.g;
+                                    result.data[index + 2] = color.b;
+                                    result.data[index + 3] = color.a;
+                                }
+                            }
+
+                            return result;
+                        };
+
+                        var filterSobel = function (source) {
+                            vertical = filterConvolute(source,
+                                    [-1, 0, 1,
+                                        -2, 0, 2,
+                                        -1, 0, 1]);
+                            horizontal = filterConvolute(source,
+                                    [-1, -2, -1,
+                                        0, 0, 0,
+                                        1, 2, 1]);
+                            for (var i = 0; i < source.data.length; i += 4) {
+                                // make the vertical gradient red
+                                var v = Math.abs(vertical.data[i]);
+                                source.data[i] = v;
+                                // make the horizontal gradient green
+                                var h = Math.abs(horizontal.data[i]);
+                                source.data[i + 1] = h;
+                                // and mix in some blue for aesthetics
+                                source.data[i + 2] = (v + h) / 4;
+                                source.data[i + 3] = 255; // opaque alpha
+                            }
+                            return source;
+                        };
+                        var filterEdge = function (source) {
+                            return filterConvolute(source,
+                                    [-1, -1, -1,
+                                        -1, 8, -1,
+                                        -1, -1, -1]);
+                        };
+
+                        var filterMark = function (pixels, style = '#fff', size = 30) {
+                            var tmpcanvas = document.createElement('canvas');
+                            var ctx = tmpcanvas.getContext('2d');
+                            var width = pixels.width;
+                            var height = pixels.height;
+                            tmpcanvas.width = width;
+                            tmpcanvas.height = height;
+                            ctx.clearRect(0, 0, width, height);
+                            ctx.strokeStyle = style;
+                            ctx.lineWidth = size;
+                            ctx.lineJoin = 'round';
+                            for (var x = 0; x < width; x++) {
+                                for (var y = 0; y < height; y++) {
+                                    var index = (y * width + x) * 4;
+                                    var grey = (pixels.data[index] + pixels.data[index + 1] + pixels.data[index + 2]) / 3;
+                                    if (grey > 127) {
+                                        ctx.beginPath();
+                                        ctx.moveTo(x, y);
+                                        ctx.lineTo(x + 1, y + 1);
+                                        ctx.closePath();
+                                        ctx.stroke();
+                                    }
+                                }
+                            }
+                            return ctx.getImageData(0, 0, width, height);
+                        };
+
+                        /*
+                         * 
+                         * @param {CanvasRenderingContext2D} ctx 
+                         */
+                        var renderImage = function (ctx) {
+                            ctx.clearRect(0, 0, img.width, img.height);
+                            ctx.drawImage(img, 0, 0, img.width, img.height);
+                            var data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                            if (currentMethod === 'pick')
+                                data = filterPickColor(data,
+                                        parseInt(redControll.value),
+                                        parseInt(greenControll.value),
+                                        parseInt(blueControll.value),
+                                        parseInt(toleranceControll.value));
+                            if (currentMethod === 'sobel')
+                                data = filterSobel(data);
+                            ctx.putImageData(data, 0, 0);
+                        };
+                        /*
+                         * Updates the size's of the elements
+                         */
+                        var updateCanvas = function () {
+                            // update height and width for the canvas
+                            if (sizeChanged) {
+                                originalCanvas.width = canvas.width = overlay.width = img.width;
+                                originalCanvas.height = canvas.height = overlay.height = img.height;
+                                sizeChanged = false;
+                            }
+                            // updates the size of the canvasParent
+                            canvasParent.style.width = canvas.width + 'px';
+                            canvasParent.style.height = canvas.height + 'px';
+                        };
+                        /*
+                         *  
+                         */
+                        var render = function () {
+                            updateCanvas();
+                            var ctx = canvas.getContext('2d');
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            renderImage(ctx);
+                            var ctx2 = originalCanvas.getContext('2d');
+                            ctx2.drawImage(img, 0, 0, img.width, img.height);
+                        };
+                        var painting = false;
+                        var prev = {x: 0, y: 0};
+                        function getMousePos(canvas, evt) {
+                            var rect = canvas.getBoundingClientRect();
+                            return {
+                                x: evt.clientX - rect.left,
+                                y: evt.clientY - rect.top
+                            };
+                        }
+
+                        var startPaint = function (evt) {
+                            painting = true;
+                            prev = getMousePos(overlay, evt);
+                        };
+                        var drawWith = function (evt, color, size, op = 'source-over') {
+                            if (painting) {
+                                var ctx = overlay.getContext('2d');
+                                var pos = getMousePos(overlay, evt);
+                                ctx.strokeStyle = color;
+                                ctx.globalCompositeOperation = op;
+                                ctx.lineWidth = size;
+                                ctx.lineJoin = 'round';
+                                ctx.beginPath();
+                                ctx.moveTo(prev.x, prev.y);
+                                ctx.lineTo(pos.x, pos.y);
+                                ctx.closePath();
+                                ctx.stroke();
+                                prev = pos;
+                        }
+                        };
+                        var endPaint = function (e) {
+                            painting = false;
+                        };
+                        var drawChooser = function (evt) {
+                            if (currentTool === 'rubber') {
+                                drawWith(evt, '#fff', 53, 'destination-out');
+                            }
+                            if (currentTool === 'pensil') {
+                                drawWith(evt, '#df4b26', 5);
+                            }
+                        };
+                        var resetPrec = function () {
+                            main.value = parseInt(parseInt(main.value) + parseInt(prec.value));
+                            prec.value = 0;
+                        };
+                        var pickrender = function () {
+                            if (currentMethod === 'pick')
+                                render();
+                        };
+                        markButton.addEventListener('click', function () {
+
+                            var ctx = canvas.getContext('2d');
+                            var data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                            data = filterMark(data);
+                            data = filterEdge(data);
+                            data = filterMark(data, '#df4b26', 5);
+                            overlay.getContext('2d').putImageData(data, 0, 0);
+
+                        }, false);
+                        sobelButton.addEventListener('click', render, false);
+                        clearButton.addEventListener('click', render, false);
+                        pickButton.addEventListener('click', render, false);
+                        toleranceControll.addEventListener("mousemove", pickrender, false);
+                        redControll.addEventListener("mousemove", pickrender, false);
+                        greenControll.addEventListener("mousemove", pickrender, false);
+                        blueControll.addEventListener("mousemove", pickrender, false);
+                        img.addEventListener('load', render, false);
+                        overlay.addEventListener("mousedown", startPaint, false);
+                        overlay.addEventListener("mouseup", endPaint, false);
+                        window.addEventListener("mousemove", drawChooser, false);
+                        window.addEventListener("mouseup", endPaint, false);
+                        //TODO: let the user choose the file, just set img.src again with a js function
+
+//                        img.src = 'http://localhost:8080/geoui/res/heart.png';
+//                        img.src = 'http://localhost:8080/geoui/res/ost.jpg';
+//                        img.src = 'http://localhost:8080/geoui/res/nord.jpg';
+//                        img.src = 'http://localhost:8080/geoui/res/wagram.jpg';
+                        img.src = 'http://localhost:8080/geoui/res/wagram-clean.png';
+//                        img.src = 'http://localhost:8080/geoui/res/wagram.png';
+//                                                img.src = 'http://localhost:8080/geoui/res/stereo.jpg';
+//                        img.src = 'http://localhost:8080/geoui/res/large.gif';
+                    };
+                    //]]>
+                </script>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
