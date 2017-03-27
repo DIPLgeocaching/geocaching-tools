@@ -42,6 +42,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import org.geocachingtools.decoder.Decoder;
@@ -67,7 +68,10 @@ public class PictureController implements Serializable {
     private List<DecoderMethod> methodsToUse;//Selected Methods
     private Map<DecoderMethod, DecoderResult> results = new HashMap<>();
     private final Decoder decoder = Decoder.getInstance();
-    private UploadedFile uploadedPic;
+    private UploadedFile uploadedPic = null;
+    private UIComponent pwd;
+    private UIComponent pic;
+    private String url;
 
     @Inject
     private LocaleController localecon;
@@ -86,57 +90,78 @@ public class PictureController implements Serializable {
     }
 
     public void upload() {
-        FacesMessage message = new FacesMessage("Succesfull", passwordFile.getFileName() + " is uploaded.");
-        FacesContext.getCurrentInstance().addMessage(null, message);
-        
-        try (InputStream is = passwordFile.getInputstream();
-                BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+        if (passwordFile != null) {
+            FacesMessage message = new FacesMessage("Succesfull", passwordFile.getFileName() + " is uploaded.");
+            FacesContext.getCurrentInstance().addMessage(null, message);
 
-            String line = "";
-            while ((line = br.readLine()) != null) {
-                passwords.add(line);
+            try (InputStream is = passwordFile.getInputstream();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+
+                String line;
+                while ((line = br.readLine()) != null) {
+                    line = line.trim();
+                    if (!line.isEmpty()) {
+                        passwords.add(line);
+                    }
+                }
+
+            } catch (IOException ex) {
+                Logger.getLogger(TextController.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-        } catch (IOException ex) {
-            Logger.getLogger(TextController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public void submit() throws IOException {
-        results.clear();
-        passwords = new ArrayList<>(Arrays.asList(passwordText.split(",")));
-        
-        System.out.println(methodsToUse);
-        System.out.println(passwordText);
-        System.out.println(passwords);
-        System.out.println("cipher: " + uploadedPic.getFileName());
-
-        if (uploadedPic != null) {
-            for (DecoderMethod method : methodsToUse) {
-                // System.out.println(method.getName());
-                Future<DecoderResult> future;
-                future = decoder.decode(
-                        new DecoderRequest(
-                                type,
-                                uploadedPic.getInputstream(),
-                                method,
-                                passwords,
-                                localecon.getLocale()
-                        )
-                );
-                try {
-                    results.put(method, future.get());
-                } catch (InterruptedException | ExecutionException ex) {
-                    throw new RuntimeException(ex);//TODO better exception handling
-                }
-            }
+        if (methodsToUse.isEmpty()) {
+            FacesMessage message = new FacesMessage("Es muss ein Verfahren ausgwählt werden!");
+            FacesContext.getCurrentInstance().addMessage(pwd.getClientId(FacesContext.getCurrentInstance()), message);
         } else {
-            FacesMessage message = new FacesMessage("Kein File gefunden...");
-            FacesContext.getCurrentInstance().addMessage(null, message);
-        }
+            results.clear();
+            passwords = new ArrayList<>();
+            if (!passwordText.trim().isEmpty()) {
+                passwords.addAll(Arrays.asList(passwordText.split(",")));
+            }
+            upload();//Adds passwords from file to passwordlist
 
-        if (methodsToUse != null) {
-            methodsToUse.clear();
+            System.out.println(methodsToUse);
+            System.out.println(passwordText);
+            System.out.println(passwords);
+
+            if (uploadedPic != null) {
+                System.out.println("cipher: " + uploadedPic.getFileName());
+                for (DecoderMethod method : methodsToUse) {
+                    // System.out.println(method.getName());
+                    if (passwords.isEmpty() && method.getRequiresPassword()) {
+                        results.put(method, new DecoderResult(method, "Das ausgewaehlte Verfahren verlangt ein Passwort!", 1.0));
+                        FacesMessage message = new FacesMessage("Eines der ausgewaehlten Verfahren verlangen ein Passwort!");
+                        FacesContext.getCurrentInstance().addMessage(pwd.getClientId(FacesContext.getCurrentInstance()), message);
+                    } else {
+                        Future<DecoderResult> future;
+                        future = decoder.decode(
+                                new DecoderRequest(
+                                        type,
+                                        uploadedPic.getInputstream(),
+                                        method,
+                                        passwords,
+                                        localecon.getLocale()
+                                )
+                        );
+                        try {
+                            results.put(method, future.get());
+                        } catch (InterruptedException | ExecutionException ex) {
+                            Logger.getLogger(TextController.class.getName()).log(Level.SEVERE, null, ex);
+                            throw new RuntimeException(ex);//TODO better exception handling
+                        }
+                    }
+                }
+
+                if (methodsToUse != null) {
+                    methodsToUse.clear();
+                }
+            } else {
+                FacesMessage message = new FacesMessage("Es muss ein Bild hochgeladen werden!");
+                FacesContext.getCurrentInstance().addMessage(pwd.getClientId(FacesContext.getCurrentInstance()), message);
+            }
         }
     }
 
@@ -197,4 +222,36 @@ public class PictureController implements Serializable {
         this.uploadedPic = uploadedPic;
     }
 
+    public UIComponent getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(UIComponent pwd) {
+        this.pwd = pwd;
+    }
+
+    public UIComponent getPic() {
+        return pic;
+    }
+
+    public void setPic(UIComponent pic) {
+        this.pic = pic;
+    }
+
+    public void clearPic() {
+        uploadedPic = null;
+        System.out.println("remove");
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public boolean isPicEmpty() {
+        return uploadedPic == null;
+    }
 }

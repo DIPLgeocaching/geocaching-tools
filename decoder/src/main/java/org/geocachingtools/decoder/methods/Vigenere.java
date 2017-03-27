@@ -59,20 +59,20 @@ public class Vigenere extends DecoderMethod<String> {
      * @param key
      * @return plaintext
      */
-    private String decode(String cipher, String key) {//TODO refactor
-        String res = "";
+    private String decode(String cipher, String key) {
+        StringBuilder result = new StringBuilder();
         cipher = cipher.toUpperCase();
         key = key.toUpperCase();
         for (int i = 0, j = 0; i < cipher.length(); i++) {
             char c = cipher.charAt(i);
             if (c < 'A' || c > 'Z') {
-                res += c;
+                result.append(c);
             } else {
-                res += (char) ((c - key.charAt(j) + 26) % 26 + 'A');
+                result.append((char) ((c - key.charAt(j) + 26) % 26 + 'A'));
                 j = ++j % key.length();
             }
         }
-        return res;
+        return result.toString();
     }
 
 }

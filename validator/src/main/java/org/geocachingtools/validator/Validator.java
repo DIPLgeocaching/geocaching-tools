@@ -56,10 +56,10 @@ public class Validator {
     
     public ValidatorResult check(ValidatorRequest request) {
         String plain = request.getPlaintext();
-        if(plain.trim().isEmpty()){
+        if(plain.trim().isEmpty()){//Do not accept empty results
             return new ValidatorResult(0);
         }
-        return new ValidatorResult(Stream.of(request.getPlaintext().split("\\s"))
+        return new ValidatorResult(Stream.of(request.getPlaintext().split("\\W"))
                 .map(String::toLowerCase)
                 .mapToDouble(str -> {
                     return words.contains(str) ? 1 : 0;
