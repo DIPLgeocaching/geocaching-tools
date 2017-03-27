@@ -24,6 +24,9 @@
                             <a id="downloadButton" download="Canvas.png">Download Canvas</a>
                         </div>
                         <div>
+                            filter connectedComponents by color (upper/lower percent): <input id="componentControll" min="0" max="100" value="50" type="range"/>
+                        </div>
+                        <div>
 
                             tolerance: <input id="toleranceControll" min="0" max="255" value="16" type="range"/>
 
@@ -84,6 +87,7 @@
                         var clearButton = document.getElementById('clearButton');
                         var pickButton = document.getElementById('pickButton');
                         var toleranceControll = document.getElementById('toleranceControll');
+                        var componentControll = document.getElementById('componentControll');
                         var redControll = document.getElementById('redControll');
                         var greenControll = document.getElementById('greenControll');
                         var blueControll = document.getElementById('blueControll');
@@ -151,7 +155,6 @@
                                 d[i + 3] = 125;
                                 count += found ? 1 : 0;
                             }
-                            console.log('i found ' + count + ' pixel');
                             return pixels;
                         };
                         var filterConvoluteCalculateSum = function (pixels, conv, sx, sy) {
@@ -352,6 +355,7 @@
                         var markComponents = function (pixels, id, colors, x, y, color = randomColor()) {
                             var q = [{x: x, y: y}];
                             var size = 0;
+                            var componentPixel = [];
                             while (q.length) {
                                 var pos = q.pop();
                                 var index = (pos.y * pixels.width + pos.x) * 4;
@@ -360,6 +364,7 @@
                                     if (pos.x >= 0 && pos.y >= 0 && pos.x < pixels.width && pos.y < pixels.height) {
 
                                         colors[index] = id;
+                                        componentPixel.push(index);
                                         size += 1;
 
                                         pixels.data[index] = color.r;
@@ -373,10 +378,11 @@
                                         q.push({x: pos.x, y: pos.y - 1});
                                     }
                                 }
-                        }
+                            }
                             return {
                                 size: size,
-                                id: id
+                                id: id,
+                                pixel: componentPixel
                             };
                         };
 
@@ -385,29 +391,59 @@
                             var height = pixels.height;
                             var id = 0;
                             var colors = fillArrayWith(pixels.data.length, -1);
+                            var components = [];
                             for (var x = 0; x < width; x++) {
                                 for (var y = 0; y < height; y++) {
                                     var component = markComponents(pixels, id, colors, x, y);
-                                    if(component.size) {
+                                    if (component.size) {
                                         id++;
-                                    }
-                                    if(component.size === 1) {
-                                        console.log("found a 1 sized component");
+                                        components.push(component);
                                     }
                                 }
                             }
-                            console.log('i found ' + id);
+                            return components;
                         };
 
                         markButton.addEventListener('click', function () {
 
                             var ctx = canvas.getContext('2d');
-                            var data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                            var width = canvas.width;
+                            var height = canvas.height;
+                            var data = ctx.getImageData(0, 0, width, height);
                             data = filterMark(data);
-                            findComponents(data);
-//                            data = filterEdge(data);
-//                            data = filterMark(data, '#df4b26', 5);
-                            overlay.getContext('2d').putImageData(data, 0, 0);
+                            var components = findComponents(data);
+                            components.sort(function (a, b) {
+                                return a.size - b.size;
+                            });
+
+
+                            var upper = ctx.createImageData(width, height);
+                            var lower = ctx.createImageData(width, height);
+                            for (var i = 0; i < components.length; i++) {
+                                var target = (100 * i / components.length < parseInt(componentControll.value)) ? lower : upper;
+                                for (var j = 0; j < components[i].pixel.length; j++) {
+                                    var index = components[i].pixel[j];
+                                    target.data[index] = target.data[index + 1] = target.data[index + 2] = 255;
+                                }
+                            }
+
+
+                            data1 = filterEdge(lower);
+                            data1 = filterMark(data1, '#df4b26', 5);
+
+                            data2 = filterEdge(upper);
+                            data2 = filterMark(data2, '#264bdf', 5);
+
+                            var tmpcanvas = document.createElement('canvas');
+                            tmpcanvas.width = width;
+                            tmpcanvas.height = height;
+                            var tmpctx = tmpcanvas.getContext('2d');
+                            overlay.getContext('2d').clearRect(0,0,width,height);
+                            tmpctx.putImageData(data1, 0, 0);
+                            overlay.getContext('2d').drawImage(tmpcanvas, 0, 0, width, height);
+                            tmpctx.putImageData(data2, 0, 0);
+                            overlay.getContext('2d').drawImage(tmpcanvas, 0, 0, width, height);
+
 
 
                         }, false);
