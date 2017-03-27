@@ -48,7 +48,7 @@
                         cursor: url('data:image/x-icon;base64,AAACAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAEAAAAAAAAAAAAAAAhYWFAPqv6ADgm4sASkpKAJ/l7QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIAAAAAAAAAAAAAAAAAAAEiIAAAAAAAAAAAAAAAAAAxEiIAAAAAAAAAAAAAAAADMxEgAAAAAAAAAAAAAAAAMzMxAAAAAAAAAAAAAAAAAzMzMAAAAAAAAAAAAAAAADMzMwAAAAAAAAAAAAAAAAMzMzAAAAAAAAAAAAAAAAAzMzMAAAAAAAAAAAAAAAADMzMwAAAAAAAAAAAAAAAABTMzAAAAAAAAAAAAAAAAAFVTMAAAAAAAAAAAAAAAAABFVQAAAAAAAAAAAAAAAAAARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///////////////////////////////////////////////////////////////////////////////////////P////h////wP///4H///8D///+B////A////gf///wP///4H///+D////B////w////8///////////////w=='), auto;
                     }
                     #mainCanvas {
-                        opacity: 0.7;
+                        /*opacity: 0.7;*/
                     }
                     .stereocanvas {
                         position:absolute;
@@ -106,6 +106,7 @@
                             down.height = canvas.height;
                             //draw both layers onto temporary canvas
                             var ctx = down.getContext('2d');
+                            ctx.drawImage(originalCanvas, 0, 0, originalCanvas.width, originalCanvas.height);
                             ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height);
                             ctx.drawImage(overlay, 0, 0, overlay.width, overlay.height);
                             //encode image into url
@@ -141,7 +142,7 @@
                                 var found = distance <= tolerance;
 
                                 d[i] = d[i + 1] = d[i + 2] = found ? 255 : 0;
-                                d[i + 3] = 255;
+                                d[i + 3] = 125;
                                 count += found ? 1 : 0;
                             }
                             console.log('i found ' + count + ' pixel');
@@ -361,8 +362,8 @@
 //                        img.src = 'http://localhost:8080/geoui/res/heart.png';
 //                        img.src = 'http://localhost:8080/geoui/res/ost.jpg';
 //                        img.src = 'http://localhost:8080/geoui/res/nord.jpg';
-//                        img.src = 'http://localhost:8080/geoui/res/wagram.jpg';
-                        img.src = 'http://localhost:8080/geoui/res/wagram-clean.png';
+                        img.src = 'http://localhost:8080/geoui/res/wagram.jpg';
+//                        img.src = 'http://localhost:8080/geoui/res/wagram-clean.png';
 //                        img.src = 'http://localhost:8080/geoui/res/wagram.png';
 //                                                img.src = 'http://localhost:8080/geoui/res/stereo.jpg';
 //                        img.src = 'http://localhost:8080/geoui/res/large.gif';
