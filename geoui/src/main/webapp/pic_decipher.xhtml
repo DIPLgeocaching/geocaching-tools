@@ -20,70 +20,43 @@
                 });
             </script>
             <h:form id="bildform" enctype="multipart/form-data">
-                <div class="containter" style="margin:auto; width: 80%">
+                <div class="containter" style="margin:auto; width: 50%;padding-bottom: 15px;">
 
-                    <div class="row">
+                    <h3><h:outputText value="#{i18n['uploadPicture']}"/></h3>                   
+                    <p:fileUpload id="picInput"
+                                  fileUploadListener="#{picCon.uploadPicture}" 
+                                  mode="simple"
+                                  skinSimple="true"
+                                  value="#{picCon.uploadedPic}"
+                                  binding="#{picCon.pic}"/>
+                    <br/>
+                    <h:outputText value="oder"/>
+                    <br/>
+                    URL: 
+                    <h:inputText id="url" value="#{picCon.url}"/>
 
-                        <div class="col-sm-1"/>
-                        <h2><h:outputText value="#{i18n['bildEnt']}"/></h2>
-                        <div class="col-sm-6">
+                    <h3><h:outputText value="#{i18n['passwortListe']}"/></h3>
+                    <input id="passwortInput"
+                           type="text"  
+                           data-role="tagsinput"
+                           value="#{picCon.passwordText}"
+                           class="form-control"/>
 
-                            <h3><h:outputText value="#{i18n['uploadPicture']}"/></h3>                   
-                            <p:fileUpload id="picInput"
-                                          fileUploadListener="#{picCon.uploadPicture}" 
-                                          mode="advanced"
-                                          skinSimple="true"
-                                          allowTypes="/(\.|\/)(gif|jpe?g|png)$/" 
-                                          fileLimit="1"
-                                          fileLimitMessage="i18n Es darf nur 1 Bild hochgeladen werden"
-                                          dragDropSupport="true"
-                                          style="width: 100%;"
-                                          value="#{picCon.uploadedPic}"
-                                          binding="#{picCon.pic}"
-                                          oncomplete="update()"/>
-                            <h:outputText id="picName" value="File: #{picCon.uploadedPic.fileName}" rendered="#{not picCon.picEmpty}"/>
+                    <h:inputHidden id="textHidden" value="#{picCon.passwordText}"/>
 
-                            <p:commandButton id="picRemove"
-                                             value="Remove Image"
-                                             icon="fa fa-fw fa-remove"
-                                             actionListener="#{picCon.clearPic()}" 
-                                             rendered="#{not picCon.picEmpty}"
-                                             update="bildform"/>
-                            <p:remoteCommand name="update" update="bildform"/>
-                            <br/>
-                            <h:outputText value="oder"/>
-                            <br/>
-                            <br/>
-                            URL: 
-                            <h:inputText id="url" value="#{picCon.url}"/>
-                            <br/>
-                            <br/>
-                            <h:commandLink id="submit"
-                                           value="Submit"
-                                           action="#{picCon.submit}"
-                                           class="btn btn-primary btn-xs"/>
-                            <br/><br/>
-                        </div>
-                        <div class="col-sm-5">
-                            <h3><h:outputText value="#{i18n['passwortListe']}"/></h3>
-                            <input id="passwortInput"
-                                   type="text"  
-                                   data-role="tagsinput" 
-                                   class="form-control"/>
-
-                            <h:inputHidden id="textHidden" value="#{picCon.passwordText}"/>
-                            <br/>
-
-                            <!--Passwortliste upload-->
-                            <p:fileUpload mode="simple"
-                                          skinSimple="true"
-                                          value="#{picCon.passwordFile}"/>
-                            <br/>
-                            <h:outputText binding="#{picCon.pwd}" id="bildMessage" style="display:hidden"/>
-                            <h:message for="bildMessage" style="color:orange"/>
-                        </div>
-                    </div>
+                    <!--Passwortliste upload-->
+                    <p:fileUpload mode="simple" 
+                                  skinSimple="true"
+                                  value="#{picCon.passwordFile}"/>
+                    <br/>
+                    <h:commandLink id="submit"
+                                   value="#{i18n['submit']}"
+                                   action="#{picCon.submit}"
+                                   class="btn btn-primary btn-xs"/>
+                    <h:outputText binding="#{picCon.pwd}" id="bildMessage" style="display:hidden"/>
+                    <h:message for="bildMessage" style="color:orange"/>
                 </div>
+
                 <p:dataTable id="methodtable"
                              var="method"
                              value="#{picCon.methods}"
@@ -98,14 +71,14 @@
                              width: 50%;
                              table-layout: fixed;">
                     <p:column selectionMode="multiple" style="width:40px;text-align:center"/>
-                    <p:column headerText="Verfahren" style="width:200px">
+                    <p:column headerText="#{i18n['methods']}" style="width:200px">
                         <p:outputPanel style="display: inline;" rendered="#{method.requiresPassword}">
-                            <i title="Password required" class="fa fa-fw fa-key"></i>
+                            <i title="#{i18n['passwordRequired']}" class="fa fa-fw fa-key"></i>
                         </p:outputPanel>
                         #{method.name}
                     </p:column>
 
-                    <p:column headerText="Resultat">
+                    <p:column headerText="#{i18n['result']}">
                         <span style="width: inherit;
                               word-wrap: break-word;
                               word-break: break-all;
@@ -115,9 +88,9 @@
                     </p:column>
                     <p:column style="width:125px">
                         <f:facet name="header">
-                            <p:commandButton type="button" onclick="jQuery('.ui-row-toggler').click()" value="Toggle All" />
+                            <p:commandButton type="button" onclick="jQuery('.ui-row-toggler').click()" value="#{i18n['toggleAll']}" />
                         </f:facet>
-                        <p:rowToggler expandLabel="&#10145; Show full result" collapseLabel="&#11015; Hide full result"></p:rowToggler>
+                        <p:rowToggler expandLabel="&#10145; #{i18n['showFullRes']}" collapseLabel="&#11015; #{i18n['hideFullRes']}"></p:rowToggler>
                     </p:column>
                     <p:rowExpansion>
                         <h:outputText value="#{picCon.results[method].fullResult}" escape="false"/>
