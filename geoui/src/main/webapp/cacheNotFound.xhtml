@@ -5,12 +5,23 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <title>TODO supply a title</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    </head>
-    <body>
-        <h1>Der Cache wurde nicht gefunden.</h1>
-    </body>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+
+    <h:body>
+        <ui:composition template="/WEB-INF/template.xhtml">
+            <ui:define name="topBar">
+
+            </ui:define>
+
+            <ui:define name="content">
+                <h1>Der Cache wurde nicht gefunden.</h1>
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+
 </html>

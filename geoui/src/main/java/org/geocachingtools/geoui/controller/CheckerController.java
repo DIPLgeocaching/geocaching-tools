@@ -6,12 +6,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
-import javax.enterprise.context.SessionScoped;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -41,7 +40,7 @@ import org.primefaces.model.map.Marker;
  * @author Schule
  */
 @Named(value = "checkerCon")
-@SessionScoped
+@RequestScoped
 public class CheckerController implements Serializable {
 
     //Are need for the Database connection
@@ -71,9 +70,15 @@ public class CheckerController implements Serializable {
     private String infoTries;
 
     private UIComponent grid;
+    
+    @PostConstruct
+    public void init() {
+        refresh();
+    }
 
     public void setCurrentCache(Cache cache) {
         refresh();
+        System.out.println("hi");
         this.cache = cache;
         this.key = cache.getCheckerlink();
     }
