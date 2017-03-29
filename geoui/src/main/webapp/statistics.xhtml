@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <meta charset="utf-8"/>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <p:commandButton action="registeredCaches"
+                             value="Zurück" />
+        </h:form>
+        <p:outputLabel value="Es gab noch keine Lösungsversuche bei deinem Cache."
+                       rendered="#{statsCon.noChecks}"/>
+        <h:form rendered="#{!statsCon.noChecks}">
+            <h1>
+                Generelle Infos
+            </h1>
+            <p:outputLabel value="Anzahl aller Lösungsversuche: #{statsCon.allAttempts.size()}"/><br/>
+            <p:outputLabel value="Anzahl der korrekten eingabe: #{statsCon.correctAttempts}" />
+            <h2>
+                Die zehn haeufigsten Fehler:
+            </h2>
+            <p:dataTable value="#{statsCon.mistakes}"
+                         var="mistake">
+                 <p:columnGroup type="header">
+                            <p:row>
+                                <p:column rowspan="2"
+                                          headerText="Anzahl"/>
+                                <p:column colspan="2"
+                                          headerText="Eingabe" />
+                            </p:row>
+                            <p:row>
+                                <p:column headerText="Breitengrad" />
+                                <p:column headerText="Längengrad" />
+                            </p:row>
+                        </p:columnGroup>
+                <p:column>
+                    <p:outputLabel value="#{mistake.amount}"/>
+                </p:column>
+                <p:column>
+                     <p:outputLabel value="#{mistake.coordinateX}"/>
+                </p:column>
+                <p:column>
+                     <p:outputLabel value="#{mistake.coordinateY}"/>
+                </p:column>
+            </p:dataTable>
+            <hr/>
+            <h1>
+                Ip-Statistiken
+            </h1>
+            <p:outputLabel value="Hier siehst du wer wann eine Eingabe getätigt
+                           hat. Du kannst es auch auf einen Zeitruam begrenzen." /> <br/>
+            <p:outputLabel value="Von:" />
+            <p:calendar id="timespanfrom"
+                        value="#{statsCon.from}">
+                <p:ajax event="dateSelect"
+                        listener="#{statsCon.dateChanged}"
+                        update="@all" />
+            </p:calendar>
+            <p:outputLabel value="Bis:" />
+            <p:calendar id="timespanto"
+                        value="#{statsCon.to}">
+                <p:ajax event="dateSelect"
+                        listener="#{statsCon.dateChanged}"
+                        update="@all" />
+            </p:calendar>
+
+            <p:dataTable id="ipstats"
+                         var="address"
+                         value="#{statsCon.ipaddresses}">
+                <f:facet name="header">
+                    Alle Versuche
+                </f:facet>
+                <p:column style="width:16px">
+                    <p:rowToggler />
+                </p:column>
+                <p:column headerText="IP-Adresse">
+                    <h:outputText value="#{address}" />
+                </p:column>
+
+                <p:rowExpansion>
+                    <p:dataTable id="tries"
+                                 value="#{statsCon.attemptsFromIp(address)}"
+                                 var="attempt"
+                                 rowIndexVar="rowIndex">
+                        <p:columnGroup type="header">
+                            <p:row>
+                                <p:column rowspan="2"
+                                          headerText="Nr." />
+                                <p:column rowspan="2"
+                                          headerText="Datum" />
+                                <p:column colspan="2"
+                                          headerText="Eingabe" />
+                            </p:row>
+                            <p:row>
+                                <p:column headerText="Breitengrad" />
+                                <p:column headerText="Längengrad" />
+                            </p:row>
+                        </p:columnGroup>
+                        <p:column style="width: 15px">
+                            <p:outputLabel value="#{rowIndex+1}."/>
+                        </p:column>
+                        <p:column>
+                            <p:outputLabel value="#{attempt.timestamp}"
+                                           style="width: 150px">
+                                <f:convertDateTime pattern="dd.MM.yyyy - HH:mm" />
+                            </p:outputLabel>
+                        </p:column>
+                        <p:column>
+                            <p:outputLabel value="#{attempt.userinputY}" />
+                        </p:column>
+                        <p:column>
+                            <p:outputLabel value="#{attempt.userinputX}" />
+                        </p:column>
+                        <!--Hier koennte man anzeigen ob es richtig war oder nicht
+                        ist aber nicht klug sonst sind die koords unverschluesllet
+                        abgespeichertun und das ist schlecht (bei verschl. kann man
+                        sie hald nicht anzeigen)-->
+                    </p:dataTable>
+                </p:rowExpansion>
+            </p:dataTable>
+        </h:form>
+    </h:body>
+</html>

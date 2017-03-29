@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <meta charset="utf-8"/>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <h:form id="gridform">
+            <p:growl id="successgrowl" for="successgrowl" />
+            <p:message id="successmess" for="successmess"/>
+            <h:panelGrid id="grid"
+                         columns="3"
+                         cellpadding="5">
+
+                <p:outputLabel for="waypoint"
+                               value="Wegpunkt:"/>
+                <p:inputText id="waypoint"
+                             value="#{newcache.cache.gcWaypoint}"
+                             required="ture"
+                             style="width: 100px">
+                    <f:validator validatorId="org.org.geocachingtools.geoui.validator.WaypointValidator"/>
+                </p:inputText>
+                <p:message for="waypoint"/>
+
+                <p:outputLabel for="name"
+                               value="Cache Name:"/>
+                <p:inputText id="name"
+                             value="#{newcache.cache.gcName}"
+                             style="width: 300px">
+                    <f:validateLength maximum="30"/>
+                </p:inputText>
+                <p:message for="name"/>
+
+                <p:outputLabel value="Koordinate:"/>
+                <h:panelGrid id="grid_coordinate"
+                             columns="7"
+                             cellpadding="0"
+                             binding="#{newcache.grid}">
+                    <p:selectOneRadio value="#{newcache.coordinate.n}">
+                        <f:selectItem itemLabel="N" 
+                                      itemValue="#{true}"/>
+                        <f:selectItem itemLabel="S"
+                                      itemValue="#{false}"/>
+                    </p:selectOneRadio>
+                    <p:inputText value="#{newcache.coordinate.y1}"
+                                 size="1"
+                                 style="width: 30px"/>°
+                    <p:inputText value="#{newcache.coordinate.y2}"
+                                 size="1"
+                                 style="width: 30px"/>'
+                    <p:inputText value="#{newcache.coordinate.y3}"
+                                 size="1"
+                                 style="width: 60px"/>"
+                    <p:selectOneRadio value="#{newcache.coordinate.e}">
+                        <f:selectItem itemLabel="E"
+                                      itemValue="#{true}" />
+                        <f:selectItem itemLabel="W"
+                                      itemValue="#{false}"/>
+                    </p:selectOneRadio>
+                    <p:inputText value="#{newcache.coordinate.x1}"
+                                 size="1"
+                                 style="width: 30px"/>°
+                    <p:inputText value="#{newcache.coordinate.x2}"
+                                 size="1"
+                                 style="width: 30px"/>'
+                    <p:inputText value="#{newcache.coordinate.x3}"
+                                 size="1"
+                                 style="width: 60px"/>"
+                </h:panelGrid>
+                <p:message for="grid_coordinate"/>
+
+                <p:outputLabel value="Mitteilung:"/>
+                <p:inputTextarea value="#{newcache.cache.message}"
+                                 style="width: 300px"/>
+                <br/>
+            </h:panelGrid>
+
+            <p:outputLabel value="Hinweise kannst du bei der Bearbeitung deiner Caches hinzufügen."/><br/>
+
+            <p:commandButton action="#{newcache.saveCache()}"
+                             value="Speichern"
+                             update="gridform"/>
+        </h:form>
+        <h:form>
+            <p:commandButton action="registeredCaches"
+                             value="Abbrechen" />
+        </h:form>
+    </h:body>
+</html>
