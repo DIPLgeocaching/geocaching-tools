@@ -220,9 +220,10 @@
                         };
 
                         var onimgload = function () {
-
+                            
                             var canvas = document.createElement('canvas');
                             var ctx = canvas.getContext('2d');
+                            sizeChanged = true;
                             canvas.width = 400;
                             canvas.height = canvas.width * (img.height / img.width);
                             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
