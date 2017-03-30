@@ -59,6 +59,7 @@
                         top:0px;
                     }
                 </style>
+                <script src="res/js/paint.js"/>
                 <script>
                     //<![CDATA[
                     window.onload = function () {
@@ -101,10 +102,10 @@
                             currentMethod = 'pick';
                         }, false);
                         rubberButton.addEventListener('click', function () {
-                            currentTool = 'rubber';
+                            window.paint.setCurrentTool('rubber');
                         }, false);
                         pensilButton.addEventListener('click', function () {
-                            currentTool = 'pensil';
+                            window.paint.setCurrentTool('pensil');
                         }, false);
                         /**
                          * encodes the both layers into a png image and downloads it
@@ -295,47 +296,7 @@
                             var ctx2 = originalCanvas.getContext('2d');
                             ctx2.drawImage(img, 0, 0, img.width, img.height);
                         };
-                        var painting = false;
-                        var prev = {x: 0, y: 0};
-                        function getMousePos(canvas, evt) {
-                            var rect = canvas.getBoundingClientRect();
-                            return {
-                                x: evt.clientX - rect.left,
-                                y: evt.clientY - rect.top
-                            };
-                        }
-
-                        var startPaint = function (evt) {
-                            painting = true;
-                            prev = getMousePos(overlay, evt);
-                        };
-                        var drawWith = function (evt, color, size, op = 'source-over') {
-                            if (painting) {
-                                var ctx = overlay.getContext('2d');
-                                var pos = getMousePos(overlay, evt);
-                                ctx.strokeStyle = color;
-                                ctx.globalCompositeOperation = op;
-                                ctx.lineWidth = size;
-                                ctx.lineJoin = 'round';
-                                ctx.beginPath();
-                                ctx.moveTo(prev.x, prev.y);
-                                ctx.lineTo(pos.x, pos.y);
-                                ctx.closePath();
-                                ctx.stroke();
-                                prev = pos;
-                        }
-                        };
-                        var endPaint = function (e) {
-                            painting = false;
-                        };
-                        var drawChooser = function (evt) {
-                            if (currentTool === 'rubber') {
-                                drawWith(evt, '#fff', 53, 'destination-out');
-                            }
-                            if (currentTool === 'pensil') {
-                                drawWith(evt, '#df4b26', 5);
-                            }
-                        };
+                        
                         var resetPrec = function () {
                             main.value = parseInt(parseInt(main.value) + parseInt(prec.value));
                             prec.value = 0;
@@ -455,10 +416,8 @@
                         greenControll.addEventListener("mousemove", pickrender, false);
                         blueControll.addEventListener("mousemove", pickrender, false);
                         img.addEventListener('load', render, false);
-                        overlay.addEventListener("mousedown", startPaint, false);
-                        overlay.addEventListener("mouseup", endPaint, false);
-                        window.addEventListener("mousemove", drawChooser, false);
-                        window.addEventListener("mouseup", endPaint, false);
+                        
+                        window.paint.init(overlay);
                         //TODO: let the user choose the file, just set img.src again with a js function
 
 //                        img.src = 'http://localhost:8080/geoui/res/heart.png';
