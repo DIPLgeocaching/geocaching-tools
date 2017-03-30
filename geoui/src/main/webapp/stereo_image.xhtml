@@ -49,6 +49,7 @@
                         top:0px;
                     }
                 </style>
+                <script src="res/js/paint.js"/>
                 <script>
                     //<![CDATA[
                     window.onload = function () {
@@ -63,17 +64,16 @@
                         var main = document.getElementById('mainControll');
                         var prec = document.getElementById('precisionControll');
                         var sizeChanged = true;
-                        var currentTool = 'pensil';
                         var graphData = [];
 
                         var downloadButton = document.getElementById('downloadButton');
                         var rubberButton = document.getElementById('rubberButton');
                         var pensilButton = document.getElementById('pensilButton');
                         rubberButton.addEventListener('click', function () {
-                            currentTool = 'rubber';
+                            window.paint.setCurrentTool('rubber');
                         }, false);
                         pensilButton.addEventListener('click', function () {
-                            currentTool = 'pensil';
+                            window.paint.setCurrentTool('pensil');
                         }, false);
 
                         var testStereogramm = function (pixels, tresh = 20, offset = 0) {
@@ -156,9 +156,7 @@
                             console.log('max ' + mx);
                             console.log('min ' + mn);
                             for (var i = 0; i < data.length; i += 1) {
-                                var value = (data[i] - mn) / (mx - mn);
-                                console.log(value);
-                                result.push(value);
+                                result.push((data[i] - mn) / (mx - mn));
                             }
                             return result;
                         };
@@ -215,51 +213,6 @@
 
                         };
 
-                        var painting = false;
-                        var prev = {x: 0, y: 0};
-
-                        function getMousePos(canvas, evt) {
-                            var rect = canvas.getBoundingClientRect();
-                            return {
-                                x: evt.clientX - rect.left,
-                                y: evt.clientY - rect.top
-                            };
-                        }
-
-                        var startPaint = function (evt) {
-                            painting = true;
-                            prev = getMousePos(overlay, evt);
-                        };
-
-                        var drawWith = function (evt, color, size, op = 'source-over') {
-                            if (painting) {
-                                var ctx = overlay.getContext('2d');
-                                var pos = getMousePos(overlay, evt);
-
-                                ctx.strokeStyle = color;
-                                ctx.globalCompositeOperation = op;
-                                ctx.lineWidth = size;
-                                ctx.lineJoin = 'round';
-                                ctx.beginPath();
-                                ctx.moveTo(prev.x, prev.y);
-                                ctx.lineTo(pos.x, pos.y);
-                                ctx.closePath();
-                                ctx.stroke();
-
-                                prev = pos;
-                        }
-                        };
-                        var endPaint = function (e) {
-                            painting = false;
-                        };
-                        var drawChooser = function (evt) {
-                            if (currentTool === 'rubber') {
-                                drawWith(evt, '#fff', 53, 'destination-out');
-                            }
-                            if (currentTool === 'pensil') {
-                                drawWith(evt, '#df4b26', 5);
-                            }
-                        };
 
                         var resetPrec = function () {
                             main.value = parseInt(parseInt(main.value) + parseInt(prec.value));
@@ -290,10 +243,7 @@
                             img.src = document.getElementById('loadFromUrlInput').value;
                         });
 
-                        overlay.addEventListener("mousedown", startPaint, false);
-                        overlay.addEventListener("mouseup", endPaint, false);
-                        window.addEventListener("mousemove", drawChooser, false);
-                        window.addEventListener("mouseup", endPaint, false);
+                        window.paint.init(overlay);
 
                         //TODO: let the user choose the file, just set img.src again with a js function
 //
