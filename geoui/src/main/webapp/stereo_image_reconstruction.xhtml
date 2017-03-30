@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"     
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <h:body>
+        <ui:composition template="/WEB-INF/template.xhtml">
+
+            <ui:define name="content">
+                <div class="container">
+                    <div class="row">
+                        <h2>Settings</h2>
+                        <div id="debug"></div>
+                        <h2>Controll</h2>
+                        <canvas id="mainCanvas" class="stereocanvas" width="800" height="400" style="z-index: 1;"/>
+
+                    </div>
+                </div>
+                <style>
+                </style>
+                <script src="res/js/stereo.js"/>
+                <script src="res/js/paint.js"/>
+                <script>
+                    //<![CDATA[
+                    window.onload = function () {
+
+                        /* get elements */
+                        var img = new Image();
+                        var sizeChanged = true;
+                        var canvas = document.getElementById('mainCanvas');
+
+                        var doit = function (sourceImg, targetCtx, mn, mx, tresh, gauss = 2) {
+                            var c = document.createElement('canvas');
+                            c.width = sourceImg.width;
+                            c.height = sourceImg.height;
+                            var imageData = targetCtx.getImageData(0, 0, sourceImg.width, sourceImg.height);
+                            for (var i = mx; i >= mn; i -= 1) {
+                                var ctx = c.getContext('2d');
+                                ctx.globalCompositeOperation = 'source-over';
+                                ctx.drawImage(sourceImg, 0, 0, c.width, c.height);
+                                ctx.globalCompositeOperation = 'difference';
+                                ctx.drawImage(sourceImg, i, 0, c.width, c.height);
+                                var pixels = ctx.getImageData(0, 0, sourceImg.width, sourceImg.height);
+                                for (var h = 0; h < gauss; h += 1)
+                                    pixels = window.stereo.filterGaussian(pixels, i);
+                                var d = pixels.data;
+                                var color = Math.floor(255 * (i - mn) / (mx - mn));
+                                for (var x = i; x < pixels.width; x++) {
+                                    for (var y = 0; y < pixels.height; y++) {
+                                        var j = (y * pixels.width + x) * 4;
+                                        var avg = (d[j] + d[j + 1] + d[j + 2]) / 3;
+                                        if (avg < tresh) {
+                                            imageData.data[j] = color;
+                                            imageData.data[j + 3] = 255;
+                                        }
+                                    }
+                                }
+                                console.log("fin " + i + " color " + color);
+                            }
+                            targetCtx.putImageData(imageData, 0, 0);
+                        };
+
+                        /*
+                         * Updates the size's of the elements
+                         */
+                        var updateCanvas = function () {
+                            // update height and width for the canvas
+                            if (sizeChanged) {
+                                canvas.width = canvas.clientWidth;
+                                canvas.height = canvas.width * (img.height / img.width);
+                                sizeChanged = false;
+                            }
+                        };
+
+                        var render = function () {
+                            updateCanvas();
+
+                            var ctx = canvas.getContext('2d');
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            ctx.fillStyle = 'black';
+                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+//                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                            setTimeout(function () {
+                                doit(img, ctx, 60, 100, 20);
+//                                doit(img, ctx, 60, 100, 5);
+//                                doit(img, ctx, 60, 100, 2);
+//                                doit(img, ctx, 60, 100, 1);
+                                console.log('done');
+                            }, 0);
+                        };
+
+                        var onimgload = function () {
+                            render();
+                        };
+                        img = new Image();
+                        img.addEventListener('load', onimgload, false);
+                        img.src = 'http://localhost:8080/geoui/res/test.jpg';
+                    };
+                    //]]>
+                </script>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
