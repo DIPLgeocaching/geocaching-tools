@@ -13,6 +13,10 @@
                 <div class="container">
                     <div class="row">
                         <h2>Settings</h2>
+                        <div>
+                            <input id="loadFromUrlInput" type="text" value="res/stereo-3d.jpg"/>
+                            <input id="loadFromUrlButton" type="button" value="Load from URL"/>
+                        </div>
                         <div id="debug"></div>
                         <div>
                             <input id="pensilButton" type="button" value="use pensil"/>
@@ -24,6 +28,7 @@
                             <input id="mainControll" type="range"/>
                             <input id="precisionControll" type="range"/>
                         </div>
+                        <canvas id="graphCanvas" width="800" height="50"/>
                         <div id="canvasParent">
                             <canvas id="mainCanvas" class="stereocanvas" width="800" height="400" style="z-index: 1;"/>
                             <canvas id="overlayCanvas" class="stereocanvas" width="800" height="400" style="z-index: 2;"/>
@@ -45,6 +50,7 @@
                     }
                 </style>
                 <script>
+                    //<![CDATA[
                     window.onload = function () {
 
                         ;
@@ -52,11 +58,13 @@
                         var img = new Image();
                         var canvasParent = document.getElementById('canvasParent');
                         var canvas = document.getElementById('mainCanvas');
+                        var graph = document.getElementById('graphCanvas');
                         var overlay = document.getElementById('overlayCanvas');
                         var main = document.getElementById('mainControll');
                         var prec = document.getElementById('precisionControll');
                         var sizeChanged = true;
                         var currentTool = 'pensil';
+                        var graphData = [];
 
                         var downloadButton = document.getElementById('downloadButton');
                         var rubberButton = document.getElementById('rubberButton');
@@ -68,6 +76,37 @@
                             currentTool = 'pensil';
                         }, false);
 
+                        var testStereogramm = function (pixels, tresh = 20, offset = 0) {
+                            var d = pixels.data;
+                            var cnt = 0;
+                            for (var x = offset; x < pixels.width; x += 1) {
+                                for (var y = 0; y < pixels.height; y += 1) {
+                                    var i = (y * pixels.width + x) * 4;
+                                    var r = d[i];
+                                    var g = d[i + 1];
+                                    var b = d[i + 2];
+                                    if ((r + g + b) / 3 <= tresh)
+                                        cnt += 1;
+                                }
+                            }
+                            return 1.0 * cnt / (pixels.height * (pixels.width - offset));
+                        };
+                        var generateGraphData = function (img) {
+                            var result = [];
+                            var canvas = document.createElement('canvas');
+                            canvas.width = img.width;
+                            canvas.height = img.height;
+                            var ctx = canvas.getContext('2d');
+                            for (var i = 0; i < img.width; i += 1) {
+                                ctx.globalCompositeOperation = 'source-over';
+                                ctx.drawImage(img, 0, 0, img.width, img.height);
+                                ctx.globalCompositeOperation = 'difference';
+                                ctx.drawImage(img, i, 0, img.width, img.height);
+                                var pixels = ctx.getImageData(0, 0, img.width, img.height);
+                                result.push(testStereogramm(pixels, 20, i));
+                            }
+                            return result;
+                        };
 
                         /**
                          * encodes the both layers into a png image and downloads it
@@ -110,6 +149,35 @@
                             ctx.drawImage(img, diff, 0, img.width, img.height);
                         };
 
+                        var normalizeData = function (data) {
+                            var result = [];
+                            var mx = Math.max.apply(Math, data);
+                            var mn = Math.min.apply(Math, data);
+                            console.log('max ' + mx);
+                            console.log('min ' + mn);
+                            for (var i = 0; i < data.length; i += 1) {
+                                var value = (data[i] - mn) / (mx - mn);
+                                console.log(value);
+                                result.push(value);
+                            }
+                            return result;
+                        };
+
+                        var renderGraph = function (ctx) {
+                            if (graphData.length === 0)
+                                return;
+                            ctx.clearRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
+                            ctx.beginPath();
+                            ctx.moveTo(0, 0);
+                            for (var i = 0; i < graphData.length; i++) {
+                                ctx.lineTo(
+                                        i * ctx.canvas.clientWidth / graphData.length,
+                                        (1 - graphData[i]) * ctx.canvas.clientHeight
+                                        );
+                            }
+                            ctx.stroke();
+                        };
+
 
                         /*
                          * Updates the size's of the elements
@@ -119,7 +187,7 @@
                             main.max = img.width;
                             // update height and width for the canvas
                             if (sizeChanged) {
-                                canvas.width = overlay.width = main.clientWidth;
+                                graph.width = canvas.width = overlay.width = main.clientWidth;
                                 canvas.height = overlay.height = canvas.width * (img.height / img.width);
                                 sizeChanged = false;
                             }
@@ -142,6 +210,8 @@
                             ctx.scale(factor, factor);
                             renderImage(ctx);
                             ctx.restore();
+
+                            renderGraph(graph.getContext('2d'));
 
                         };
 
@@ -196,10 +266,30 @@
                             prec.value = 0;
                         };
 
+                        var onimgload = function () {
+
+                            var canvas = document.createElement('canvas');
+                            var ctx = canvas.getContext('2d');
+                            canvas.width = 400;
+                            canvas.height = canvas.width * (img.height / img.width);
+                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                            setTimeout(function () {
+                                graphData = normalizeData(generateGraphData(canvas));
+                                render();
+                            }, 0);
+                            render();
+                        };
                         main.addEventListener("mousemove", render, false);
                         prec.addEventListener("mousemove", render, false);
                         prec.addEventListener("mouseup", resetPrec, false);
-                        img.addEventListener('load', render, false);
+
+                        document.getElementById('loadFromUrlButton').addEventListener('click', function () {
+                            img = new Image();
+                            img.addEventListener('load', onimgload, false);
+                            //img.crossOrigin = "Anonymous";
+                            img.src = document.getElementById('loadFromUrlInput').value;
+                        });
+
                         overlay.addEventListener("mousedown", startPaint, false);
                         overlay.addEventListener("mouseup", endPaint, false);
                         window.addEventListener("mousemove", drawChooser, false);
@@ -213,13 +303,14 @@
 //                        img.src = 'http://localhost:8080/geoui/res/heart.png';
 //                        img.src = 'http://localhost:8080/geoui/res/L-stereogram-tree.jpg'; 
 //                        img.src = 'http://localhost:8080/geoui/res/what.png'; 
-                        img.src = 'http://localhost:8080/geoui/res/city.jpg'; 
+//                        img.src = 'http://localhost:8080/geoui/res/city.jpg';
 //                        img.src = 'http://localhost:8080/geoui/res/geocaching.jpg'; 
 //                        img.src = 'http://localhost:8080/geoui/res/ost.jpg';
 //                        img.src = 'http://localhost:8080/geoui/res/nord.jpg';
 //                        img.src = 'http://localhost:8080/geoui/res/stereo.jpg';
 //                        img.src = 'http://localhost:8080/geoui/res/large.gif';
                     };
+                    //]]>
                 </script>
             </ui:define>
         </ui:composition>
