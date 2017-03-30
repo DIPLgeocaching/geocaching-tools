@@ -46,7 +46,7 @@
                 </style>
                 <script>
                     window.onload = function () {
-                        
+
                         ;
                         /* get elements */
                         var img = new Image();
@@ -61,10 +61,14 @@
                         var downloadButton = document.getElementById('downloadButton');
                         var rubberButton = document.getElementById('rubberButton');
                         var pensilButton = document.getElementById('pensilButton');
-                        rubberButton.addEventListener('click', function() {currentTool = 'rubber';}, false);
-                        pensilButton.addEventListener('click', function() {currentTool = 'pensil';}, false);
-                        
-                        
+                        rubberButton.addEventListener('click', function () {
+                            currentTool = 'rubber';
+                        }, false);
+                        pensilButton.addEventListener('click', function () {
+                            currentTool = 'pensil';
+                        }, false);
+
+
                         /**
                          * encodes the both layers into a png image and downloads it
                          */
@@ -202,11 +206,18 @@
                         window.addEventListener("mouseup", endPaint, false);
 
                         //TODO: let the user choose the file, just set img.src again with a js function
-
-                        img.src = 'http://localhost:8080/geoui/res/heart.png';
+//
+//                        img.src = 'http://localhost:8080/geoui/res/kopf.jpg';
+//                        img.src = 'http://localhost:8080/geoui/res/test.jpg';
+//                        img.src = 'http://localhost:8080/geoui/res/text.png';
+//                        img.src = 'http://localhost:8080/geoui/res/heart.png';
+//                        img.src = 'http://localhost:8080/geoui/res/L-stereogram-tree.jpg'; 
+//                        img.src = 'http://localhost:8080/geoui/res/what.png'; 
+                        img.src = 'http://localhost:8080/geoui/res/city.jpg'; 
+//                        img.src = 'http://localhost:8080/geoui/res/geocaching.jpg'; 
 //                        img.src = 'http://localhost:8080/geoui/res/ost.jpg';
 //                        img.src = 'http://localhost:8080/geoui/res/nord.jpg';
-                        //                        img.src = 'http://localhost:8080/geoui/res/stereo.jpg';
+//                        img.src = 'http://localhost:8080/geoui/res/stereo.jpg';
 //                        img.src = 'http://localhost:8080/geoui/res/large.gif';
                     };
                 </script>
