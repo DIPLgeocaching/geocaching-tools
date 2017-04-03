@@ -16,8 +16,10 @@
             <!--Favicon-->
             <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
             <link rel="icon" href="res/favicon.ico" type="image/x-icon"/>
-          
+
             <!--Tags Input-->
+            <script src="http://maps.google.com/maps/api/js?key=AIzaSyCwlHXQ9vtGtHqUrTJFtUeDlodOIGL6Ld0"  
+            type="text/javascript"></script>
             <link rel="stylesheet" href="./res/css/bootstrap-tagsinput.css"/>
             <script src="./res/js/bootstrap-tagsinput.js"></script>
             <style>
@@ -50,7 +52,7 @@
                                 <a href="pic_decipher.xhtml" >
                                     <h:outputText  class="btn btn-primary"  value="#{i18n['bildEnt']}" rendered="#{not userController.loggedIn}"/>
                                 </a>
-                                <a href="#">
+                                <a href="registeredCaches.xhtml">
                                     <h:outputText class="btn btn-primary" value="#{i18n['geochecker']}" rendered="#{not userController.loggedIn}"/>
                                 </a>
                                 <a href="invite_user.xhtml">
@@ -72,7 +74,7 @@
             <div class="top_menue">
                 <ui:insert name="topBar"/>
             </div>
-        
+
             <ui:insert name="content"/>
 
         </h:body>

@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <meta charset="utf-8"/>
+        <!--Bootstrap-->
+            <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/paper/bootstrap.min.css" rel="stylesheet" integrity="sha384-awusxf8AUojygHf2+joICySzB780jVvQaVCAt1clU3QsyAitLGul28Qxb2r1e5g+" crossorigin="anonymous"/>
+            <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/yeti/bootstrap.min.css" rel="stylesheet" integrity="sha384-HzUaiJdCTIY/RL2vDPRGdEQHHahjzwoJJzGUkYjHVzTwXFQ2QN/nVgX7tzoMW3Ov" crossorigin="anonymous"/>
+            <link href="./res/css/layout.css" rel="stylesheet" type="text/css" />
+            <!--Favicon-->
+            <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
+            <link rel="icon" href="res/favicon.ico" type="image/x-icon"/>
+
+            <!--Tags Input-->
+            <script src="http://maps.google.com/maps/api/js?key=AIzaSyCwlHXQ9vtGtHqUrTJFtUeDlodOIGL6Ld0"  
+            type="text/javascript"></script>
+            <link rel="stylesheet" href="./res/css/bootstrap-tagsinput.css"/>
+            <script src="./res/js/bootstrap-tagsinput.js"></script>
+            <style>
+                td{
+                    word-wrap: break-word;
+                    white-space: pre-wrap;
+                }
+            </style>
+        <title>Geochecker</title>
+    </h:head>
+    <h:body> 
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid" style="background-color: #4974FF">
+
+                <div class="navbar-header" >
+                    <a href="#">
+                        <img onclick="" src="res\logo.png" title="Startseite" height="100" width="210" style="margin: 10px 20px 10px 10px"/>
+                    </a>
+                </div>
+
+                <div class="navbar-collapse"  >
+                    <ul class="nav navbar-nav">
+                      
+                    </ul>
+                    <div class="nav navbar-nav navbar-right">
+                        <h:form>
+                            <h:commandButton action="#{localeCon.setLocaleEN()}"  image="res\flags\eng-flag.ico" style="height: 30px; width: 35px; margin-top: 60px"/>
+                            <h:commandButton action="#{localeCon.setLocaleDE()}"  image="res\flags\ger-flag.ico" style="height: 30px; width: 35px"/>
+                            <a href="#"><h:outputText value="#{i18n['logout']}" class="btn btn-primary" rendered="#{userController.loggedIn}"/></a>
+                            <!--<a href="#"><h:outputText value="{i18n['register']}" class="btn btn-primary" rendered="{not userController.loggedIn}"/></a>-->
+                        </h:form> 
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <div class="top_menue">
+            <h1>Geochecker</h1>
+        </div>
+
+        <p:gmap center="1.0,1.0"
+                zoom="15"
+                type="HYBRID"/>
+        <h:form id="checker" style="margin-left: 30px">
+            <p:outputLabel value="Achtung! Der Cache wurde inaktiv gesetzt."
+                           rendered="#{!checkerCon.cache.status}"/><br/>
+            <p:outputLabel value="#{checkerCon.cache.gcWaypoint}"
+                           style="font-size: 28px;"/>
+            <br/>
+            <p:outputLabel value="#{checkerCon.cache.gcName}"
+                           rendered="#{checkerCon.exists()}"
+                           style="font-size: 22px;"/>
+            <hr/>
+            <p:outputLabel value="Gibt hier deine Koordinaten ein:"/>
+            <br/>
+
+            <h:panelGrid id="gridcoordinate"
+                         columns="7"
+                         cellpadding="0"
+                         binding="#{checkerCon.grid}">
+                <p:selectOneRadio  value="#{checkerCon.coordinate.n}">
+                    <f:selectItem itemLabel="N" 
+                                  itemValue="#{true}"/>
+                    <f:selectItem itemLabel="S"
+                                  itemValue="#{false}"/>
+                </p:selectOneRadio>
+                <p:inputText value="#{checkerCon.coordinate.y1}"
+                             size="1"
+                             style="width: 30px"/>°
+                <p:inputText value="#{checkerCon.coordinate.y2}"
+                             size="1"
+                             style="width: 30px"/>'
+                <p:inputText value="#{checkerCon.coordinate.y3}"
+                             size="1"
+                             style="width: 60px"/>"
+                <p:selectOneRadio value="#{checkerCon.coordinate.e}">
+                    <f:selectItem itemLabel="E"
+                                  itemValue="#{true}" />
+                    <f:selectItem itemLabel="W"
+                                  itemValue="#{false}"/>
+                </p:selectOneRadio>
+                <p:inputText value="#{checkerCon.coordinate.x1}"
+                             size="1"
+                             style="width: 30px"/>°
+                <p:inputText value="#{checkerCon.coordinate.x2}"
+                             size="1"
+                             style="width: 30px"/>'
+                <p:inputText value="#{checkerCon.coordinate.x3}"
+                             size="1"
+                             style="width: 60px"/>"
+            </h:panelGrid>
+            <p:message for="gridcoordinate"/>
+            <p:outputLabel value="#{checkerCon.message}"/><br/>
+            <p:outputPanel rendered="#{checkerCon.isSolved}">
+                <p:outputLabel value="Nachricht des Cache-Erstellers:" /><br/>
+                <p:outputLabel value="#{checkerCon.cache.message}"
+                               style="white-space: pre-wrap"/><br/>
+                <p:gmap center="#{checkerCon.coordinate.doubleCoordinateY}, #{checkerCon.coordinate.doubleCoordinateX}"
+                        zoom="15"
+                        type="HYBRID"
+                        style="width:600px;height:400px"
+                        model="#{checkerCon.solvedModel}"/>
+            </p:outputPanel>
+            <p:outputPanel rendered="#{checkerCon.showAttemptHint}">
+                <p:outputLabel value="Du hast schon viele Fehlversuche. Hier ein Hinweis vom Ersteller:"/><br/>
+                <p:outputLabel value="#{checkerCon.attemptHint}" /><br/>
+            </p:outputPanel>
+            <p:commandButton value="Check"
+                             action="#{checkerCon.check()}"
+                             ajax="#{false}"/><br/>
+            <p:outputLabel value="#{checkerCon.infoTries}" />
+        </h:form>
+
+    </h:body>
+</html>

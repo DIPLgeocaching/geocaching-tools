@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <h:body>
+        <ui:composition template="/WEB-INF/template.xhtml">
+            <ui:define name="topBar">
+                <h1>Deine Registrierten Caches</h1>
+                <h:outputText value="Du besitzt momentan keine Caches."
+                              rendered="#{registedCacheCon.noCaches}"/>
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form>
+
+                    <p:dataTable value="#{registedCacheCon.caches}"
+                                 var="cache"
+                                 rendered="#{!registedCacheCon.noCaches}"
+                                 filteredValue="#{registedCacheCon.filteredCaches}"
+                                 emptyMessage="Keine Caches mit entspraechenden Kritaerien"
+                                 style="margin-left: 30px; margin-right: 30px">
+
+                        <p:column headerText="Status"
+                                  sortBy="#{cache.status}"
+                                  style="width: 50px">
+                            <p:commandLink styleClass="ui-icon ui-icon-bullet"
+                                           rendered="#{cache.status}" />
+                            <p:commandLink styleClass="ui-icon ui-icon-radio-off"
+                                           rendered="#{!cache.status}" />
+                        </p:column>
+
+                        <p:column headerText="Wegpunkt"
+                                  sortBy="#{cache.gcWaypoint}"
+                                  filterBy="#{cache.gcWaypoint}"
+                                  filterMatchMode="startsWith"
+                                  style="width:125px">
+                            <p:outputLabel value="#{cache.gcWaypoint}"/>
+                        </p:column>
+
+                        <p:column headerText="Name"
+                                  sortBy="#{cache.gcName}"
+                                  filterBy="#{cache.gcName}"
+                                  filterMatchMode="contains">
+                            <p:outputLabel value="#{cache.gcName}"/>
+                        </p:column>
+                        <p:column style="width: 40px">
+                            <p:commandLink action="#{statsCon.setStatsCache(cache)}"
+                                           styleClass="ui-icon ui-icon-signal"
+                                           ajax="#{false}">
+                            </p:commandLink>
+                        </p:column>
+                        <p:column style="width: 40px">
+                            <p:commandLink action="#{changeCacheCon.setChangingCache(cache)}"
+                                           styleClass="ui-icon ui-icon-pencil"
+                                           ajax="#{false}">
+                            </p:commandLink>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+                <br/>
+                <h:form>
+                    <p:button value="Neuen Cache anlegen"
+                              outcome="createNewCache"
+                              style="margin-left: 30px;"/>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+
+    </h:body>
+</html>
+
