@@ -20,7 +20,6 @@ import javax.servlet.http.HttpSession;
 import org.geocachingtools.geoui.database.Dao;
 import org.geocachingtools.geoui.model.Cache;
 import org.geocachingtools.geoui.model.Gctuser;
-import org.geocachingtools.geoui.model.SessionAttempt;
 
 /**
  *

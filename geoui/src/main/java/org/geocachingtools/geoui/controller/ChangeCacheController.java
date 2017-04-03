@@ -94,11 +94,13 @@ public class ChangeCacheController implements Serializable {
         this.attemptHint = new Hint(1, "", cache);
     }
     
-    public void removeCache() {
+    public String removeCache() {
+        System.out.println("hallo");
         dao.deleteCache(cache);
         List<Cache> caches = con.getCaches();
         caches.remove(cache);
         con.setCaches(caches);
+        return "registeredCaches";
     }
     
     /*

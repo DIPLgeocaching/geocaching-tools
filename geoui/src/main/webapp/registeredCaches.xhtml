@@ -21,11 +21,12 @@
                                  var="cache"
                                  rendered="#{!registedCacheCon.noCaches}"
                                  filteredValue="#{registedCacheCon.filteredCaches}"
-                                 emptyMessage="Keine Caches mit entspraechenden Kritaerien">
+                                 emptyMessage="Keine Caches mit entspraechenden Kritaerien"
+                                 style="margin-left: 30px; margin-right: 30px">
 
                         <p:column headerText="Status"
                                   sortBy="#{cache.status}"
-                                  style="width: 25px">
+                                  style="width: 50px">
                             <p:commandLink styleClass="ui-icon ui-icon-bullet"
                                            rendered="#{cache.status}" />
                             <p:commandLink styleClass="ui-icon ui-icon-radio-off"
@@ -46,13 +47,13 @@
                                   filterMatchMode="contains">
                             <p:outputLabel value="#{cache.gcName}"/>
                         </p:column>
-                        <p:column style="width: 10px">
+                        <p:column style="width: 40px">
                             <p:commandLink action="#{statsCon.setStatsCache(cache)}"
                                            styleClass="ui-icon ui-icon-signal"
                                            ajax="#{false}">
                             </p:commandLink>
                         </p:column>
-                        <p:column style="width: 10px">
+                        <p:column style="width: 40px">
                             <p:commandLink action="#{changeCacheCon.setChangingCache(cache)}"
                                            styleClass="ui-icon ui-icon-pencil"
                                            ajax="#{false}">
@@ -63,7 +64,8 @@
                 <br/>
                 <h:form>
                     <p:button value="Neuen Cache anlegen"
-                              outcome="createNewCache"/>
+                              outcome="createNewCache"
+                              style="margin-left: 30px;"/>
                 </h:form>
             </ui:define>
 

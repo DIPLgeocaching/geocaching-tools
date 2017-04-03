@@ -354,7 +354,6 @@ public class Dao {
         Session ses = HibernateUtil.getSessionFactory().openSession();
         Transaction tx;
         Cache cache = new Cache();
-        System.out.println(link);
         
         try {
             tx = ses.beginTransaction();

@@ -7,7 +7,7 @@ package org.geocachingtools.geoui.controller;
 
 import java.io.Serializable;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -20,13 +20,12 @@ import org.geocachingtools.geoui.model.Cache;
  * @author Thomas
  */
 @Named(value = "gateway")
-@RequestScoped
+@SessionScoped
 public class GatewayChecker implements Serializable {
 
     //Are need for the Database connection
     private final HttpSession s = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
     private final Dao dao = (Dao) s.getAttribute("dao");
-
     @Inject
     private CheckerController con;
 

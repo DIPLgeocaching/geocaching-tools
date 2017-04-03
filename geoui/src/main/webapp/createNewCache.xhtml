@@ -13,88 +13,87 @@
             </ui:define>
 
             <ui:define name="content">
+                    <h:form id="gridform" style="margin-left: 30px">
+                        <p:growl id="successgrowl" for="successgrowl" />
+                        <p:message id="successmess" for="successmess"/>
+                        <h:panelGrid id="grid"
+                                     columns="3"
+                                     cellpadding="5">
 
-                <h:form id="gridform">
-                    <p:growl id="successgrowl" for="successgrowl" />
-                    <p:message id="successmess" for="successmess"/>
-                    <h:panelGrid id="grid"
-                                 columns="3"
-                                 cellpadding="5">
+                            <p:outputLabel for="waypoint"
+                                           value="Wegpunkt:"/>
+                            <p:inputText id="waypoint"
+                                         value="#{newcache.cache.gcWaypoint}"
+                                         required="ture"
+                                         style="width: 100px">
+                                <f:validator validatorId="org.org.geocachingtools.geoui.validator.WaypointValidator"/>
+                            </p:inputText>
+                            <p:message for="waypoint"/>
 
-                        <p:outputLabel for="waypoint"
-                                       value="Wegpunkt:"/>
-                        <p:inputText id="waypoint"
-                                     value="#{newcache.cache.gcWaypoint}"
-                                     required="ture"
-                                     style="width: 100px">
-                            <f:validator validatorId="org.org.geocachingtools.geoui.validator.WaypointValidator"/>
-                        </p:inputText>
-                        <p:message for="waypoint"/>
+                            <p:outputLabel for="name"
+                                           value="Cache Name:"/>
+                            <p:inputText id="name"
+                                         value="#{newcache.cache.gcName}"
+                                         style="width: 300px"
+                                         validatorMessage="Wert erforderlich. Bitte Maximal 30 Zeichen.">
+                                <f:validateLength minimum="1" maximum="30"/>
+                            </p:inputText>
+                            <p:message for="name"/>
 
-                        <p:outputLabel for="name"
-                                       value="Cache Name:"/>
-                        <p:inputText id="name"
-                                     value="#{newcache.cache.gcName}"
-                                     style="width: 300px">
-                            <f:validateLength maximum="30"/>
-                        </p:inputText>
-                        <p:message for="name"/>
+                            <p:outputLabel value="Koordinate:"/>
+                            <h:panelGrid id="grid_coordinate"
+                                         columns="7"
+                                         binding="#{newcache.grid}">
+                                <p:selectOneRadio value="#{newcache.coordinate.n}">
+                                    <f:selectItem itemLabel="N" 
+                                                  itemValue="#{true}"/>
+                                    <f:selectItem itemLabel="S"
+                                                  itemValue="#{false}"/>
+                                </p:selectOneRadio>
+                                <p:inputText value="#{newcache.coordinate.y1}"
+                                             size="1"
+                                             style="width: 30px; margin-left: 90px"/>°
+                                <p:inputText value="#{newcache.coordinate.y2}"
+                                             size="1"
+                                             style="width: 30px"/>'
+                                <p:inputText value="#{newcache.coordinate.y3}"
+                                             size="1"
+                                             style="width: 60px"/>"
+                                <p:selectOneRadio value="#{newcache.coordinate.e}">
+                                    <f:selectItem itemLabel="E"
+                                                  itemValue="#{true}" />
+                                    <f:selectItem itemLabel="W"
+                                                  itemValue="#{false}"/>
+                                </p:selectOneRadio>
+                                <p:inputText value="#{newcache.coordinate.x1}"
+                                             size="1"
+                                             style="width: 30px; margin-left: 90px"/>°
+                                <p:inputText value="#{newcache.coordinate.x2}"
+                                             size="1"
+                                             style="width: 30px"/>'
+                                <p:inputText value="#{newcache.coordinate.x3}"
+                                             size="1"
+                                             style="width: 60px"/>"
+                            </h:panelGrid>
+                            <p:message for="grid_coordinate"/>
 
-                        <p:outputLabel value="Koordinate:"/>
-                        <h:panelGrid id="grid_coordinate"
-                                     columns="7"
-                                     cellpadding="0"
-                                     binding="#{newcache.grid}">
-                            <p:selectOneRadio value="#{newcache.coordinate.n}">
-                                <f:selectItem itemLabel="N" 
-                                              itemValue="#{true}"/>
-                                <f:selectItem itemLabel="S"
-                                              itemValue="#{false}"/>
-                            </p:selectOneRadio>
-                            <p:inputText value="#{newcache.coordinate.y1}"
-                                         size="1"
-                                         style="width: 30px"/>°
-                            <p:inputText value="#{newcache.coordinate.y2}"
-                                         size="1"
-                                         style="width: 30px"/>'
-                            <p:inputText value="#{newcache.coordinate.y3}"
-                                         size="1"
-                                         style="width: 60px"/>"
-                            <p:selectOneRadio value="#{newcache.coordinate.e}">
-                                <f:selectItem itemLabel="E"
-                                              itemValue="#{true}" />
-                                <f:selectItem itemLabel="W"
-                                              itemValue="#{false}"/>
-                            </p:selectOneRadio>
-                            <p:inputText value="#{newcache.coordinate.x1}"
-                                         size="1"
-                                         style="width: 30px"/>°
-                            <p:inputText value="#{newcache.coordinate.x2}"
-                                         size="1"
-                                         style="width: 30px"/>'
-                            <p:inputText value="#{newcache.coordinate.x3}"
-                                         size="1"
-                                         style="width: 60px"/>"
+                            <p:outputLabel value="Mitteilung:"/>
+                            <p:inputTextarea value="#{newcache.cache.message}"
+                                             style="width: 300px"/>
+                            <br/>
                         </h:panelGrid>
-                        <p:message for="grid_coordinate"/>
 
-                        <p:outputLabel value="Mitteilung:"/>
-                        <p:inputTextarea value="#{newcache.cache.message}"
-                                         style="width: 300px"/>
-                        <br/>
-                    </h:panelGrid>
+                        <p:outputLabel value="Hinweise kannst du bei der Bearbeitung deiner Caches hinzufügen."/><br/>
 
-                    <p:outputLabel value="Hinweise kannst du bei der Bearbeitung deiner Caches hinzufügen."/><br/>
-
-                    <p:commandButton action="#{newcache.saveCache()}"
-                                     value="Speichern"
-                                     update="gridform"/>
-                </h:form>
-                <h:form>
-                    <p:commandButton action="registeredCaches"
-                                     value="Abbrechen" />
-                </h:form>            </ui:define>
-
+                        <p:commandButton action="#{newcache.saveCache()}"
+                                         value="Speichern"
+                                         update="gridform"/>
+                    </h:form>
+                <h:form style="margin-left: 30px">
+                        <p:commandButton action="registeredCaches"
+                                         value="Abbrechen" />
+                    </h:form>            
+            </ui:define>
         </ui:composition>
 
     </h:body>

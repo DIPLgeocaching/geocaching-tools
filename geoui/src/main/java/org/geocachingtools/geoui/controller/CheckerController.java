@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -40,7 +40,7 @@ import org.primefaces.model.map.Marker;
  * @author Schule
  */
 @Named(value = "checkerCon")
-@RequestScoped
+@SessionScoped
 public class CheckerController implements Serializable {
 
     //Are need for the Database connection
@@ -78,7 +78,6 @@ public class CheckerController implements Serializable {
 
     public void setCurrentCache(Cache cache) {
         refresh();
-        System.out.println("hi");
         this.cache = cache;
         this.key = cache.getCheckerlink();
     }
@@ -100,7 +99,7 @@ public class CheckerController implements Serializable {
 
         if (check.getSum() < 6) {
             infoTries = "Du hast noch " + (5 - check.getSum())
-                    + " Verscuhe über. Um " + df.format(check.getCal().getTime())
+                    + " Versuche über. Um " + df.format(check.getCal().getTime())
                     + " bekommst du fünf neue Versuche.";
             return true;
         } else {
