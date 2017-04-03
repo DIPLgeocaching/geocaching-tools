@@ -103,8 +103,8 @@ public class CheckerController implements Serializable {
                     + " bekommst du fünf neue Versuche.";
             return true;
         } else {
-            infoTries = "Du hast alle Versuche verbraucht. Warte bis " + df.format(check.getCal().getTime())
-                    + ". Dort bekommst du fünf neue Versuche.";
+            infoTries = "Du hast alle Versuche verbraucht. Um " + df.format(check.getCal().getTime())
+                    + " bekommst du fünf neue Versuche.";
             return false;
         }
     }
