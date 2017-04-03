@@ -27,7 +27,13 @@ and open the template in the editor.
                 </div>
             </ui:define>
             <ui:define name="topBar">
-                <c:if test="#{not userCon.activated}">
+                <c:if test="#{not userCon.loggedIn}">
+                    <h:form>
+                        <h:commandButton action="#{userCon.initAuth('google')}" value="Login via Google"/>
+                        <h:commandButton action="#{userCon.initAuth('github')}" value="Login via Github"/>
+                    </h:form>
+                </c:if>
+                <c:if test="#{not userCon.activated and userCon.loggedIn}">
                     <div class="container">
 
                         <div class="row">

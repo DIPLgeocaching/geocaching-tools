@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <f:view locale="#{localeCon.locale}">
 
         <h:head>
@@ -52,7 +53,7 @@
                 <div class="infofield" style="left:50px;background-color: #{userCon.activated ? 'green':'red'};">
                     activated
                 </div>
-                <div class="infofield" style="left:100px;" onclick="window.location='user.xhtml'">
+                <div class="infofield" style="left:100px;" onclick="window.location = 'user.xhtml'">
                     Go To User
                 </div>
             </div>
@@ -89,10 +90,12 @@
                             <h:form>
                                 <h:commandButton action="#{localeCon.setLocaleEN()}"  image="res\flags\eng-flag.ico" style="height: 30px; width: 35px; margin-top: 60px"/>
                                 <h:commandButton action="#{localeCon.setLocaleDE()}"  image="res\flags\ger-flag.ico" style="height: 30px; width: 35px"/>
-                                <img src="#{userCon.userdata.pictureUrl}" style="width: 45px; height: 45px;border-radius: 50%;"/>
-                                <!--<a href="#"><h:outputText value="#{i18n['logout']}" class="btn btn-primary" rendered="#{userCon.loggedIn}"/></a>-->
-                                <!--<a href="#"><h:outputText value="{i18n['register']}" class="btn btn-primary" rendered="{not userCon.loggedIn}"/></a>-->
-                            </h:form> 
+                                <c:if test="#{userCon.loggedIn}">
+                                    <img src="#{userCon.userdata.pictureUrl}" style="width: 45px; height: 45px;border-radius: 50%;"/>
+                                    <h:commandButton action="#{userCon.logoutRequest()}" value="Logout"/>
+                                </c:if>
+                            </h:form>
+
                         </div>
                     </div>
                 </div>
