@@ -64,6 +64,8 @@ public class UserController implements Serializable {
      * über mehrere requests hier gemerkt werden muss)
      */
     private AuthProvider provider;
+    
+    
 
     @PostConstruct
     public void init() {
@@ -127,6 +129,7 @@ public class UserController implements Serializable {
     public Gctusr getGctusr() {
         return user;
     }
+
     public OAuthData getUser() {
         return user != null ? user.getOauth() : null;
     }
@@ -141,6 +144,13 @@ public class UserController implements Serializable {
 
     public String getKey() {
         return key;
+    }
+
+    public String getMessage() {
+        ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+        String msg = (String) context.getSessionMap().remove("message");
+        System.out.println(msg);
+        return msg;
     }
 
 }

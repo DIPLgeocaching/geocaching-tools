@@ -35,6 +35,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.geocachingtools.geoui.controller.UserController;
 
 /**
@@ -63,10 +64,14 @@ public class LoginFilter implements Filter {
         String loginURL = request.getContextPath() + "/home.xhtml";
         boolean loggedIn = controller.isLoggedIn();
         boolean activated = controller.isActivated();
-
+        String message = !loggedIn ? ("Bitte zuerst Anmelden") : (!activated ? "Bitte Account aktivieren" : "");
+            HttpSession session = request.getSession();
+        
         if (!loggedIn || !activated) {
+            session.setAttribute("message", message);
             response.sendRedirect(loginURL);
         } else {
+            session.setAttribute("message", "");
             chain.doFilter(servletRequest, response);
         }
     }
