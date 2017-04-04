@@ -12,14 +12,27 @@
             <ui:define name="content">
                 <div class="container">
                     <div class="row">
-                        <h2>Settings</h2>
                         <div id="debug"></div>
-                        <h2>Controll</h2>
+                        <h2>3D Reconstruction</h2>
+                        <div class="progress">
+                            <div id="progressBar" class="progress-bar" role="progressbar"
+                                 aria-valuenow="0"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100"
+                                 style="width: 0%;"></div>
+                        </div>
                         <canvas id="mainCanvas" class="stereocanvas" width="800" height="400" style="z-index: 1;"/>
 
                     </div>
                 </div>
                 <style>
+                    .progress .progress-bar {
+                        -webkit-transition: none;
+                        -moz-transition: none;
+                        -ms-transition: none;
+                        -o-transition: none;
+                        transition: none;
+                    }
                 </style>
                 <script src="res/js/stereo.js"/>
                 <script src="res/js/paint.js"/>
@@ -41,39 +54,50 @@
                         var img = new Image();
                         var sizeChanged = true;
                         var canvas = document.getElementById('mainCanvas');
+                        var settings = JSON.parse(Base64.decode(gup('q')));
+                        var progressBar = document.getElementById('progressBar');
 
-                        var doit_sub = function (sourceImg, targetCtx,tresh, gauss = 2, index) {
-                            
+                        var doit_sub = function (sourceImg, targetCtx, mn, mx, tresh, gauss = 2, c, index, imageData) {
+                            var ctx = c.getContext('2d');
+                            ctx.globalCompositeOperation = 'source-over';
+                            ctx.drawImage(sourceImg, 0, 0, c.width, c.height);
+                            ctx.globalCompositeOperation = 'difference';
+                            ctx.drawImage(sourceImg, index, 0, c.width, c.height);
+                            var pixels = ctx.getImageData(0, 0, sourceImg.width, sourceImg.height);
+                            for (var h = 0; h < gauss; h += 1)
+                                pixels = window.stereo.filterGaussian(pixels, index);
+                            var d = pixels.data;
+                            var color = Math.floor(255 * (index - mn) / (mx - mn));
+                            var progress = 100 - Math.floor(100 * (index - mn) / (mx - mn));
+
+                            progressBar.style.width = progress + '%';
+                            progressBar.setAttribute('aria-valuenow', progress);
+
+                            for (var x = index; x < pixels.width; x++) {
+                                for (var y = 0; y < pixels.height; y++) {
+                                    var j = (y * pixels.width + x) * 4;
+                                    var avg = (d[j] + d[j + 1] + d[j + 2]) / 3;
+                                    if (avg < tresh) {
+                                        imageData.data[j] = color;
+                                        imageData.data[j + 3] = 255;
+                                    }
+                                }
+                            }
+                            console.log("fin " + index + " color " + color);
+                                targetCtx.putImageData(imageData, 0, 0);
+                            if (index <= mn) {
+                            } else {
+                                setTimeout(function () {
+                                    doit_sub(sourceImg, targetCtx, mn, mx, tresh, gauss, c, index - 1, imageData);
+                                }, 10);
+                        }
                         };
                         var doit = function (sourceImg, targetCtx, mn, mx, tresh, gauss = 2) {
                             var c = document.createElement('canvas');
                             c.width = sourceImg.width;
                             c.height = sourceImg.height;
                             var imageData = targetCtx.getImageData(0, 0, sourceImg.width, sourceImg.height);
-                            for (var i = mx; i >= mn; i -= 1) {
-                                var ctx = c.getContext('2d');
-                                ctx.globalCompositeOperation = 'source-over';
-                                ctx.drawImage(sourceImg, 0, 0, c.width, c.height);
-                                ctx.globalCompositeOperation = 'difference';
-                                ctx.drawImage(sourceImg, i, 0, c.width, c.height);
-                                var pixels = ctx.getImageData(0, 0, sourceImg.width, sourceImg.height);
-                                for (var h = 0; h < gauss; h += 1)
-                                    pixels = window.stereo.filterGaussian(pixels, i);
-                                var d = pixels.data;
-                                var color = Math.floor(255 * (i - mn) / (mx - mn));
-                                for (var x = i; x < pixels.width; x++) {
-                                    for (var y = 0; y < pixels.height; y++) {
-                                        var j = (y * pixels.width + x) * 4;
-                                        var avg = (d[j] + d[j + 1] + d[j + 2]) / 3;
-                                        if (avg < tresh) {
-                                            imageData.data[j] = color;
-                                            imageData.data[j + 3] = 255;
-                                        }
-                                    }
-                                }
-                                console.log("fin " + i + " color " + color);
-                            }
-                            targetCtx.putImageData(imageData, 0, 0);
+                            doit_sub(sourceImg, targetCtx, mn, mx, tresh, gauss, c, mx, imageData);
                         };
 
                         /*
@@ -95,10 +119,10 @@
                             ctx.clearRect(0, 0, canvas.width, canvas.height);
                             ctx.fillStyle = 'black';
                             ctx.fillRect(0, 0, canvas.width, canvas.height);
-                            var settings = JSON.parse(Base64.decode(gup('q')));
+                            console.log(settings);
 //                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                             setTimeout(function () {
-                                doit(img, ctx, settings.from, settings.to, settings.url);//stereo-3d.jpg
+                                doit(img, ctx, settings.from, settings.to, 20);//stereo-3d.jpg
 //                                doit(img, ctx, 60, 100, 20);//test.jpg
 //                                doit(img, ctx, 240, 280, 20);//what.png
 //                                doit(img, ctx, 60, 100, 5);
@@ -113,7 +137,7 @@
                         };
                         img = new Image();
                         img.addEventListener('load', onimgload, false);
-                        img.src = 'http://localhost:8080/geoui/res/stereo-3d.jpg';
+                        img.src = settings.url;
                     };
                     //]]>
                 </script>

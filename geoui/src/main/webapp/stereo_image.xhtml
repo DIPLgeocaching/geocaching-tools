@@ -14,7 +14,7 @@
                     <div class="row">
                         <h2>Settings</h2>
                         <div>
-                            <input id="loadFromUrlInput" type="text" value="res/stereo-3d.jpg"/>
+                            <input id="loadFromUrlInput" type="text" value="res/test.jpg"/>
                             <input id="loadFromUrlButton" type="button" value="Load from URL"/>
                         </div>
                         <div id="debug"></div>
@@ -66,9 +66,9 @@
                 <script src="res/js/base64.js"/>
                 <script>
                     //<![CDATA[
-                    
+
                     window.onload = function () {
-                        
+
                         /* get elements */
                         var img = new Image();
                         var canvasParent = document.getElementById('canvasParent');
@@ -81,6 +81,8 @@
                         var renderButton = document.getElementById('renderButton');
                         var sizeChanged = true;
                         var graphData = [];
+                        var from = 0;
+                        var to = 0;
 
                         var slider = new Slider('#recControll', {
                             focus: true
@@ -91,21 +93,27 @@
                             slider = new Slider('#recControll', {
                                 min: 0,
                                 max: mx,
-                                value: (modeButton.checked) ? [1, mx] : 1,
+                                value: (modeButton.checked) ? [from, mx] : from,
                                 focus: true
                             });
                             slider.on('change', function (value) {
                                 console.log(value);
-                                //single mode
-                                if (value.oldValue != value.newValue) {
-                                    render(value.newValue);
-                                }
-                                //multi mode
-                                if (value.oldValue[0] !== value.newValue[0]) {
-                                    render(value.newValue[0]);
-                                }
-                                if (value.oldValue[1] !== value.newValue[1]) {
-                                    render(value.newValue[1]);
+                                if (!modeButton.checked) {
+                                    //single mode
+                                    if (value.oldValue != value.newValue) {
+                                        render(value.newValue);
+                                    }
+                                    from = value.newValue;
+                                } else {
+                                    //multi mode
+                                    if (value.oldValue[0] !== value.newValue[0]) {
+                                        render(value.newValue[0]);
+                                    }
+                                    if (value.oldValue[1] !== value.newValue[1]) {
+                                        render(value.newValue[1]);
+                                    }
+                                    from = Math.min(value.newValue[0], value.newValue[1]);
+                                    to = Math.max(value.newValue[0], value.newValue[1]);
                                 }
                             });
                         };
@@ -129,9 +137,9 @@
                         });
                         renderButton.addEventListener('click', function () {
                             var settings = {
-                                from: 0,
-                                to: 0,
-                                url: ""
+                                from: from,
+                                to: to,
+                                url: img.src
                             };
                             var json = JSON.stringify(settings);
                             //var base = new Buffer(json).toString("base64");
@@ -204,6 +212,7 @@
                             //it is important that the image is drawn in its original size on the canvas
                             //otherwise some stereo images do not cancel themselve out correctly 
                             //because of some default scalation filtering operations
+                            console.log(offset);
                             ctx.drawImage(img, 0, 0, img.width, img.height);
                             ctx.globalCompositeOperation = 'difference';
                             ctx.drawImage(img, offset, 0, img.width, img.height);
@@ -291,9 +300,9 @@
                             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                             setTimeout(function () {
                                 graphData = normalizeData(generateGraphData(canvas));
-                                render();
+                                render(from);
                             }, 0);
-                            render();
+                            render(from);
                         };
                         prec.addEventListener("mouseup", resetPrec, false);
 
