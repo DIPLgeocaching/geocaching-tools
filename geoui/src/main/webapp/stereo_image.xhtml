@@ -11,7 +11,7 @@
 
             <ui:define name="content">
                 <div class="container">
-                    <div class="row">
+                    <div id="mainRow" class="row">
                         <h2>Settings</h2>
                         <div>
                             <input id="loadFromUrlInput" type="text" value="res/test.jpg"/>
@@ -29,12 +29,8 @@
                             <input id="renderButton" type="button" value="Render 3d Reconstruction" style="display:none;"/>
                         </div>
                         <h2>Controll</h2>
-                        <div  style="overflow: hidden; height: 0px;">
-                            <input id="mainControll" type="range"/>
-                            <input id="precisionControll" type="range"/>
-                        </div>
                         <canvas id="graphCanvas" width="800" height="50"/>
-                        <div>
+                        <div  id="recControllParent" style="display: none;">
                             <input id="recControll" type="text" data-slider-value="[0,0]"/>
                         </div>
                         <div id="canvasParent">
@@ -75,9 +71,8 @@
                         var canvas = document.getElementById('mainCanvas');
                         var graph = document.getElementById('graphCanvas');
                         var overlay = document.getElementById('overlayCanvas');
-                        var main = document.getElementById('mainControll');
-                        var prec = document.getElementById('precisionControll');
                         var modeButton = document.getElementById('modeButton');
+                        var mainRow = document.getElementById('mainRow');
                         var renderButton = document.getElementById('renderButton');
                         var sizeChanged = true;
                         var graphData = [];
@@ -128,7 +123,7 @@
                             window.paint.setCurrentTool('pensil');
                         }, false);
                         modeButton.addEventListener('click', function (evt) {
-                            resetSlider(main.clientWidth, img.width);
+                            resetSlider(canvas.clientWidth, img.width);
                             if (modeButton.checked) {
                                 renderButton.style.display = 'inline-block';
                             } else {
@@ -197,12 +192,6 @@
                         };
                         downloadButton.addEventListener('click', download, false);
 
-                        /* initialize range inputs */
-                        main.min = 0;
-                        prec.max = +20;
-                        prec.min = -20;
-                        prec.value = 0;
-
                         /*
                          * This functions renders image two times shifted by 'diff' onto the provided context
                          * @param {CanvasRenderingContext2D} ctx 
@@ -250,13 +239,11 @@
                          * Updates the size's of the elements
                          */
                         var updateCanvas = function () {
-                            // update the max value of the main range input
-                            main.max = img.width;
                             // update height and width for the canvas
                             if (sizeChanged) {
-                                graph.width = canvas.width = overlay.width = main.clientWidth;
+                                graph.width = canvas.width = overlay.width = mainRow.clientWidth;
                                 canvas.height = overlay.height = canvas.width * (img.height / img.width);
-                                resetSlider(main.clientWidth, img.width);
+                                resetSlider(canvas.clientWidth, img.width);
 
                                 sizeChanged = false;
                             }
@@ -284,12 +271,6 @@
 
                         };
 
-
-                        var resetPrec = function () {
-                            main.value = parseInt(parseInt(main.value) + parseInt(prec.value));
-                            prec.value = 0;
-                        };
-
                         var onimgload = function () {
 
                             var canvas = document.createElement('canvas');
@@ -301,10 +282,10 @@
                             setTimeout(function () {
                                 graphData = normalizeData(generateGraphData(canvas));
                                 render(from);
+                                document.getElementById('recControllParent').style = "display:'block';";
                             }, 0);
                             render(from);
                         };
-                        prec.addEventListener("mouseup", resetPrec, false);
 
                         document.getElementById('loadFromUrlButton').addEventListener('click', function () {
                             img = new Image();
