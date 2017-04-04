@@ -62,12 +62,14 @@
                              resizableColumns="true"
                              liveResize="true"
                              reflow="true"
+                             sortOrder="descendending"
                              style="padding: auto;
                              margin:auto; 
                              width: 50%;
                              table-layout: fixed;">
                     <p:column selectionMode="multiple" style="width:40px;text-align:center"/>
-                    <p:column headerText="#{i18n['methods']}" style="width:200px">
+                    <p:column headerText="#{i18n['methods']}" style="width:200px"
+                              sortBy="#{textCon.results[method].relevance}">
                         <p:outputPanel style="display: inline;" rendered="#{method.requiresPassword}">
                             <i title="#{i18n['passwordRequired']}" class="fa fa-fw fa-key"></i>
                         </p:outputPanel>

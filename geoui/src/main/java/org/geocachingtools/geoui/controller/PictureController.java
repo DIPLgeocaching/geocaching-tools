@@ -126,7 +126,7 @@ public class PictureController implements Serializable {
 
     public void submit() throws IOException {
         if (methodsToUse.isEmpty()) {
-            FacesMessage message = new FacesMessage("Es muss ein Verfahren ausgwählt werden!");
+            FacesMessage message = new FacesMessage("Es muss ein Verfahren ausgwaehlt werden!");
             FacesContext.getCurrentInstance().addMessage(pwd.getClientId(FacesContext.getCurrentInstance()), message);
         } else {
             results.clear();
