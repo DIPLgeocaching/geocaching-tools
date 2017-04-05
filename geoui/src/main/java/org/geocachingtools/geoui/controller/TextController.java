@@ -41,7 +41,7 @@ public class TextController implements Serializable {
     private boolean pwdRequired = false;
 
     @Inject
-    private LocaleController localecon;
+    private LocaleController localeCon;
 
     @PostConstruct
     public void init() {
@@ -71,7 +71,7 @@ public class TextController implements Serializable {
 
     public void submit() {
         if (methodsToUse.isEmpty()) {
-            FacesMessage message = new FacesMessage("Es muss ein Verfahren ausgwählt werden!");
+            FacesMessage message = new FacesMessage(localeCon.getI18n("methodRequired"));
             FacesContext.getCurrentInstance().addMessage(pwd.getClientId(FacesContext.getCurrentInstance()), message);
         } else {
             results.clear();
@@ -100,7 +100,7 @@ public class TextController implements Serializable {
                                         cipher,
                                         method,
                                         passwords,
-                                        localecon.getLocale()
+                                        localeCon.getLocale()
                                 )
                         );
                         try {
@@ -115,11 +115,11 @@ public class TextController implements Serializable {
                     methodsToUse.clear();
                 }
             } else {
-                FacesMessage message = new FacesMessage("Es muss ein Ciphertext eingegeben werden!");
+                FacesMessage message = new FacesMessage(localeCon.getI18n("cipherRequired"));
                 FacesContext.getCurrentInstance().addMessage(pwd.getClientId(FacesContext.getCurrentInstance()), message);
             }
             if (pwdRequired) {
-                FacesMessage message = new FacesMessage("Eines der ausgewaehlten Verfahren verlangen ein Passwort!");
+                FacesMessage message = new FacesMessage(localeCon.getI18n("passwordRequired"));
                 FacesContext.getCurrentInstance().addMessage(pwd.getClientId(FacesContext.getCurrentInstance()), message);
                 pwdRequired = false;
             }

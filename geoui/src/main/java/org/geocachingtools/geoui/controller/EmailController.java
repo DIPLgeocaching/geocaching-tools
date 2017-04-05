@@ -34,6 +34,7 @@ import java.util.Random;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -54,6 +55,9 @@ public class EmailController implements Serializable {
      */
     private String messageToSent;
     private String emailAdresseString;
+    
+    @Inject
+    private LocaleController localeCon;
 
     @PostConstruct
     public void init() {
@@ -91,6 +95,7 @@ public class EmailController implements Serializable {
 
         Session session = Session.getInstance(props,
                 new javax.mail.Authenticator() {
+            @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(username, password);
             }
@@ -112,11 +117,11 @@ public class EmailController implements Serializable {
                 Transport.send(message);
                 System.out.println("Email Successfull sent");
             }
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Email erfolgreich gesendet"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(localeCon.getI18n("emailSent")));
             emailAdresseString = "";
             messageToSent = "";
         } catch (MessagingException e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Email senden gescheitert, Schule: Port nicht offen, Email Adresse nicht gefunden"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(localeCon.getI18n("emailError")));
             messageToSent = "";
             System.out.println("Fehler im EmailCon sendTLS");
             // throw new RuntimeException(e);
