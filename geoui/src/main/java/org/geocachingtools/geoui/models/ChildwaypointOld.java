@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.geocachingtools.geoui.model;
+package org.geocachingtools.geoui.models;
 
 import java.io.Serializable;
 import javax.persistence.CascadeType;
@@ -22,8 +22,8 @@ import javax.persistence.Table;
  * @author Thomas
  */
 @Entity
-@Table(name = "childwaypoint")
-public class Childwaypoint implements Serializable{
+@Table(name = "childwaypointold")
+public class ChildwaypointOld implements Serializable{
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,16 +40,16 @@ public class Childwaypoint implements Serializable{
     
     @ManyToOne(optional=false, cascade = CascadeType.ALL)
     @JoinColumn(name = "child_parent_id")
-    private Cache parentCache;
+    private CacheOld parentCache;
 
     /*
     Constructor
      */
     
-    public Childwaypoint() {
+    public ChildwaypointOld() {
     }
 
-    public Childwaypoint(String text, String cooridnateX, String cooridnateY, Cache parentCache) {
+    public ChildwaypointOld(String text, String cooridnateX, String cooridnateY, CacheOld parentCache) {
         this.text = text;
         this.cooridnateX = cooridnateX;
         this.cooridnateY = cooridnateY;
@@ -92,11 +92,11 @@ public class Childwaypoint implements Serializable{
         this.cooridnateY = cooridnateY;
     }
 
-    public Cache getParentCache() {
+    public CacheOld getParentCache() {
         return parentCache;
     }
 
-    public void setParentCache(Cache parentCache) {
+    public void setParentCache(CacheOld parentCache) {
         this.parentCache = parentCache;
     }
 }

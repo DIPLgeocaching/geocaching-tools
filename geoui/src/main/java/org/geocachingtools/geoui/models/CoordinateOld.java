@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.geocachingtools.geoui.model;
+package org.geocachingtools.geoui.models;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -17,7 +17,7 @@ import java.util.Arrays;
  *
  * @author Thomas
  */
-public class Coordinate {
+public class CoordinateOld {
 
     private boolean n;// N/S
     private boolean e;// E/W
@@ -81,10 +81,10 @@ public class Coordinate {
     Constructor
     */
     
-    public Coordinate() {
+    public CoordinateOld() {
     }
 
-    public Coordinate(boolean n, boolean e, int y1, int y2, int y3, int x1, int x2, int x3) {
+    public CoordinateOld(boolean n, boolean e, int y1, int y2, int y3, int x1, int x2, int x3) {
         this.n = n;
         this.e = e;
         this.y1 = y1;

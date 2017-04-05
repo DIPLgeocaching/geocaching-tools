@@ -24,7 +24,7 @@ import org.geocachingtools.geoui.auth.AuthProvider;
 import org.geocachingtools.geoui.auth.UserData;
 import org.geocachingtools.geoui.auth.provider.GithubAuthProvider;
 import org.geocachingtools.geoui.auth.provider.GoogleAuthProvider;
-import org.geocachingtools.geoui.model.Gctusr;
+import org.geocachingtools.geoui.model.Gctuser;
 import org.geocachingtools.geoui.model.Invitekey;
 import org.geocachingtools.geoui.util.Dao;
 
@@ -51,7 +51,7 @@ public class UserController implements Serializable {
      * The persistent part of the user (id, provider, access-token,
      * invite-key-validation)
      */
-    private Gctusr user;
+    private Gctuser user;
     /**
      * The transient part of the user (name, profile-pic, email). All things
      * which can change from one day to another. These informations are saved on
@@ -98,7 +98,7 @@ public class UserController implements Serializable {
         this.userdata = provider.loadUserData(token.getAccessToken());
         this.user = dao.getUserByOAuthData(userdata.getId(), provider.getClass().getCanonicalName());
         if (this.user == null) {
-            this.user = new Gctusr("", userdata.getName(), false);
+            this.user = new Gctuser("", userdata.getName(), false);
             this.user.setOauth(new OAuthData(userdata.getId(), provider.getClass().getCanonicalName()));
         }
         this.user.getOauth().setAccessToken(token.getAccessToken());
@@ -126,7 +126,7 @@ public class UserController implements Serializable {
         return user != null && user.isActivated();
     }
 
-    public Gctusr getGctusr() {
+    public Gctuser getGctusr() {
         return user;
     }
 

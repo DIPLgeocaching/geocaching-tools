@@ -89,6 +89,7 @@
             <artifactId>cdi-api</artifactId>
             <version>1.1</version>
             <type>jar</type>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.oltu.oauth2/org.apache.oltu.oauth2.client -->
         <dependency>
             <groupId>org.apache.oltu.oauth2</groupId>

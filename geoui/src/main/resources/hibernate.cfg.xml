@@ -11,7 +11,7 @@
     <property name="hibernate.hbm2ddl.auto">create-drop</property>
     <mapping class="org.geocachingtools.geoui.model.Cache"/>
     <mapping class="org.geocachingtools.geoui.model.Childwaypoint"/>
-    <mapping class="org.geocachingtools.geoui.model.Gctusr"/>
+    <mapping class="org.geocachingtools.geoui.model.Gctuser"/>
     <mapping class="org.geocachingtools.geoui.model.Hint"/>
     <mapping class="org.geocachingtools.geoui.model.Invitekey"/>
     <mapping class="org.geocachingtools.geoui.model.SessionAttempts"/>

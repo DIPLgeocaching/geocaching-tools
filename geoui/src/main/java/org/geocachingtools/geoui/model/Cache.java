@@ -11,8 +11,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -20,59 +18,81 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
- *
+ * This Class represents a Cache from a User (Gctusr).
+ * A Gctuser can register caches which are registered at Geocaching.com.
  * @author Thomas
  */
 @Entity
 @Table(name = "cache")
-public class Cache implements Serializable{
+public class Cache implements Serializable {
+
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
-    @Column(name = "status")
-    private boolean status;
-    
-    @Column(name = "gcName")
-    private String gcName;
+    @Column(name="checkerlink")
+    private String checkerlink; //A uniqe key created by gc-waypoint and name of the user
     
     @Column(name = "gcWaypoint")
-    private String gcWaypoint;
+    private String gcWaypoint; //The offical Waypoint of the Cache
     
-    @Column(name = "cooridnateX")
-    private double cooridnateX;
-    
-    @Column(name = "cooridnateY")
-    private double cooridnateY;
-    
-    @Column(name = "message")
-    private String message;
-    
-    @ManyToOne(optional = false, cascade = CascadeType.ALL)
-    @JoinColumn(name = "cache_gctuser_id")
-    private Gctusr cacheowner;
-    
-    @OneToMany(mappedBy = "cache")
-    private List<SessionAttempts> sessions;
-    
-    @OneToMany(mappedBy = "cachehint")
-    private List<Hint> hints;
-    
-    @OneToMany(mappedBy="parentCache", fetch = FetchType.EAGER)
-    private List<Childwaypoint> childwaypoints;
+    @Column(name = "status")
+    private boolean status; //Flag to show if the Cache is acitvated
 
+    @Column(name = "gcName")
+    private String gcName; //The name the user sets for his cache
+
+    @Column(name = "coordinateX")
+    private String coordinateX; //latidude from the cache
+
+    @Column(name = "coordinateY")
+    private String coordinateY;//longitude from the Cache
+
+    @Column(name = "message")
+    private String message; //The message that is show when the cache is solved
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "cache_gctuser_id")
+    private Gctuser cacheowner;//owner of the cache
+
+    @OneToMany(mappedBy = "parentcache", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<SessionAttempt> sessions;//all attempts to solve a cache are stored in "sessions"
+
+    @OneToMany(mappedBy = "cachehint",
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.REMOVE)
+    private List<Hint> hints;//all hints that show up when a specific amount of mistakes are made
+
+    @OneToMany(mappedBy = "parentCache",
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.REMOVE)
+    private List<Childwaypoint> childwaypoints;//all subkoordinates
+
+    /*
+    Constructor
+    */
     public Cache() {
     }
 
-    public Cache(String gcName, String gcWaypoint, double cooridnateX, double cooridnateY, String message, Gctusr cacheowner) {
+    public Cache(String checkerlink, String gcName, String gcWaypoint, String cooridnateX, String cooridnateY, String message, Gctuser cacheowner, List<Hint> hints, List<Childwaypoint> childwaypoints) {
+        this.checkerlink = checkerlink;
         this.status = true;
         this.gcName = gcName;
         this.gcWaypoint = gcWaypoint;
-        this.cooridnateX = cooridnateX;
-        this.cooridnateY = cooridnateY;
+        this.coordinateX = cooridnateX;
+        this.coordinateY = cooridnateY;
         this.message = message;
         this.cacheowner = cacheowner;
+        this.hints = hints;
+        this.childwaypoints = childwaypoints;
+    }
+    
+    /*
+    Getter and Setter
+    */
+    public String getCheckerlink() {
+        return checkerlink;
+    }
+
+    public void setCheckerlink(String checkerlink) {
+        this.checkerlink = checkerlink;
     }
 
     public boolean isStatus() {
@@ -81,14 +101,6 @@ public class Cache implements Serializable{
 
     public void setStatus(boolean status) {
         this.status = status;
-    }
-    
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getGcName() {
@@ -107,20 +119,20 @@ public class Cache implements Serializable{
         this.gcWaypoint = gcWaypoint;
     }
 
-    public double getCooridnateX() {
-        return cooridnateX;
+    public String getCooridnateX() {
+        return coordinateX;
     }
 
-    public void setCooridnateX(double cooridnateX) {
-        this.cooridnateX = cooridnateX;
+    public void setCooridnateX(String cooridnateX) {
+        this.coordinateX = cooridnateX;
     }
 
-    public double getCooridnateY() {
-        return cooridnateY;
+    public String getCooridnateY() {
+        return coordinateY;
     }
 
-    public void setCooridnateY(double cooridnateY) {
-        this.cooridnateY = cooridnateY;
+    public void setCooridnateY(String cooridnateY) {
+        this.coordinateY = cooridnateY;
     }
 
     public String getMessage() {
@@ -139,19 +151,19 @@ public class Cache implements Serializable{
         this.message = otherInfo;
     }
 
-    public Gctusr getCacheowner() {
+    public Gctuser getCacheowner() {
         return cacheowner;
     }
 
-    public void setCacheowner(Gctusr cacheowner) {
+    public void setCacheowner(Gctuser cacheowner) {
         this.cacheowner = cacheowner;
     }
 
-    public List<SessionAttempts> getSessions() {
+    public List<SessionAttempt> getSessions() {
         return sessions;
     }
 
-    public void setSessions(List<SessionAttempts> sessions) {
+    public void setSessions(List<SessionAttempt> sessions) {
         this.sessions = sessions;
     }
 
@@ -169,5 +181,10 @@ public class Cache implements Serializable{
 
     public void setChildwaypoints(List<Childwaypoint> childwaypoints) {
         this.childwaypoints = childwaypoints;
-    }   
+    }
+
+    @Override
+    public String toString() {
+        return "Cache{" + "checkerlink=" + checkerlink + ", gcWaypoint=" + gcWaypoint + ", status=" + status + ", gcName=" + gcName + ", coordinateX=" + coordinateX + ", coordinateY=" + coordinateY + ", message=" + message + ", cacheowner=" + cacheowner + ", sessions=" + sessions + ", hints=" + hints + ", childwaypoints=" + childwaypoints + '}';
+    }
 }

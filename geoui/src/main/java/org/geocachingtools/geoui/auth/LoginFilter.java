@@ -45,6 +45,7 @@ import org.geocachingtools.geoui.controller.UserController;
 @WebFilter({
     "/text_decipher.xhtml",
     "/pic_decipher.xhtml",
+    "/registeredCaches.xhtml",
     "/invite_user.xhtml"
 })
 public class LoginFilter implements Filter {

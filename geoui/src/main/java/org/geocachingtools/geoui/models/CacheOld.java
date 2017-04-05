@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.geocachingtools.geoui.model;
+package org.geocachingtools.geoui.models;
 
+import org.geocachingtools.geoui.model.SessionAttempt;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -23,8 +24,8 @@ import javax.persistence.Table;
  * @author Thomas
  */
 @Entity
-@Table(name = "cache")
-public class Cache implements Serializable {
+@Table(name = "cacheold")
+public class CacheOld implements Serializable {
 
     @Id
     @Column(name="checkerlink")
@@ -50,7 +51,7 @@ public class Cache implements Serializable {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "cache_gctuser_id")
-    private Gctuser cacheowner;//owner of the cache
+    private GctuserOld cacheowner;//owner of the cache
 
     @OneToMany(mappedBy = "parentcache", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<SessionAttempt> sessions;//all attempts to solve a cache are stored in "sessions"
@@ -58,20 +59,20 @@ public class Cache implements Serializable {
     @OneToMany(mappedBy = "cachehint",
             fetch = FetchType.EAGER,
             cascade = CascadeType.REMOVE)
-    private List<Hint> hints;//all hints that show up when a specific amount of mistakes are made
+    private List<HintOld> hints;//all hints that show up when a specific amount of mistakes are made
 
     @OneToMany(mappedBy = "parentCache",
             fetch = FetchType.EAGER,
             cascade = CascadeType.REMOVE)
-    private List<Childwaypoint> childwaypoints;//all subkoordinates
+    private List<ChildwaypointOld> childwaypoints;//all subkoordinates
 
     /*
     Constructor
     */
-    public Cache() {
+    public CacheOld() {
     }
 
-    public Cache(String checkerlink, String gcName, String gcWaypoint, String cooridnateX, String cooridnateY, String message, Gctuser cacheowner, List<Hint> hints, List<Childwaypoint> childwaypoints) {
+    public CacheOld(String checkerlink, String gcName, String gcWaypoint, String cooridnateX, String cooridnateY, String message, GctuserOld cacheowner, List<HintOld> hints, List<ChildwaypointOld> childwaypoints) {
         this.checkerlink = checkerlink;
         this.status = true;
         this.gcName = gcName;
@@ -151,11 +152,11 @@ public class Cache implements Serializable {
         this.message = otherInfo;
     }
 
-    public Gctuser getCacheowner() {
+    public GctuserOld getCacheowner() {
         return cacheowner;
     }
 
-    public void setCacheowner(Gctuser cacheowner) {
+    public void setCacheowner(GctuserOld cacheowner) {
         this.cacheowner = cacheowner;
     }
 
@@ -167,19 +168,19 @@ public class Cache implements Serializable {
         this.sessions = sessions;
     }
 
-    public List<Hint> getHints() {
+    public List<HintOld> getHints() {
         return hints;
     }
 
-    public void setHints(List<Hint> hints) {
+    public void setHints(List<HintOld> hints) {
         this.hints = hints;
     }
 
-    public List<Childwaypoint> getChildwaypoints() {
+    public List<ChildwaypointOld> getChildwaypoints() {
         return childwaypoints;
     }
 
-    public void setChildwaypoints(List<Childwaypoint> childwaypoints) {
+    public void setChildwaypoints(List<ChildwaypointOld> childwaypoints) {
         this.childwaypoints = childwaypoints;
     }
 

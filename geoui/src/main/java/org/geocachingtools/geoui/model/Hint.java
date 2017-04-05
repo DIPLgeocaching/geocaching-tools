@@ -17,7 +17,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
- *
+ * This class is a hint a cacheonwer can set for a cache.
+ * A Hint refers to one cache and a cache has 0-n hints.
  * @author Thomas
  */
 @Entity
@@ -27,18 +28,22 @@ public class Hint implements Serializable {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id;//Uniqe id
 
     @Column(name = "attempts")
-    private int attempts;
+    private int attempts;//The amount of wrong inputs the cachesolver has to reache to show the hint
 
     @Column(name = "helptest")
-    private String helptext;
+    private String helptext;//The text that is shown when the amount is reached
 
     @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "hint_cache_id")
-    private Cache cachehint;
+    private Cache cachehint;//The cache the hint is set to
 
+    /*
+    Constructor
+    */
+    
     public Hint() {
     }
 
@@ -48,6 +53,10 @@ public class Hint implements Serializable {
         this.cachehint = cachehint;
     }
 
+    /*
+    Getter and Setter
+    */
+    
     public Long getId() {
         return id;
     }
@@ -78,5 +87,10 @@ public class Hint implements Serializable {
 
     public void setCachehint(Cache cachehint) {
         this.cachehint = cachehint;
+    }
+
+    @Override
+    public String toString() {
+        return "Hint{" + "id=" + id + ", attempts=" + attempts + ", helptext=" + helptext + ", cachehint=" + cachehint + '}';
     }
 }

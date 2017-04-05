@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.geocachingtools.geoui.model;
+package org.geocachingtools.geoui.models;
 
 import java.io.Serializable;
 import javax.persistence.CascadeType;
@@ -23,7 +23,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "invitekey")
-public class Invitekey implements Serializable{
+public class InvitekeyOld implements Serializable{
     
     @Id
     @Column(name = "invkey")
@@ -31,16 +31,16 @@ public class Invitekey implements Serializable{
     
     @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "invkey_user")
-    private Gctuser keyowner;//The user that create the key
+    private GctuserOld keyowner;//The user that create the key
 
     /*
     Construcotr
     */
     
-    public Invitekey() {
+    public InvitekeyOld() {
     }
 
-    public Invitekey(String invkey, Gctuser keyowner) {
+    public InvitekeyOld(String invkey, GctuserOld keyowner) {
         this.invkey = invkey;
         this.keyowner = keyowner;
     }
@@ -57,11 +57,11 @@ public class Invitekey implements Serializable{
         this.invkey = invkey;
     }
 
-    public Gctuser getKeyowner() {
+    public GctuserOld getKeyowner() {
         return keyowner;
     }
 
-    public void setKeyowner(Gctuser keyowner) {
+    public void setKeyowner(GctuserOld keyowner) {
         this.keyowner = keyowner;
     }
 }

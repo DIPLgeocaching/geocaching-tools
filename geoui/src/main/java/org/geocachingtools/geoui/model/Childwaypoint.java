@@ -17,7 +17,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
- *
+ * This class represents a subkoordinate from a cache.
+ * A cache can have many subkoodintes but a subkoordinate needs to refer to only one Cache.
  * @author Thomas
  */
 @Entity
@@ -26,31 +27,39 @@ public class Childwaypoint implements Serializable{
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id;//A uinqe id for eache subkoordinate/childwaypoint
         
     @Column(name = "text")
-    private String text;
+    private String text;//The hint that is shown when the cachesolver inserts the coordinates
     
     @Column(name = "cooridnateX")
-    private double cooridnateX;
+    private String cooridnateX;//Latitude from the subcoordinate
     
     @Column(name = "cooridnateY")
-    private double cooridnateY;
+    private String cooridnateY;//Longitude from the subcoordinate
     
     @ManyToOne(optional=false, cascade = CascadeType.ALL)
     @JoinColumn(name = "child_parent_id")
     private Cache parentCache;
 
+    /*
+    Constructor
+     */
+    
     public Childwaypoint() {
     }
 
-    public Childwaypoint(String text, double cooridnateX, double cooridnateY, Cache parentCache) {
+    public Childwaypoint(String text, String cooridnateX, String cooridnateY, Cache parentCache) {
         this.text = text;
         this.cooridnateX = cooridnateX;
         this.cooridnateY = cooridnateY;
         this.parentCache = parentCache;
     }
-
+    
+    /*
+    Getter and Setter
+     */
+    
     public Long getId() {
         return id;
     }
@@ -67,19 +76,19 @@ public class Childwaypoint implements Serializable{
         this.text = text;
     }
 
-    public double getCooridnateX() {
+    public String getCooridnateX() {
         return cooridnateX;
     }
 
-    public void setCooridnateX(double cooridnateX) {
+    public void setCooridnateX(String cooridnateX) {
         this.cooridnateX = cooridnateX;
     }
 
-    public double getCooridnateY() {
+    public String getCooridnateY() {
         return cooridnateY;
     }
 
-    public void setCooridnateY(double cooridnateY) {
+    public void setCooridnateY(String cooridnateY) {
         this.cooridnateY = cooridnateY;
     }
 

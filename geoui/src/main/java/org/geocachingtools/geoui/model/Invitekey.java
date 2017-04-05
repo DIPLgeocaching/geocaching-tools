@@ -18,43 +18,40 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
- *
+ * This class represents an invitekey a user can create. With this key an other
+ * person can register itselfs to the checker
  * @author Schule
  */
 @Entity
 @Table(name = "invitekey")
 public class Invitekey implements Serializable{
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     
+    @Id
     @Column(name = "invkey")
-    private String invkey;
+    private String invkey;//key itself
     
     @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "invkey_user")
-    private Gctusr keyowner;
-    
-    @OneToOne
-    private Gctusr usedby;
+    private Gctuser keyowner;//The user that create the key
 
+    @OneToOne
+    private Gctuser usedby;
+    /*
+    Construcotr
+    */
+    
     public Invitekey() {
     }
 
-    public Invitekey(String invkey, Gctusr keyowner) {
+    public Invitekey(String invkey, Gctuser keyowner) {
         this.invkey = invkey;
         this.keyowner = keyowner;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    /*
+    Getter and Setter
+    */
+    
     public String getInvkey() {
         return invkey;
     }
@@ -63,11 +60,20 @@ public class Invitekey implements Serializable{
         this.invkey = invkey;
     }
 
-    public Gctusr getKeyowner() {
+    public Gctuser getKeyowner() {
         return keyowner;
     }
 
-    public void setKeyowner(Gctusr keyowner) {
+    public void setKeyowner(Gctuser keyowner) {
         this.keyowner = keyowner;
     }
+
+    public Gctuser getUsedby() {
+        return usedby;
+    }
+
+    public void setUsedby(Gctuser usedby) {
+        this.usedby = usedby;
+    }
+    
 }

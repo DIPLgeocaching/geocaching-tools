@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.geocachingtools.geoui.model;
+package org.geocachingtools.geoui.models;
 
 import java.io.Serializable;
 import javax.persistence.CascadeType;
@@ -23,7 +23,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "hint")
-public class Hint implements Serializable {
+public class HintOld implements Serializable {
 
     @Id
     @Column(name = "id")
@@ -38,16 +38,16 @@ public class Hint implements Serializable {
 
     @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "hint_cache_id")
-    private Cache cachehint;//The cache the hint is set to
+    private CacheOld cachehint;//The cache the hint is set to
 
     /*
     Constructor
     */
     
-    public Hint() {
+    public HintOld() {
     }
 
-    public Hint(int attempts, String helptext, Cache cachehint) {
+    public HintOld(int attempts, String helptext, CacheOld cachehint) {
         this.attempts = attempts;
         this.helptext = helptext;
         this.cachehint = cachehint;
@@ -81,11 +81,11 @@ public class Hint implements Serializable {
         this.helptext = helptext;
     }
 
-    public Cache getCachehint() {
+    public CacheOld getCachehint() {
         return cachehint;
     }
 
-    public void setCachehint(Cache cachehint) {
+    public void setCachehint(CacheOld cachehint) {
         this.cachehint = cachehint;
     }
 

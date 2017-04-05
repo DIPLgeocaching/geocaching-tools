@@ -8,11 +8,11 @@ package org.geocachingtools.geoui.util;
 import java.util.ArrayList;
 import java.util.List;
 import org.geocachingtools.geoui.model.Cache;
-import org.geocachingtools.geoui.model.Gctusr;
+import org.geocachingtools.geoui.model.Gctuser;
 import org.geocachingtools.geoui.model.Hint;
 import org.geocachingtools.geoui.model.Invitekey;
 import org.geocachingtools.geoui.model.OAuthData;
-import org.geocachingtools.geoui.model.SessionAttempts;
+import org.geocachingtools.geoui.model.SessionAttempt;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -26,7 +26,7 @@ public class Dao {
     private static final String ADMINMAIL = "informatik.gc@gmail.com";
 
     static {
-        Gctusr usr1 = new Gctusr(ADMINMAIL, "Admin", true);
+        Gctuser usr1 = new Gctuser(ADMINMAIL, "Admin", true);
         Invitekey key1 = new Invitekey("HalloWelt", usr1);
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx;
@@ -61,7 +61,7 @@ public class Dao {
         }
     }
 
-    public boolean saveGctusr(Gctusr gu) {
+    public boolean saveGctusr(Gctuser gu) {
         Session ses = HibernateUtil.getSessionFactory().openSession();
         Transaction tx;
         boolean succ = false;
@@ -109,7 +109,7 @@ public class Dao {
         }
     }
 
-    public void saveSessionAttempts(SessionAttempts sa) {
+    public void saveSessionAttempts(SessionAttempt sa) {
         Session ses = HibernateUtil.getSessionFactory().openSession();
         Transaction tx;
 
@@ -142,10 +142,10 @@ public class Dao {
         return allCaches;
     }
 
-    public List<Gctusr> getAllGctusrs() {
+    public List<Gctuser> getAllGctusrs() {
         Session ses = HibernateUtil.getSessionFactory().openSession();
         Transaction tx;
-        List<Gctusr> allGctusrs = new ArrayList<>();
+        List<Gctuser> allGctusrs = new ArrayList<>();
 
         try {
             tx = ses.beginTransaction();
@@ -196,10 +196,10 @@ public class Dao {
         return allInvitekeys;
     }
 
-    public List<SessionAttempts> getAllSessionAttempts() {
+    public List<SessionAttempt> getAllSessionAttempts() {
         Session ses = HibernateUtil.getSessionFactory().openSession();
         Transaction tx;
-        List<SessionAttempts> allSessionAttempts = new ArrayList<>();
+        List<SessionAttempt> allSessionAttempts = new ArrayList<>();
 
         try {
             tx = ses.beginTransaction();
@@ -214,16 +214,16 @@ public class Dao {
         return allSessionAttempts;
     }
 
-    public Gctusr getCertianGctusr(String googleAccount) {
+    public Gctuser getCertianGctusr(String googleAccount) {
         Session ses = HibernateUtil.getSessionFactory().openSession();
         Transaction tx;
-        Gctusr gctusr = null;
+        Gctuser gctusr = null;
 
         try {
             tx = ses.beginTransaction();
             Query q = ses.createQuery("from Gctusr where GoogleAccount = :ga");
             q.setParameter("ga", googleAccount);
-            gctusr = (Gctusr) q.list().get(0);
+            gctusr = (Gctuser) q.list().get(0);
             tx.commit();
         } catch (IndexOutOfBoundsException ex) {
             System.out.println("Benutzer " + googleAccount + " nicht vorhanden!");
@@ -254,7 +254,7 @@ public class Dao {
         return cache;
     }
 
-    public List<Cache> getCachesFromUser(Gctusr gctusr) {
+    public List<Cache> getCachesFromUser(Gctuser gctusr) {
         Session ses = HibernateUtil.getSessionFactory().openSession();
         Transaction tx;
         List<Cache> caches = new ArrayList<>();
@@ -331,7 +331,7 @@ public class Dao {
      * @param key the key submitted by the user
      * @return true if the user got activated by the key
      */
-    public boolean activateUser(Gctusr usr, String key) {
+    public boolean activateUser(Gctuser usr, String key) {
         Session ses = HibernateUtil.getSessionFactory().openSession();
         Transaction tx;
         try {
@@ -358,10 +358,10 @@ public class Dao {
         HibernateUtil.close();
     }
 
-    public Gctusr getUserByOAuthData(String id, String provider) {
+    public Gctuser getUserByOAuthData(String id, String provider) {
         //TODO: eigene Query hinzfügen anstannt alle user zu laden
-        List<Gctusr> all = getAllGctusrs();
-        for (Gctusr usr : all) {
+        List<Gctuser> all = getAllGctusrs();
+        for (Gctuser usr : all) {
             OAuthData oauth = usr.getOauth();
             if (oauth != null) {
                 System.out.println(oauth.getOauthid() + " " + oauth.getProvider());
@@ -375,7 +375,7 @@ public class Dao {
         return null;
     }
 
-    public boolean saveOrUpdateGctusr(Gctusr gu) {
+    public boolean saveOrUpdateGctusr(Gctuser gu) {
         Session ses = HibernateUtil.getSessionFactory().openSession();
         Transaction tx;
         boolean succ = false;
