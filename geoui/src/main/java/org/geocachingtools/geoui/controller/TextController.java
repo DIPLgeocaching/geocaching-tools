@@ -35,7 +35,7 @@ public class TextController implements Serializable {
     private List<DecoderMethod> methods = new ArrayList<>();//Available Methods
     private List<DecoderMethod> methodsToUse;//Selected Methods
     private Map<DecoderMethod, DecoderResult> results = new HashMap<>();
-    private final Decoder decoder = Decoder.getInstance();
+    private Decoder decoder;
     private UploadedFile passwordFile;
     private UIComponent pwd;
     private boolean pwdRequired = false;
@@ -45,6 +45,7 @@ public class TextController implements Serializable {
 
     @PostConstruct
     public void init() {
+        decoder = Decoder.getInstance();
         decoder.getMethods(type).stream().forEach(o -> {
             methods.add(o);
         });
@@ -71,7 +72,7 @@ public class TextController implements Serializable {
 
     public void submit() {
         if (methodsToUse.isEmpty()) {
-            FacesMessage message = new FacesMessage("Es muss ein Verfahren ausgwählt werden!");
+            FacesMessage message = new FacesMessage("Es muss ein Verfahren ausgwaehlt werden!");
             FacesContext.getCurrentInstance().addMessage(pwd.getClientId(FacesContext.getCurrentInstance()), message);
         } else {
             results.clear();

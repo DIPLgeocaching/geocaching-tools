@@ -31,6 +31,8 @@ import java.io.InputStreamReader;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -67,20 +69,32 @@ public class PictureController implements Serializable {
     private List<DecoderMethod> methods = new ArrayList<>();//Available Methods
     private List<DecoderMethod> methodsToUse;//Selected Methods
     private Map<DecoderMethod, DecoderResult> results = new HashMap<>();
-    private final Decoder decoder = Decoder.getInstance();
+    private Decoder decoder;
     private UploadedFile uploadedPic = null;
     private UIComponent pwd;
     private UIComponent pic;
     private String url;
+    private InputStream urlImage;
 
     @Inject
     private LocaleController localecon;
 
     @PostConstruct
     public void init() {
+        decoder = Decoder.getInstance();
         decoder.getMethods(type).stream().forEach(o -> {
             methods.add(o);
         });
+    }
+
+    public InputStream getPictureByURL() {
+        try {
+            return new URL(url).openStream();
+
+        } catch (IOException ex) {
+            Logger.getLogger(PictureController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     public void handlePictureUpload(FileUploadEvent event) {
@@ -113,7 +127,7 @@ public class PictureController implements Serializable {
 
     public void submit() throws IOException {
         if (methodsToUse.isEmpty()) {
-            FacesMessage message = new FacesMessage("Es muss ein Verfahren ausgwählt werden!");
+            FacesMessage message = new FacesMessage("Es muss ein Verfahren ausgwaehlt werden!");
             FacesContext.getCurrentInstance().addMessage(pwd.getClientId(FacesContext.getCurrentInstance()), message);
         } else {
             results.clear();
@@ -127,8 +141,16 @@ public class PictureController implements Serializable {
             System.out.println(passwordText);
             System.out.println(passwords);
 
+            InputStream inputStream = null;
+            inputStream = getPictureByURL();
+
             if (uploadedPic != null) {
-                System.out.println("cipher: " + uploadedPic.getFileName());
+                inputStream = uploadedPic.getInputstream();
+            }
+
+            if (inputStream != null) {
+
+                // System.out.println("cipher: " + inputStream.toString());
                 for (DecoderMethod method : methodsToUse) {
                     // System.out.println(method.getName());
                     if (passwords.isEmpty() && method.getRequiresPassword()) {
@@ -140,7 +162,7 @@ public class PictureController implements Serializable {
                         future = decoder.decode(
                                 new DecoderRequest(
                                         type,
-                                        uploadedPic.getInputstream(),
+                                        inputStream,
                                         method,
                                         passwords,
                                         localecon.getLocale()

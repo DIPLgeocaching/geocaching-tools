@@ -46,12 +46,12 @@ public class Dao {
         Cache ca4 = new Cache("ca4","Toller Cache", "GCABCDE", "-12.459", "12.456", "Juhu du hast es geschafft", usr4, new ArrayList<>(), new ArrayList<>());
         Cache ca5 = new Cache("ca5","Der tollste Cache", "GC12345", coord.hashCoordinate(21.0), coord.hashCoordinate(12.0), "yess u made it", usr4, new ArrayList<>(), new ArrayList<>());
         Cache ca6 = new Cache("ca6","Der allertollste Cache", "GC54321", coord.hashCoordinate(-12.459), coord.hashCoordinate(12.456), "Gratuliere", usr4, new ArrayList<>(), new ArrayList<>());
-        Cache ca7 = new Cache("ca7","Testcache", "GC15963", coord.hashCoordinate(21.0), coord.hashCoordinate(12.0), "Gratuliere, du hast meinen Cache gelöst!", usr4, new ArrayList<>(), new ArrayList<>());
+        Cache ca7 = new Cache("ca7","Testcache", "GC15963", coord.hashCoordinate(21.0), coord.hashCoordinate(12.0), "Gratuliere, du hast meinen Cache geloest!", usr4, new ArrayList<>(), new ArrayList<>());
 
         Childwaypoint cw1 = new Childwaypoint("Versuche es mit Cesar", coord.hashCoordinate(0.0), coord.hashCoordinate(1.0), ca5);
         Childwaypoint cw2 = new Childwaypoint("Dies ist ein Hinweis", coord.hashCoordinate(0.0), coord.hashCoordinate(2.0), ca5);
         Childwaypoint cw3= new Childwaypoint("Du bist nah dran! Versuche es mit Caesar.", coord.hashCoordinate(0.0), coord.hashCoordinate(2.0), ca7);
-        Childwaypoint cw4 = new Childwaypoint("Du hast die Hälfte schon geschafft!", coord.hashCoordinate(2.0), coord.hashCoordinate(1.0), ca7);
+        Childwaypoint cw4 = new Childwaypoint("Du hast die Haelfte schon geschafft!", coord.hashCoordinate(2.0), coord.hashCoordinate(1.0), ca7);
 
         DateFormat formatter1;
         formatter1 = new SimpleDateFormat("mm/DD/yyyy");
@@ -231,7 +231,7 @@ public class Dao {
 
         try {
             tx = ses.beginTransaction();
-            allGctusrs = ses.createQuery("from Gctusr").list();
+            allGctusrs = ses.createQuery("from Gctuser").list();
             tx.commit();
         } catch (Exception ex) {
             System.err.println("Exception in getAllGctusrs\n" + ex);

@@ -36,9 +36,9 @@ public class UserchecksController {
 
         if (checks.containsKey(ip)) {
             check = checks.get(ip);
-            if (check.getSum() < 6 && now.before(check.getCal())) {
+            if (now.before(check.getCal())) {
                 check.increase();
-            } else {
+            } else if(now.after(check.getCal())){
                 checks.remove(ip);
                 now.add(Calendar.HOUR_OF_DAY, 1);
                 check = new Check(1, now);

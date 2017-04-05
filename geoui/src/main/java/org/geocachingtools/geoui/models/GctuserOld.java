@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.geocachingtools.geoui.model;
+package org.geocachingtools.geoui.models;
 
 import java.io.Serializable;
 import java.util.List;
@@ -21,7 +21,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "gctusr")
-public class Gctuser implements Serializable{
+public class GctuserOld implements Serializable{
 
     @Id
     @Column(name = "id")
@@ -38,19 +38,19 @@ public class Gctuser implements Serializable{
     private boolean isAdmin;//A flag that is set to true when the user is admin
     
     @OneToMany(mappedBy = "keyowner")
-    private List<Invitekey> invitekeys;//all invtekey the user created
+    private List<InvitekeyOld> invitekeys;//all invtekey the user created
     
     @OneToMany(mappedBy = "cacheowner")
-    private List<Cache> caches;//all caches a user had registered
+    private List<CacheOld> caches;//all caches a user had registered
 
     /*
     Constructor
     */
     
-    public Gctuser() {
+    public GctuserOld() {
     }
 
-    public Gctuser(String googleAccount, String gcUsername, boolean isAdmin) {
+    public GctuserOld(String googleAccount, String gcUsername, boolean isAdmin) {
         this.googleAccount = googleAccount;
         this.gcUsername = gcUsername;
         this.isAdmin = isAdmin;
@@ -92,19 +92,19 @@ public class Gctuser implements Serializable{
         this.isAdmin = isAdmin;
     }
 
-    public List<Invitekey> getInvitekeys() {
+    public List<InvitekeyOld> getInvitekeys() {
         return invitekeys;
     }
 
-    public void setInvitekeys(List<Invitekey> invitekeys) {
+    public void setInvitekeys(List<InvitekeyOld> invitekeys) {
         this.invitekeys = invitekeys;
     }
 
-    public List<Cache> getCaches() {
+    public List<CacheOld> getCaches() {
         return caches;
     }
 
-    public void setCaches(List<Cache> caches) {
+    public void setCaches(List<CacheOld> caches) {
         this.caches = caches;
     }
 }
