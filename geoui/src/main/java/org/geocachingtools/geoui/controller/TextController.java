@@ -119,7 +119,7 @@ public class TextController implements Serializable {
                 FacesContext.getCurrentInstance().addMessage(pwd.getClientId(FacesContext.getCurrentInstance()), message);
             }
             if (pwdRequired) {
-                FacesMessage message = new FacesMessage(localeCon.getI18n("passwordRequired"));
+                FacesMessage message = new FacesMessage(localeCon.getI18n("pwdRequired"));
                 FacesContext.getCurrentInstance().addMessage(pwd.getClientId(FacesContext.getCurrentInstance()), message);
                 pwdRequired = false;
             }

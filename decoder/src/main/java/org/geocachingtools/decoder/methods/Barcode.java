@@ -76,13 +76,13 @@ public class Barcode extends DecoderMethod<InputStream> {
             BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
             Result result = reader.decode(bitmap, hints);
 
-            BarcodeFormat barcodeFormat = result.getBarcodeFormat();
+            //BarcodeFormat barcodeFormat = result.getBarcodeFormat();
             StringBuilder fullResult = new StringBuilder();
-            fullResult.append("Found Barcode of type ").append(barcodeFormat.toString()).append("\n");
+            fullResult.append("Found Barcode of type ").append(result.getBarcodeFormat().toString()).append("\n");
             fullResult.append("Content:\n");
             fullResult.append(result.getText());
 
-            return new DecoderResult(this, barcodeFormat.toString(), fullResult.toString(), 1.0);
+            return new DecoderResult(this, fullResult.toString(), fullResult.toString(), 1.0);
         } catch (IOException | NotFoundException ex) {
             return new DecoderResult(this, "nothing found", 0.0);
         }

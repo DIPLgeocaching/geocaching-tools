@@ -21,10 +21,10 @@ public class Coordinate {
 
     private boolean n;// N/S
     private boolean e;// E/W
-    private int y1;// ° from N/S
+    private int y1;// d from N/S
     private int y2;// ' from N/S
     private int y3;// " from N/S
-    private int x1;// ° from E/W
+    private int x1;// d from E/W
     private int x2;// ' from E/W
     private int x3;// " from E/W
 

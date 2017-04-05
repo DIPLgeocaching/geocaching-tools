@@ -31,6 +31,8 @@ import java.io.InputStreamReader;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -72,6 +74,7 @@ public class PictureController implements Serializable {
     private UIComponent pwd;
     private UIComponent pic;
     private String url;
+    private InputStream urlImage;
 
     @Inject
     private LocaleController localeCon;
@@ -81,6 +84,16 @@ public class PictureController implements Serializable {
         decoder.getMethods(type).stream().forEach(o -> {
             methods.add(o);
         });
+    }
+
+    public InputStream getPictureByURL() {
+        try {
+            return new URL(url).openStream();
+
+        } catch (IOException ex) {
+            Logger.getLogger(PictureController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     public void handlePictureUpload(FileUploadEvent event) {
@@ -127,20 +140,28 @@ public class PictureController implements Serializable {
             System.out.println(passwordText);
             System.out.println(passwords);
 
+            InputStream inputStream = null;
+            inputStream = getPictureByURL();
+
             if (uploadedPic != null) {
-                System.out.println("cipher: " + uploadedPic.getFileName());
+                inputStream = uploadedPic.getInputstream();
+            }
+
+            if (inputStream != null) {
+
+                // System.out.println("cipher: " + inputStream.toString());
                 for (DecoderMethod method : methodsToUse) {
                     // System.out.println(method.getName());
                     if (passwords.isEmpty() && method.getRequiresPassword()) {
-                        results.put(method, new DecoderResult(method, localeCon.getI18n("passwordRequired"), 1.0));
-                        FacesMessage message = new FacesMessage(localeCon.getI18n("passwordRequired"));
+                        results.put(method, new DecoderResult(method, localeCon.getI18n("pwdRequired"), 1.0));
+                        FacesMessage message = new FacesMessage(localeCon.getI18n("pwdRequired"));
                         FacesContext.getCurrentInstance().addMessage(pwd.getClientId(FacesContext.getCurrentInstance()), message);
                     } else {
                         Future<DecoderResult> future;
                         future = decoder.decode(
                                 new DecoderRequest(
                                         type,
-                                        uploadedPic.getInputstream(),
+                                        inputStream,
                                         method,
                                         passwords,
                                         localeCon.getLocale()
