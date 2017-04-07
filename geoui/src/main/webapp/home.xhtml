@@ -16,13 +16,17 @@ and open the template in the editor.
         <ui:composition template="/WEB-INF/template.xhtml">
 
             <ui:define name="content">
-                <div class="container">
+                <div class="container" style="margin-bottom: 30px;">
                     <div class="row">
-                        <h1>Vorstellung von uns</h1>
-                        <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
-                            At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. 
-                            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. 
-                            At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>
+                        <h1><h:outputText value="#{i18n['aboutUs']}"/></h1>
+                        
+                        <img src="./res/Projektfoto.jpeg" style="width: 70%; margin-bottom: 10px;"/>
+                        <li>Thomas Rapberger <a href="mailto:thomas.rapberger@hotmail.com">&lt;thomas.rapberger@hotmail.comt&gt;</a></li>
+                        <li>Lukas Wallenböck <a href="mailto:lukas.wallenboeck@outlook.at">&lt;lukas.wallenboeck@outlook.at&gt;</a></li>
+                        <li>Simon Lehner-Dittenberger <a href="mailto:simon.lehnerd@gmail.com">&lt;simon.lehnerd@gmail.com&gt;</a></li>
+                        <li>Stefan Kurzbauer <a href="mailto:st.kurzbauer@gmail.com">&lt;st.kurzbauer@gmail.com&gt;</a></li>
+                        <li>Jakob Geringer <a href="mailto:jakobgeringer@gmail.com">&lt;jakobgeringer@gmail.com&gt;</a></li>                 
+                        
                     </div>
                 </div>
             </ui:define>
