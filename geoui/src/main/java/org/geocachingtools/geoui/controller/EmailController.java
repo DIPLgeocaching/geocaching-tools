@@ -110,12 +110,13 @@ public class EmailController implements Serializable {
                 messageToSent += "<br/>------------------------------------------------------------<br/>"
                         + "<span style=\"font-weight: bold;\">Invite Key</span><br/>"
                         + key;
-                //TODO: save in DB
+                
                 message.setFrom(new InternetAddress("informatik.gc@gmail.com"));
                 message.setSubject("Invitation to Geocaching Tools!");
                 message.setContent(messageToSent, "text/html");
                 message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(s));
                 Transport.send(message);
+				//Save in DB
                 dao.saveInvitekey(new Invitekey(key, controller.getGctusr()));
                 System.out.println("Email Successfull sent");
             }

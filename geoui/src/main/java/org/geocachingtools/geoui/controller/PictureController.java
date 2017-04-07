@@ -77,7 +77,7 @@ public class PictureController implements Serializable {
     private InputStream urlImage;
 
     @Inject
-    private LocaleController localecon;
+    private LocaleController localeCon;
 
     @PostConstruct
     public void init() {
@@ -105,7 +105,7 @@ public class PictureController implements Serializable {
 
     public void upload() {
         if (passwordFile != null) {
-            FacesMessage message = new FacesMessage("Succesfull", passwordFile.getFileName() + " is uploaded.");
+            FacesMessage message = new FacesMessage(String.format(localeCon.getI18n("fileUpload"),passwordFile.getFileName()));
             FacesContext.getCurrentInstance().addMessage(null, message);
 
             try (InputStream is = passwordFile.getInputstream();
@@ -127,7 +127,7 @@ public class PictureController implements Serializable {
 
     public void submit() throws IOException {
         if (methodsToUse.isEmpty()) {
-            FacesMessage message = new FacesMessage("Es muss ein Verfahren ausgwaehlt werden!");
+            FacesMessage message = new FacesMessage(localeCon.getI18n("methodRequired"));
             FacesContext.getCurrentInstance().addMessage(pwd.getClientId(FacesContext.getCurrentInstance()), message);
         } else {
             results.clear();
@@ -154,8 +154,8 @@ public class PictureController implements Serializable {
                 for (DecoderMethod method : methodsToUse) {
                     // System.out.println(method.getName());
                     if (passwords.isEmpty() && method.getRequiresPassword()) {
-                        results.put(method, new DecoderResult(method, "Das ausgewaehlte Verfahren verlangt ein Passwort!", 1.0));
-                        FacesMessage message = new FacesMessage("Eines der ausgewaehlten Verfahren verlangen ein Passwort!");
+                        results.put(method, new DecoderResult(method, localeCon.getI18n("pwdRequired"), 1.0));
+                        FacesMessage message = new FacesMessage(localeCon.getI18n("pwdRequired"));
                         FacesContext.getCurrentInstance().addMessage(pwd.getClientId(FacesContext.getCurrentInstance()), message);
                     } else {
                         Future<DecoderResult> future;
@@ -165,7 +165,7 @@ public class PictureController implements Serializable {
                                         inputStream,
                                         method,
                                         passwords,
-                                        localecon.getLocale()
+                                        localeCon.getLocale()
                                 )
                         );
                         try {
@@ -181,7 +181,7 @@ public class PictureController implements Serializable {
                     methodsToUse.clear();
                 }
             } else {
-                FacesMessage message = new FacesMessage("Es muss ein Bild hochgeladen werden!");
+                FacesMessage message = new FacesMessage(localeCon.getI18n("pictureRequired"));
                 FacesContext.getCurrentInstance().addMessage(pwd.getClientId(FacesContext.getCurrentInstance()), message);
             }
         }
