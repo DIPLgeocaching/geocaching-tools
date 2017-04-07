@@ -26,6 +26,6 @@ public class SessionListener implements HttpSessionListener {
     public void sessionDestroyed(HttpSessionEvent se) {
         //HibernateUtil wird geschlossen
         Dao dao = (Dao) se.getSession().getAttribute("dao");
-        dao.close();        
+//        dao.close();        
     }
 }

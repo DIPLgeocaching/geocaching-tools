@@ -69,7 +69,7 @@ public class PictureController implements Serializable {
     private List<DecoderMethod> methods = new ArrayList<>();//Available Methods
     private List<DecoderMethod> methodsToUse;//Selected Methods
     private Map<DecoderMethod, DecoderResult> results = new HashMap<>();
-    private final Decoder decoder = Decoder.getInstance();
+    private Decoder decoder;
     private UploadedFile uploadedPic = null;
     private UIComponent pwd;
     private UIComponent pic;
@@ -81,6 +81,7 @@ public class PictureController implements Serializable {
 
     @PostConstruct
     public void init() {
+        decoder = Decoder.getInstance();
         decoder.getMethods(type).stream().forEach(o -> {
             methods.add(o);
         });

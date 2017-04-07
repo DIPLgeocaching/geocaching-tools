@@ -231,7 +231,7 @@ public class Dao {
 
         try {
             tx = ses.beginTransaction();
-            allGctusrs = ses.createQuery("from Gctusr").list();
+            allGctusrs = ses.createQuery("from Gctuser").list();
             tx.commit();
         } catch (Exception ex) {
             System.err.println("Exception in getAllGctusrs\n" + ex);

@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -33,6 +34,8 @@ public class Invitekey implements Serializable{
     @JoinColumn(name = "invkey_user")
     private Gctuser keyowner;//The user that create the key
 
+    @OneToOne
+    private Gctuser usedby;
     /*
     Construcotr
     */
@@ -64,4 +67,13 @@ public class Invitekey implements Serializable{
     public void setKeyowner(Gctuser keyowner) {
         this.keyowner = keyowner;
     }
+
+    public Gctuser getUsedby() {
+        return usedby;
+    }
+
+    public void setUsedby(Gctuser usedby) {
+        this.usedby = usedby;
+    }
+    
 }

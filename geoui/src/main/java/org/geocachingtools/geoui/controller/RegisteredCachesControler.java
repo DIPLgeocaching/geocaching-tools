@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import org.geocachingtools.geoui.database.Dao;
@@ -28,9 +29,12 @@ import org.geocachingtools.geoui.model.Gctuser;
 @Named(value = "registedCacheCon")
 @SessionScoped
 public class RegisteredCachesControler implements Serializable {
-    
+
     private final HttpSession s = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
     private final Dao dao = (Dao) s.getAttribute("dao");
+
+    @Inject
+    UserController userCon;
 
     boolean init = true;
     private Gctuser gctuser;
@@ -48,12 +52,12 @@ public class RegisteredCachesControler implements Serializable {
                 Logger.getLogger(RegisteredCachesControler.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        this.gctuser = dao.getCertainGctuser("Rapi1234-GA");
+        gctuser = this.userCon.getGctusr();
         caches = new Dao().getCachesFromUser(gctuser);
         sortCaches();
         noCaches = caches.isEmpty();
     }
-    
+
     public void sortCaches() {
         Collections.sort(caches, new Comparator<Cache>() {
             @Override
@@ -66,11 +70,11 @@ public class RegisteredCachesControler implements Serializable {
     public String cachesFromUser() {
         return "yourRegisteredCaches";
     }
-    
+
     public void addCache(Cache c) {
         caches.add(c);
     }
-    
+
     /*
     Getter und Setter
      */
@@ -89,7 +93,7 @@ public class RegisteredCachesControler implements Serializable {
     public void setInit(boolean init) {
         this.init = init;
     }
-    
+
     public Gctuser getGctusr() {
         return gctuser;
     }

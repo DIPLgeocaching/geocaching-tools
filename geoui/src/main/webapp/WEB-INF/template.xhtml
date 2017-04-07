@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <f:view locale="#{localeCon.locale}">
 
         <h:head>
@@ -13,6 +14,8 @@
             <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/paper/bootstrap.min.css" rel="stylesheet" integrity="sha384-awusxf8AUojygHf2+joICySzB780jVvQaVCAt1clU3QsyAitLGul28Qxb2r1e5g+" crossorigin="anonymous"/>
             <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/yeti/bootstrap.min.css" rel="stylesheet" integrity="sha384-HzUaiJdCTIY/RL2vDPRGdEQHHahjzwoJJzGUkYjHVzTwXFQ2QN/nVgX7tzoMW3Ov" crossorigin="anonymous"/>
             <link href="./res/css/layout.css" rel="stylesheet" type="text/css" />
+            <link href="./res/css/bootstrap-social.css" rel="stylesheet" type="text/css"/>
+            <link href="./res/css/font-awesome.css" rel="stylesheet" type="text/css"/>
             <!--Favicon-->
             <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
             <link rel="icon" href="res/favicon.ico" type="image/x-icon"/>
@@ -31,6 +34,33 @@
         </h:head>
 
         <h:body>
+
+            <div id="debugstuff" style="position: absolute;z-index: 100; width: 0%;height: 100%;">
+                <style>
+                    .infofield {
+                        text-align:center;
+                        position:absolute;
+                        bottom:0;left:0;
+                        height:45px;width:45px;
+                        background-color:grey;
+                        border: 1px solid;
+                        text-align: center;
+                        font-size: xx-small;
+                        vertical-align: middle;
+                        line-height: 45px;
+                        font-weight: bolder;
+                    }
+                </style>
+                <div class="infofield" style="left:0px;background-color: #{userCon.loggedIn ? 'green':'red'};">
+                    logged in
+                </div>
+                <div class="infofield" style="left:50px;background-color: #{userCon.activated ? 'green':'red'};">
+                    activated
+                </div>
+                <div class="infofield" style="left:100px;" onclick="window.location = 'user.xhtml'">
+                    Go To User
+                </div>
+            </div>
             <nav class="navbar navbar-inverse">
                 <div class="container-fluid" style="background-color: #4974FF">
 
@@ -64,9 +94,12 @@
                             <h:form>
                                 <h:commandButton action="#{localeCon.setLocaleEN()}"  image="res\flags\eng-flag.ico" style="height: 30px; width: 35px; margin-top: 60px"/>
                                 <h:commandButton action="#{localeCon.setLocaleDE()}"  image="res\flags\ger-flag.ico" style="height: 30px; width: 35px"/>
-                                <a href="#"><h:outputText value="#{i18n['logout']}" class="btn btn-primary" rendered="#{userController.loggedIn}"/></a>
-                                <!--<a href="#"><h:outputText value="{i18n['register']}" class="btn btn-primary" rendered="{not userController.loggedIn}"/></a>-->
-                            </h:form> 
+                                <c:if test="#{userCon.loggedIn}">
+                                    <img src="#{userCon.userdata.pictureUrl}" style="width: 45px; height: 45px;border-radius: 50%;"/>
+                                    <h:commandButton action="#{userCon.logoutRequest()}" value="Logout"/>
+                                </c:if>
+                            </h:form>
+
                         </div>
                     </div>
                 </div>
@@ -74,7 +107,6 @@
             <div class="top_menue">
                 <ui:insert name="topBar"/>
             </div>
-
             <ui:insert name="content"/>
 
         </h:body>

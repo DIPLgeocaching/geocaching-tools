@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <head>
+        <title>TODO supply a title</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <div id="debugstuff" style="background-color: lightblue; width: 98%; margin:1%;height: 57px;">
+            <style>
+                .infofield {
+                    text-align:center;
+                    height:45px;
+                    width:45px;
+                    background-color:grey;
+                    border: 1px solid;
+                    text-align: center;
+                    font-size: xx-small;
+                    vertical-align: middle;
+                    line-height: 45px;
+                    font-weight: bolder;
+                    float:left;
+                    margin:5px;
+                }
+            </style>
+            <div class="infofield" style="background-color: #{userCon.loggedIn ? 'green':'red'};">
+                logged in
+            </div>
+            <div class="infofield" style="#{userCon.user.provider == 'org.geocachingtools.geoui.auth.provider.GoogleAuthProvider' ? 'background-color: green' : ''}">
+                google
+            </div>
+            <div class="infofield" style="#{userCon.user.provider == 'org.geocachingtools.geoui.auth.provider.GithubAuthProvider' ? 'background-color: green' : ''}">
+                github
+            </div>
+        </div>
+        <h:form>
+            <h:commandButton action="#{userCon.initAuth('google')}" value="Login via Google"/>
+            <h:commandButton action="#{userCon.initAuth('github')}" value="Login via Github"/>
+            <h:commandButton action="#{userCon.logoutRequest()}" value="Logout"/>
+        </h:form>
+        <h:form>
+            <h:panelGrid columns="2">
+                <h:outputLabel value="ID"/>
+                <h:outputText value="#{userCon.user.oauthid}"/>
+                <h:outputLabel value="Provider"/>
+                <h:outputText value="#{userCon.user.provider}"/>
+                <h:outputLabel value="Access Token"/>
+                <h:outputText value="#{userCon.user.accessToken}"/>
+                <h:outputLabel value="Image Url"/>
+                <h:outputText value="#{userCon.userdata.pictureUrl}"/>
+                <h:outputLabel value="Name"/>
+                <h:outputText value="#{userCon.userdata.name}"/>
+                <h:outputLabel value="Is User Activated"/>
+                <h:outputText value="#{userCon.activated}"/>
+                <h:outputLabel value="User used key "/>
+                <h:outputText value="#{userCon.gctusr.usedkey.invkey}"/>
+                <h:outputLabel value="Image"/>
+                <img src='#{userCon.userdata.pictureUrl}' style="width:64px; height:64px;"/>
+            </h:panelGrid>
+        </h:form>
+        <h:form>
+            <h:commandButton action="home.xhtml" value="Back to main site"/>
+        </h:form>
+    </body>
+</html>
