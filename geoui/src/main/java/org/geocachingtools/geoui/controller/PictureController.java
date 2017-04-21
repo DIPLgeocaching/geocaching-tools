@@ -73,7 +73,6 @@ public class PictureController implements Serializable {
     private UIComponent pwd;
     private UIComponent pic;
     private String url;
-    private InputStream urlImage;
 
     @Inject
     private LocaleController localeCon;
@@ -89,7 +88,6 @@ public class PictureController implements Serializable {
     public InputStream getPictureByURL() {
         try {
             return new URL(url).openStream();
-
         } catch (IOException ex) {
             Logger.getLogger(PictureController.class.getName()).log(Level.SEVERE, null, ex);
         }

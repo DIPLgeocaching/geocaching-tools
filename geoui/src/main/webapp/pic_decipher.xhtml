@@ -20,7 +20,7 @@
                 });
             </script>
             <h:form id="bildform" enctype="multipart/form-data">
-                <div class="containter" style="margin:auto; width: 50%;padding-bottom: 15px;">
+                <div class="containter" style="margin:auto; width: 70%;padding-bottom: 15px;">
 
                     <h3><h:outputText value="#{i18n['uploadPicture']}"/></h3>                   
                     <p:fileUpload id="picInput"
@@ -69,7 +69,7 @@
                              sortOrder="descendending"
                              style="padding: auto;
                              margin:auto; 
-                             width: 50%;
+                             width: 70%;
                              table-layout: fixed;">
                     <p:column selectionMode="multiple" style="width:40px;text-align:center"/>
                     <p:column headerText="#{i18n['methods']}" style="width:200px"
@@ -88,7 +88,7 @@
                             <h:outputText value="#{picCon.results[method].briefResult}" escape="false"/>
                         </span>
                     </p:column>
-                    <p:column style="width:125px">
+                    <p:column style="width:170px">
                         <f:facet name="header">
                             <p:commandButton type="button" onclick="jQuery('.ui-row-toggler').click()" value="#{i18n['toggleAll']}" />
                         </f:facet>

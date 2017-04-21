@@ -6,9 +6,13 @@
 package org.geocachingtools.geoui.model;
 
 import java.io.Serializable;
+import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -26,8 +30,18 @@ public class Invitekey implements Serializable {
     @Column(name = "invkey")
     private String invkey;//key itself
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "invkey_user")
+    private Gctuser keyowner;//The user that create the key
+
     @OneToOne
     private Gctuser usedby;
+    
+    @Column(name = "email")
+    private String email;
+    
+    @Column(name = "created")
+    private Date date;
 
     /*
     Construcotr
@@ -35,8 +49,9 @@ public class Invitekey implements Serializable {
     public Invitekey() {
     }
 
-    public Invitekey(String invkey) {
+    public Invitekey(String invkey, Gctuser keyowner) {
         this.invkey = invkey;
+        this.keyowner = keyowner;
     }
 
     /*
@@ -50,6 +65,14 @@ public class Invitekey implements Serializable {
         this.invkey = invkey;
     }
 
+    public Gctuser getKeyowner() {
+        return keyowner;
+    }
+
+    public void setKeyowner(Gctuser keyowner) {
+        this.keyowner = keyowner;
+    }
+
     public Gctuser getUsedby() {
         return usedby;
     }
@@ -58,4 +81,23 @@ public class Invitekey implements Serializable {
         this.usedby = usedby;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public boolean isUsed() {
+        return usedby != null;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public Date getDate() {
+        return date;
+    }
 }

@@ -26,7 +26,7 @@ public class Dao {
     private static final String ADMINKEY = "AdminKey";
 
     static {
-        Invitekey key1 = new Invitekey(ADMINKEY);
+        Invitekey key1 = new Invitekey(ADMINKEY,null);
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx;
 

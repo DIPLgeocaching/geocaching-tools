@@ -12,7 +12,6 @@ and open the template in the editor.
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <ui:composition template="/WEB-INF/template.xhtml">
-        <p:growl/>  
         <ui:define name="topBar">
 
             <c:if test="#{not userCon.gctusr.isAdmin}">
@@ -45,7 +44,7 @@ and open the template in the editor.
                             <div class="col-sm-6">
                                 <h:column>
                                     <h3><h:outputText value="#{i18n['nachricht']}"/></h3>
-                                    <p:editor value="#{emailController.messageToSent}"/>
+                                    <p:editor value="#{emailCon.messageToSent}"/>
                                 </h:column>
                             </div>
 
@@ -56,13 +55,28 @@ and open the template in the editor.
                                        data-role="tagsinput" 
                                        class="form-control"/><br/>
 
-                                <h:inputHidden id="emailHidden" value="#{emailController.emailAdresseString}" />
+                                <h:inputHidden id="emailHidden" value="#{emailCon.emailAdresseString}" />
                                 <br/>
-                                <p:commandLink id="emailButton" value="Submit" action="#{emailController.sendMailTLS}" class="btn btn-primary btn-s">
-                                </p:commandLink>
-
+                                <p:commandLink id="emailButton" value="Submit" action="#{emailCon.sendMailTLS}" class="btn btn-primary btn-s" update="inviteKeys"/>
                             </div>
                         </div>
+                    </div>
+                    <div class="top_menue" style="margin-top: 3%; border-top: solid 1px">
+                        <h2 style="padding-left: 21px; margin-bottom: 21px;"><h:outputText value="#{i18n['userOverview']}"/></h2>
+                    </div>
+                    <div class="container" style="padding-bottom: 20px;">
+                        <h3><h:outputText value="#{i18n['eingeladeneUser']}"/></h3>
+                        <p:dataTable id="inviteKeys" var="key" value="#{emailCon.inviteKeys}">
+                            <p:column headerText="#{i18n['date']}">
+                                <h:outputText value="#{key.date}"/>
+                            </p:column>
+                            <p:column headerText="#{i18n['email']}">
+                                <h:outputText value="#{key.email}"/>
+                            </p:column>
+                            <p:column headerText="#{i18n['used']}">
+                                <h:outputText value="#{key.used}"/>
+                            </p:column>
+                        </p:dataTable>                   
                     </div>
                 </h:form>
             </c:if>

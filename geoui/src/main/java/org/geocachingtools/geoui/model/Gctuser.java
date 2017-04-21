@@ -6,12 +6,17 @@
 package org.geocachingtools.geoui.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -39,6 +44,12 @@ public class Gctuser implements Serializable {
     @Column(name = "isAdmin")
     private boolean isAdmin;//A flag that is set to true when the user is admin
 
+    @OneToMany(mappedBy = "keyowner", fetch = FetchType.EAGER)
+    private List<Invitekey> invitekeys;//all invtekey the user created
+
+    @OneToMany(mappedBy = "cacheowner")
+    private List<Cache> caches;//all caches a user had registered
+
     @Embedded
     private OAuthData oauth;
 
@@ -49,12 +60,14 @@ public class Gctuser implements Serializable {
     Constructor
      */
     public Gctuser() {
+        this("Unkown", "Unkown", false);
     }
 
     public Gctuser(String googleAccount, String gcUsername, boolean isAdmin) {
         this.googleAccount = googleAccount;
         this.gcUsername = gcUsername;
         this.isAdmin = isAdmin;
+        invitekeys = new ArrayList<>();
     }
 
     /*
@@ -92,6 +105,22 @@ public class Gctuser implements Serializable {
         this.isAdmin = isAdmin;
     }
 
+    public List<Invitekey> getInvitekeys() {
+        return invitekeys;
+    }
+
+    public void setInvitekeys(List<Invitekey> invitekeys) {
+        this.invitekeys = invitekeys;
+    }
+
+    public List<Cache> getCaches() {
+        return caches;
+    }
+
+    public void setCaches(List<Cache> caches) {
+        this.caches = caches;
+    }
+
     public OAuthData getOauth() {
         return oauth;
     }
@@ -110,6 +139,31 @@ public class Gctuser implements Serializable {
 
     public boolean isActivated() {
         return getUsedkey() != null;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 29 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Gctuser other = (Gctuser) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
     }
 
 }
