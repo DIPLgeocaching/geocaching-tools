@@ -12,7 +12,7 @@ import javax.faces.validator.FacesValidator;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 import javax.servlet.http.HttpSession;
-import org.geocachingtools.geoui.database.Dao;
+import org.geocachingtools.geoui.util.Dao;
 
 /**
  *

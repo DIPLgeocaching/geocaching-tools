@@ -66,8 +66,8 @@ public class LoginFilter implements Filter {
         boolean loggedIn = controller.isLoggedIn();
         boolean activated = controller.isActivated();
         String message = !loggedIn ? ("Bitte zuerst Anmelden") : (!activated ? "Bitte Account aktivieren" : "");
-            HttpSession session = request.getSession();
-        
+        HttpSession session = request.getSession();
+
         if (!loggedIn || !activated) {
             session.setAttribute("message", message);
             response.sendRedirect(loginURL);

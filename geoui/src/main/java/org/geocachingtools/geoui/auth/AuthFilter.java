@@ -59,7 +59,7 @@ public class AuthFilter implements Filter {
         String code = request.getParameter("code");
         if (code != null && !code.isEmpty()) {
             try {
-                usercon.finishAuth((HttpServletRequest)request,(HttpServletResponse)response);
+                usercon.finishAuth((HttpServletRequest) request, (HttpServletResponse) response);
             } catch (Exception ex) {
                 Logger.getLogger(AuthFilter.class.getName()).log(Level.SEVERE, null, ex);
             }

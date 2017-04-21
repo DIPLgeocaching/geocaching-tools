@@ -35,32 +35,32 @@
 
         <h:body>
 
-            <div id="debugstuff" style="position: absolute;z-index: 100; width: 0%;height: 100%;">
-                <style>
-                    .infofield {
-                        text-align:center;
-                        position:absolute;
-                        bottom:0;left:0;
-                        height:45px;width:45px;
-                        background-color:grey;
-                        border: 1px solid;
-                        text-align: center;
-                        font-size: xx-small;
-                        vertical-align: middle;
-                        line-height: 45px;
-                        font-weight: bolder;
-                    }
-                </style>
-                <div class="infofield" style="left:0px;background-color: #{userCon.loggedIn ? 'green':'red'};">
-                    logged in
-                </div>
-                <div class="infofield" style="left:50px;background-color: #{userCon.activated ? 'green':'red'};">
-                    activated
-                </div>
-                <div class="infofield" style="left:100px;" onclick="window.location = 'user.xhtml'">
-                    Go To User
-                </div>
-            </div>
+            <!--            <div id="debugstuff" style="position: absolute;z-index: 100; width: 0%;height: 100%;">
+                            <style>
+                                .infofield {
+                                    text-align:center;
+                                    position:absolute;
+                                    bottom:0;left:0;
+                                    height:45px;width:45px;
+                                    background-color:grey;
+                                    border: 1px solid;
+                                    text-align: center;
+                                    font-size: xx-small;
+                                    vertical-align: middle;
+                                    line-height: 45px;
+                                    font-weight: bolder;
+                                }
+                            </style>
+                            <div class="infofield" style="left:0px;background-color: #{userCon.loggedIn ? 'green':'red'};">
+                                logged in
+                            </div>
+                            <div class="infofield" style="left:50px;background-color: #{userCon.activated ? 'green':'red'};">
+                                activated
+                            </div>
+                            <div class="infofield" style="left:100px;" onclick="window.location = 'user.xhtml'">
+                                Go To User
+                            </div>
+                        </div>-->
             <nav class="navbar navbar-inverse">
                 <div class="container-fluid" style="background-color: #4974FF">
 
@@ -73,22 +73,22 @@
                     <div class="navbar-collapse"  >
                         <ul class="nav navbar-nav">
                             <div style="margin-top: 7%">
-                                <a href="home.xhtml">
-                                    <h:outputText class="btn btn-primary" value="#{i18n['home']}"/>
-                                </a>
-                                <a href="text_decipher.xhtml">
-                                    <h:outputText class="btn btn-primary" value="#{i18n['textEnt']}" rendered="#{not userController.loggedIn}"/>
-                                </a>
-                                <a href="pic_decipher.xhtml" >
-                                    <h:outputText  class="btn btn-primary"  value="#{i18n['bildEnt']}" rendered="#{not userController.loggedIn}"/>
-                                </a>
-                                <a href="registeredCaches.xhtml">
-                                    <h:outputText class="btn btn-primary" value="#{i18n['geochecker']}" rendered="#{not userController.loggedIn}"/>
-                                </a>
-                                <a href="invite_user.xhtml">
-                                    <h:outputText class="btn btn-primary" value="#{i18n['userEinladen']}" rendered="#{not userController.loggedIn}"/>
-                                </a>
-                            </div>  
+                            <a href="home.xhtml">
+                                <h:outputText class="btn btn-primary" value="#{i18n['home']}"/>
+                            </a>
+                            <a href="text_decipher.xhtml">
+                                <h:outputText class="btn btn-primary" value="#{i18n['textEnt']}"/>
+                            </a>
+                            <a href="pic_decipher.xhtml" >
+                                <h:outputText  class="btn btn-primary"  value="#{i18n['bildEnt']}"/>
+                            </a>
+                            <a href="registeredCaches.xhtml">
+                                <h:outputText class="btn btn-primary" value="#{i18n['geochecker']}"/>
+                            </a>
+                            <a href="invite_user.xhtml">
+                                <h:outputText class="btn btn-primary" value="#{i18n['userEinladen']}"/>
+                            </a>
+                        </div>  
                         </ul>
                         <div class="nav navbar-nav navbar-right">
                             <h:form>

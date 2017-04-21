@@ -41,6 +41,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpSession;
 import org.geocachingtools.geoui.model.Invitekey;
 import org.geocachingtools.geoui.util.Dao;
 
@@ -58,15 +59,16 @@ public class EmailController implements Serializable {
     private String messageToSent;
     private String emailAdresseString;
     private Dao dao;
-
+    
     @Inject
-    private UserController controller;
+    private LocaleController localeCon;
 
     @PostConstruct
     public void init() {
         messageToSent = "";
         emailAdresseString = "";
-        dao = new Dao();
+        HttpSession s = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+        dao = (Dao) s.getAttribute("dao");
     }
 
     public String getMessageToSent() {
@@ -110,21 +112,21 @@ public class EmailController implements Serializable {
                 messageToSent += "<br/>------------------------------------------------------------<br/>"
                         + "<span style=\"font-weight: bold;\">Invite Key</span><br/>"
                         + key;
-                
+
                 message.setFrom(new InternetAddress("informatik.gc@gmail.com"));
                 message.setSubject("Invitation to Geocaching Tools!");
                 message.setContent(messageToSent, "text/html");
                 message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(s));
                 Transport.send(message);
-				//Save in DB
-                dao.saveInvitekey(new Invitekey(key, controller.getGctusr()));
+                //Save in DB
+                dao.saveInvitekey(new Invitekey(key));
                 System.out.println("Email Successfull sent");
             }
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Email erfolgreich gesendet"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(localeCon.getI18n("emailSent")));
             emailAdresseString = "";
             messageToSent = "";
         } catch (MessagingException e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Email senden gescheitert, Schule: Port nicht offen, Email Adresse nicht gefunden"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(localeCon.getI18n("emailError")));
             messageToSent = "";
             System.out.println("Fehler im EmailCon sendTLS");
             // throw new RuntimeException(e);

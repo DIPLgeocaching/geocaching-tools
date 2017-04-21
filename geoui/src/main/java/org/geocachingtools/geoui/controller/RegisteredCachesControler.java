@@ -6,19 +6,16 @@
 package org.geocachingtools.geoui.controller;
 
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
-import org.geocachingtools.geoui.database.Dao;
+import org.geocachingtools.geoui.util.Dao;
 import org.geocachingtools.geoui.model.Cache;
 import org.geocachingtools.geoui.model.Gctuser;
 
@@ -29,35 +26,25 @@ import org.geocachingtools.geoui.model.Gctuser;
 @Named(value = "registedCacheCon")
 @SessionScoped
 public class RegisteredCachesControler implements Serializable {
-
+    
     private final HttpSession s = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-    private final Dao dao = (Dao) s.getAttribute("dao");
-
-    @Inject
-    UserController userCon;
+    private Dao dao = (Dao) s.getAttribute("dao");
 
     boolean init = true;
     private Gctuser gctuser;
     private List<Cache> caches;
-    private List<Cache> filteredCaches;
-    private boolean noCaches = false;
     private Cache selectedCache;
+    
+    @Inject
+    private UserController userCon;
 
     @PostConstruct
-    public void init() {
-        if (init) {
-            try {
-                dao.initDb();
-            } catch (ParseException ex) {
-                Logger.getLogger(RegisteredCachesControler.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        gctuser = this.userCon.getGctusr();
-        caches = new Dao().getCachesFromUser(gctuser);
+    public void init() {        
+        this.gctuser = userCon.getGctusr();
+        caches = dao.getCachesFromUser(gctuser);
         sortCaches();
-        noCaches = caches.isEmpty();
     }
-
+    
     public void sortCaches() {
         Collections.sort(caches, new Comparator<Cache>() {
             @Override
@@ -70,22 +57,14 @@ public class RegisteredCachesControler implements Serializable {
     public String cachesFromUser() {
         return "yourRegisteredCaches";
     }
-
+    
     public void addCache(Cache c) {
         caches.add(c);
     }
-
+    
     /*
     Getter und Setter
      */
-    public List<Cache> getFilteredCaches() {
-        return filteredCaches;
-    }
-
-    public void setFilteredCaches(List<Cache> filteredCaches) {
-        this.filteredCaches = filteredCaches;
-    }
-
     public boolean isInit() {
         return init;
     }
@@ -93,7 +72,7 @@ public class RegisteredCachesControler implements Serializable {
     public void setInit(boolean init) {
         this.init = init;
     }
-
+    
     public Gctuser getGctusr() {
         return gctuser;
     }
@@ -111,11 +90,7 @@ public class RegisteredCachesControler implements Serializable {
     }
 
     public boolean isNoCaches() {
-        return noCaches;
-    }
-
-    public void setNoCaches(boolean noCaches) {
-        this.noCaches = noCaches;
+        return caches.size() == 0;
     }
 
     public Cache getSelectedCache() {

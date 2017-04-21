@@ -31,7 +31,6 @@ import java.io.InputStreamReader;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -105,7 +104,7 @@ public class PictureController implements Serializable {
 
     public void upload() {
         if (passwordFile != null) {
-            FacesMessage message = new FacesMessage(String.format(localeCon.getI18n("fileUpload"),passwordFile.getFileName()));
+            FacesMessage message = new FacesMessage(String.format(localeCon.getI18n("fileUpload"), passwordFile.getFileName()));
             FacesContext.getCurrentInstance().addMessage(null, message);
 
             try (InputStream is = passwordFile.getInputstream();
