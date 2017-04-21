@@ -35,7 +35,6 @@ public class RegisteredCachesControler implements Serializable {
     boolean init = true;
     private Gctuser gctuser;
     private List<Cache> caches;
-    private List<Cache> filteredCaches;
     private boolean noCaches = false;
     private Cache selectedCache;
 
@@ -74,14 +73,6 @@ public class RegisteredCachesControler implements Serializable {
     /*
     Getter und Setter
      */
-    public List<Cache> getFilteredCaches() {
-        return filteredCaches;
-    }
-
-    public void setFilteredCaches(List<Cache> filteredCaches) {
-        this.filteredCaches = filteredCaches;
-    }
-
     public boolean isInit() {
         return init;
     }

@@ -8,39 +8,39 @@
     <h:body>
         <ui:composition template="/WEB-INF/template.xhtml">
             <ui:define name="topBar">
-                <h1>Statistiken vom Cache #{statsCon.cache.gcWaypoint}</h1>
+                <h1>#{i18n['statisticsFrom']} #{statsCon.cache.gcWaypoint}</h1>
             </ui:define>
 
             <ui:define name="content">
                 <h:form style="margin-left: 30px">
                     <p:commandButton action="registeredCaches"
-                                     value="Zurück" />
+                                     value="#{i18n['statisticsBack']}" />
                 </h:form>
-                <p:outputLabel value="Es gab noch keine Lösungsversuche bei deinem Cache."
+                <p:outputLabel value="#{i18n['statisticsNoTries']}"
                                rendered="#{statsCon.noChecks}"
                                style="margin-left: 30px"/>
                 <h:form rendered="#{!statsCon.noChecks}"
                         style="margin-left: 30px; margin-right: 30px">
                     <h1>
-                        Generelle Infos
+                        #{i18n['statisticsGeneral']}
                     </h1>
-                    <p:outputLabel value="Anzahl aller Lösungsversuche: #{statsCon.allAttempts.size()}"/><br/>
-                    <p:outputLabel value="Anzahl der korrekten eingabe: #{statsCon.correctAttempts}" />
+                    <p:outputLabel value="#{i18n['statisticsAmount']} #{statsCon.allAttempts.size()}"/><br/>
+                    <p:outputLabel value="#{i18n['statisticsCorrect']} #{statsCon.correctAttempts}" />
                     <h2>
-                        Die zehn haeufigsten Fehler:
+                        #{i18n['statisticsTen']}
                     </h2>
                     <p:dataTable value="#{statsCon.mistakes}"
                                  var="mistake">
                         <p:columnGroup type="header">
                             <p:row>
                                 <p:column rowspan="2"
-                                          headerText="Anzahl"/>
+                                          headerText="#{i18n['statisticsAmount']}"/>
                                 <p:column colspan="2"
-                                          headerText="Eingabe" />
+                                          headerText="#{i18n['statisticsEntered']}" />
                             </p:row>
                             <p:row>
-                                <p:column headerText="Breitengrad" />
-                                <p:column headerText="Längengrad" />
+                                <p:column headerText="#{i18n['statisticsLatitude']}" />
+                                <p:column headerText="#{i18n['statisticsLongitude']}" />
                             </p:row>
                         </p:columnGroup>
                         <p:column width="65">
@@ -55,18 +55,17 @@
                     </p:dataTable>
                     <hr/>
                     <h1>
-                        Ip-Statistiken
+                        #{i18n['statisticsIpStats']}
                     </h1>
-                    <p:outputLabel value="Hier siehst du wer wann eine Eingabe getätigt
-                                   hat. Du kannst es auch auf einen Zeitruam begrenzen." /> <br/>
-                    <p:outputLabel value="Von:" />
+                    <p:outputLabel value="#{i18n['statisticsText']}" /> <br/>
+                    <p:outputLabel value="#{i18n['statisticsFrom']}:" />
                     <p:calendar id="timespanfrom"
                                 value="#{statsCon.from}">
                         <p:ajax event="dateSelect"
                                 listener="#{statsCon.dateChanged}"
                                 update="@all" />
                     </p:calendar>
-                    <p:outputLabel value="Bis:" />
+                    <p:outputLabel value="#{i18n['statisticsTo']}:" />
                     <p:calendar id="timespanto"
                                 value="#{statsCon.to}">
                         <p:ajax event="dateSelect"
@@ -79,12 +78,12 @@
                                  value="#{statsCon.ipaddresses}"
                                  style="margin-bottom: 40px">
                         <f:facet name="header">
-                            Alle Versuche
+                            #{i18n['statisticsAllTries']}
                         </f:facet>
                         <p:column style="width:35px">
                             <p:rowToggler />
                         </p:column>
-                        <p:column headerText="IP-Adresse">
+                        <p:column headerText="#{i18n['statisticsIp']}">
                             <h:outputText value="#{address}" />
                         </p:column>
 
@@ -98,13 +97,13 @@
                                         <p:column rowspan="2"
                                                   headerText="Nr." />
                                         <p:column rowspan="2"
-                                                  headerText="Datum" />
+                                                  headerText="#{i18n['statisticsDate']}"/>
                                         <p:column colspan="2"
-                                                  headerText="Eingabe" />
+                                                  headerText="#{i18n['statisticsEntered']}" />
                                     </p:row>
                                     <p:row>
-                                        <p:column headerText="Breitengrad" />
-                                        <p:column headerText="Längengrad" />
+                                        <p:column headerText="#{i18n['statisticsLatitude']}" />
+                                        <p:column headerText="#{i18n['statisticsLongitude']}" />
                                     </p:row>
                                 </p:columnGroup>
                                 <p:column style="width: 15px">
@@ -122,10 +121,6 @@
                                 <p:column>
                                     <p:outputLabel value="#{attempt.userinputX}" />
                                 </p:column>
-                                <!--Hier koennte man anzeigen ob es richtig war oder nicht
-                                ist aber nicht klug sonst sind die koords unverschluesllet
-                                abgespeichertun und das ist schlecht (bei verschl. kann man
-                                sie hald nicht anzeigen)-->
                             </p:dataTable>
                         </p:rowExpansion>
                     </p:dataTable>

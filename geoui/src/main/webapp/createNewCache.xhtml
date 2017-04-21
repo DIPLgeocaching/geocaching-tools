@@ -9,7 +9,7 @@
     <h:body>
         <ui:composition template="/WEB-INF/template.xhtml">
             <ui:define name="topBar">
-                <h1>Neuen Cache anlegen</h1>
+                <h1>#{i18n['createNewCache']}</h1>
             </ui:define>
 
             <ui:define name="content">
@@ -21,7 +21,7 @@
                                      cellpadding="5">
 
                             <p:outputLabel for="waypoint"
-                                           value="Wegpunkt:"/>
+                                           value="#{i18n['registedCachesWaypoint']}:"/>
                             <p:inputText id="waypoint"
                                          value="#{newcache.cache.gcWaypoint}"
                                          required="ture"
@@ -31,16 +31,16 @@
                             <p:message for="waypoint"/>
 
                             <p:outputLabel for="name"
-                                           value="Cache Name:"/>
+                                           value="Cachename:"/>
                             <p:inputText id="name"
                                          value="#{newcache.cache.gcName}"
                                          style="width: 300px"
-                                         validatorMessage="Wert erforderlich. Bitte Maximal 30 Zeichen.">
+                                         validatorMessage="#{i18n['createNewCacheError']}">
                                 <f:validateLength minimum="1" maximum="30"/>
                             </p:inputText>
                             <p:message for="name"/>
 
-                            <p:outputLabel value="Koordinate:"/>
+                            <p:outputLabel value="#{i18n['changeCacheCoordinate']}:"/>
                             <h:panelGrid id="grid_coordinate"
                                          columns="7"
                                          binding="#{newcache.grid}">
@@ -77,21 +77,21 @@
                             </h:panelGrid>
                             <p:message for="grid_coordinate"/>
 
-                            <p:outputLabel value="Mitteilung:"/>
+                            <p:outputLabel value="#{i18n['changeCacheMessage']}:"/>
                             <p:inputTextarea value="#{newcache.cache.message}"
                                              style="width: 300px"/>
                             <br/>
                         </h:panelGrid>
 
-                        <p:outputLabel value="Hinweise kannst du bei der Bearbeitung deiner Caches hinzufügen."/><br/>
+                        <p:outputLabel value="#{i18n['createNewCacheHints']}"/><br/>
 
                         <p:commandButton action="#{newcache.saveCache()}"
-                                         value="Speichern"
+                                         value="#{i18n['changeCacheSave']}"
                                          update="gridform"/>
                     </h:form>
                 <h:form style="margin-left: 30px">
                         <p:commandButton action="registeredCaches"
-                                         value="Abbrechen" />
+                                         value="#{i18n['chnageCacheCancel']}" />
                     </h:form>            
             </ui:define>
         </ui:composition>
