@@ -142,7 +142,7 @@ public class EmailController implements Serializable {
                         + "<span style=\"font-weight: bold;\">Invite Key</span><br/>"
                         + key;
 
-                message.setFrom(new InternetAddress("informatik.gc@gmail.com"));
+                message.setFrom(new InternetAddress(EMAIL));
                 message.setSubject("Invitation to Geocaching Tools!");
                 message.setContent(messageToSent, "text/html");
                 message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(s));
