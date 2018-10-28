@@ -16,6 +16,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
@@ -25,7 +26,6 @@ import org.geocachingtools.geoui.auth.UserData;
 import org.geocachingtools.geoui.auth.provider.GithubAuthProvider;
 import org.geocachingtools.geoui.auth.provider.GoogleAuthProvider;
 import org.geocachingtools.geoui.model.Gctuser;
-import org.geocachingtools.geoui.model.Invitekey;
 import org.geocachingtools.geoui.util.Dao;
 
 /**
@@ -35,13 +35,6 @@ import org.geocachingtools.geoui.util.Dao;
 @Named(value = "userCon")
 @SessionScoped
 public class UserController implements Serializable {
-
-    /**
-     * TODO: rapi anschaffen das er das schöner lösen soll anstatt überall dao
-     * objekte zu erzeugen.
-     */
-    private Dao dao;
-
     /**
      *
      */
@@ -64,12 +57,13 @@ public class UserController implements Serializable {
      * über mehrere requests hier gemerkt werden muss)
      */
     private AuthProvider provider;
-    
-    
+        
+    private Dao dao;
 
     @PostConstruct
     public void init() {
-        dao = new Dao();
+        HttpSession s = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+        dao = (Dao) s.getAttribute("dao");
     }
 
     public void initAuth(String name) throws OAuthSystemException, IOException {

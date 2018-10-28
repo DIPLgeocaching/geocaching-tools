@@ -27,7 +27,10 @@ package org.geocachingtools.geoui.controller;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import javax.mail.PasswordAuthentication;
 import java.util.Properties;
 import java.util.Random;
@@ -41,6 +44,8 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpSession;
+import org.geocachingtools.geoui.model.Gctuser;
 import org.geocachingtools.geoui.model.Invitekey;
 import org.geocachingtools.geoui.util.Dao;
 
@@ -48,7 +53,7 @@ import org.geocachingtools.geoui.util.Dao;
  *
  * @author 20120451
  */
-@Named(value = "emailController")
+@Named(value = "emailCon")
 @SessionScoped
 public class EmailController implements Serializable {
 
@@ -58,15 +63,23 @@ public class EmailController implements Serializable {
     private String messageToSent;
     private String emailAdresseString;
     private Dao dao;
+    private Gctuser user;
 
     @Inject
-    private UserController controller;
+    private LocaleController localeCon;
+    @Inject
+    private UserController userCon;
+
+    private final String EMAIL = "informatik.gc@gmail.com";
+    private final String PWD = "geocaching1234";
 
     @PostConstruct
     public void init() {
         messageToSent = "";
         emailAdresseString = "";
-        dao = new Dao();
+        HttpSession s = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+        dao = (Dao) s.getAttribute("dao");
+        user = userCon.getGctusr();
     }
 
     public String getMessageToSent() {
@@ -85,10 +98,28 @@ public class EmailController implements Serializable {
         this.emailAdresseString = emailAdresseString;
     }
 
-    public void sendMailTLS() {
-        final String username = "informatik.gc@gmail.com";
-        final String password = "geocaching1234";
+    public Gctuser getUser() {
+        return user;
+    }
 
+    public void setUser(Gctuser user) {
+        this.user = user;
+    }
+
+    public List<Invitekey> getInviteKeys() {
+        List<Invitekey> keys = new ArrayList<>();
+        for (Invitekey key : dao.getAllInvitekeys()) {
+            try {
+                if (key.getKeyowner().equals(user)) {
+                    keys.add(key);
+                }
+            } catch (NullPointerException ex) {
+            }
+        }
+        return keys;
+    }
+
+    public void sendMailTLS() {
         System.out.println("Sending mail to " + emailAdresseString);
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
@@ -99,7 +130,7 @@ public class EmailController implements Serializable {
         Session session = Session.getInstance(props,
                 new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(username, password);
+                return new PasswordAuthentication(EMAIL, PWD);
             }
         });
 
@@ -110,24 +141,26 @@ public class EmailController implements Serializable {
                 messageToSent += "<br/>------------------------------------------------------------<br/>"
                         + "<span style=\"font-weight: bold;\">Invite Key</span><br/>"
                         + key;
-                
-                message.setFrom(new InternetAddress("informatik.gc@gmail.com"));
+
+                message.setFrom(new InternetAddress(EMAIL));
                 message.setSubject("Invitation to Geocaching Tools!");
                 message.setContent(messageToSent, "text/html");
                 message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(s));
                 Transport.send(message);
-				//Save in DB
-                dao.saveInvitekey(new Invitekey(key, controller.getGctusr()));
+                //Save in DB
+                Invitekey invitekey = new Invitekey(key, user);
+                invitekey.setEmail(emailAdresseString);
+                invitekey.setDate(new Date());
+                dao.saveInvitekey(invitekey);
                 System.out.println("Email Successfull sent");
             }
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Email erfolgreich gesendet"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(localeCon.getI18n("emailSent")));
             emailAdresseString = "";
             messageToSent = "";
         } catch (MessagingException e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Email senden gescheitert, Schule: Port nicht offen, Email Adresse nicht gefunden"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(localeCon.getI18n("emailError")));
             messageToSent = "";
             System.out.println("Fehler im EmailCon sendTLS");
-            // throw new RuntimeException(e);
         }
     }
 
@@ -139,5 +172,9 @@ public class EmailController implements Serializable {
             key += chars[random.nextInt(chars.length)];
         }
         return key;
+    }
+
+    public String getEMAIL() {
+        return EMAIL;
     }
 }

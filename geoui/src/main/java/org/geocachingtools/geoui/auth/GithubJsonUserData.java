@@ -28,34 +28,38 @@ package org.geocachingtools.geoui.auth;
  *
  * @author Simon
  */
-public class GithubJsonUserData  implements UserData{
+public class GithubJsonUserData implements UserData {
 
     public static class User {
+
         public String id;
         public String login;
         public String avatar_url;
     };
+
     public static class UserEmail {
+
         public String email;
         public boolean primary;
         public boolean verified;
         public boolean visibility;
     }
-    
+
     private User user;
     private UserEmail mail;
 
     public void setMails(UserEmail[] mail) {
-        for(UserEmail m : mail) {
-            if(m.primary)
+        for (UserEmail m : mail) {
+            if (m.primary) {
                 this.mail = m;
+            }
         }
     }
 
     public void setUser(User user) {
         this.user = user;
     }
-    
+
     @Override
     public String getEmail() {
         return mail.email;
@@ -75,5 +79,5 @@ public class GithubJsonUserData  implements UserData{
     public String getPictureUrl() {
         return user.avatar_url;
     }
-    
+
 }

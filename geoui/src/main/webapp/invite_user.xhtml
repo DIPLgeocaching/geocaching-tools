@@ -5,96 +5,81 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"     
+<html xmlns="http://www.w3.org/1999/xhtml"     
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <ui:composition template="/WEB-INF/template.xhtml">
-        <ui:define name="content">
-            <c:if test="#{userCon.gctusr.isAdmin}">
-                <body>
-                    <script>
-                        $(document).ready(function () {
-
-                            function onchangeTagInput() {
-                                var box1 = $('#emailInput');
-                                var box2 = $('#inviteForm\\:emailHidden');
-                                box2.val(box1.val());
-                            }
-                            $('#emailInput').on('change', onchangeTagInput);
-                        });
-                    </script>
-
-                    <h:form id="inviteForm" >
-                        <p:growl/>  
-                        <div class="container">
-                            <div class="row" > 
-                                <div class="col-sm-6">
-                                    <h:column>
-                                        <h3><h:outputText value="#{i18n['nachricht']}"/></h3>
-                                        <p:editor value="#{emailController.messageToSent}"/>
-                                    </h:column>
-                                </div>
-
-                                <div class="col-sm-6">
-                                    <h3><h:outputText value="#{i18n['email']}"/></h3>
-                                    <input id="emailInput" 
-                                           type="text"  
-                                           data-role="tagsinput" 
-                                           class="form-control"/><br/>
-
-                                    <h:inputHidden id="emailHidden" value="#{emailController.emailAdresseString}" />
-                                    <br/>
-                                    <p:commandLink id="emailButton" value="Submit" action="#{emailController.sendMailTLS}" class="btn btn-primary btn-s">
-                                    </p:commandLink>
-
-                                </div>
-                            </div>
-                        </div>
-                        <div class="top_menue" style="margin-top: 3%; border-top: solid 1px">
-                            <h2><h:outputText value="#{i18n['userOverview']}"/></h2>
-                        </div>
-                        <div class="container">
-                            <div class="col-sm-6">
-                                <h:column>
-                                    <h3><h:outputText value="#{i18n['eingeladeneUser']}"/></h3>
-                                    <h:dataTable>
-                                        <f:facet name="header">E-Mail Adresse</f:facet>
-                                        <h:outputText value="john.doe@gmail.com"/>
-                                    </h:dataTable>
-                                </h:column>
-
-                            </div>
-                            <div class="col-sm-6">  
-                                <h3><h:outputText value="#{i18n['registrierteUser']}"/></h3>
-                                <h:dataTable>
-                                    <h:column>
-                                        <f:facet name="header">E-Mail Adresse</f:facet>
-                                        <h:outputText value="jane.doe@gmail.com"/>
-                                    </h:column>
-                                </h:dataTable>
-                            </div>
-                        </div>
-                    </h:form>
-                </body>
-            </c:if>
-        </ui:define>
-
         <ui:define name="topBar">
 
             <c:if test="#{not userCon.gctusr.isAdmin}">
-                <h3>Zugriff verweigert</h3>
+                <h3>Zugriff verweigert!</h3>
             </c:if>
             <c:if test="#{userCon.gctusr.isAdmin}">
                 <h:form>
-                    <h2><h:outputText value="#{i18n['userEinladen']}"/></h2>
+                    <h2 style="padding-top: 21px; padding-left: 21px; margin-bottom: 21px;"><h:outputText value="#{i18n['userEinladen']}"/></h2>
                 </h:form>
             </c:if>
         </ui:define>
 
+        <ui:define name="content">
+            <c:if test="#{userCon.gctusr.isAdmin}">
+                <script>
+                    $(document).ready(function () {
+
+                        function onchangeTagInput() {
+                            var box1 = $('#emailInput');
+                            var box2 = $('#inviteForm\\:emailHidden');
+                            box2.val(box1.val());
+                        }
+                        $('#emailInput').on('change', onchangeTagInput);
+                    });
+                </script>
+
+                <h:form id="inviteForm" >
+                    <div class="container">
+                        <div class="row" > 
+                            <div class="col-sm-6">
+                                <h:column>
+                                    <h3><h:outputText value="#{i18n['nachricht']}"/></h3>
+                                    <p:editor value="#{emailCon.messageToSent}"/>
+                                </h:column>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <h3><h:outputText value="#{i18n['email']}"/></h3>
+                                <input id="emailInput" 
+                                       type="text"  
+                                       data-role="tagsinput" 
+                                       class="form-control"/><br/>
+
+                                <h:inputHidden id="emailHidden" value="#{emailCon.emailAdresseString}" />
+                                <br/>
+                                <p:commandLink id="emailButton" value="Submit" action="#{emailCon.sendMailTLS}" class="btn btn-primary btn-s" update="inviteKeys"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="top_menue" style="margin-top: 3%; border-top: solid 1px">
+                        <h2 style="padding-left: 21px; margin-bottom: 21px;"><h:outputText value="#{i18n['userOverview']}"/></h2>
+                    </div>
+                    <div class="container" style="padding-bottom: 20px;">
+                        <h3><h:outputText value="#{i18n['eingeladeneUser']}"/></h3>
+                        <p:dataTable id="inviteKeys" var="key" value="#{emailCon.inviteKeys}">
+                            <p:column headerText="#{i18n['date']}">
+                                <h:outputText value="#{key.date}"/>
+                            </p:column>
+                            <p:column headerText="#{i18n['email']}">
+                                <h:outputText value="#{key.email}"/>
+                            </p:column>
+                            <p:column headerText="#{i18n['used']}">
+                                <h:outputText value="#{key.used}"/>
+                            </p:column>
+                        </p:dataTable>                   
+                    </div>
+                </h:form>
+            </c:if>
+        </ui:define>
     </ui:composition>
 </html>
