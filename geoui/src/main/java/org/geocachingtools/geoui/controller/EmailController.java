@@ -34,12 +34,15 @@ import java.util.Random;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import org.geocachingtools.geoui.model.Invitekey;
+import org.geocachingtools.geoui.util.Dao;
 
 /**
  *
@@ -54,12 +57,16 @@ public class EmailController implements Serializable {
      */
     private String messageToSent;
     private String emailAdresseString;
+    private Dao dao;
+
+    @Inject
+    private UserController controller;
 
     @PostConstruct
     public void init() {
         messageToSent = "";
         emailAdresseString = "";
-
+        dao = new Dao();
     }
 
     public String getMessageToSent() {
@@ -97,19 +104,20 @@ public class EmailController implements Serializable {
         });
 
         try {
-
-            Message message = new MimeMessage(session);
-            messageToSent += "<br/>------------------------------------------------------------<br/>"
-                    + "<span style=\"font-weight: bold;\">Invite Key</span><br/>"
-                    + createInviteKey();
-            //TODO: save in DB
-            message.setFrom(new InternetAddress("informatik.gc@gmail.com"));
-            message.setSubject("Invitation to Geocaching Tools!");
-            message.setContent(messageToSent, "text/html");
-
             for (String s : Arrays.asList(emailAdresseString.split(","))) {
+                String key = createInviteKey();
+                Message message = new MimeMessage(session);
+                messageToSent += "<br/>------------------------------------------------------------<br/>"
+                        + "<span style=\"font-weight: bold;\">Invite Key</span><br/>"
+                        + key;
+                
+                message.setFrom(new InternetAddress("informatik.gc@gmail.com"));
+                message.setSubject("Invitation to Geocaching Tools!");
+                message.setContent(messageToSent, "text/html");
                 message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(s));
                 Transport.send(message);
+				//Save in DB
+                dao.saveInvitekey(new Invitekey(key, controller.getGctusr()));
                 System.out.println("Email Successfull sent");
             }
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Email erfolgreich gesendet"));

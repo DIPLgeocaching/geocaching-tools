@@ -1,4 +1,16 @@
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.geocachingtools.decoder.DecoderRequest;
+import org.geocachingtools.decoder.DecoderResult;
+import org.geocachingtools.decoder.methods.OpenStegoLSB;
+import org.geocachingtools.decoder.methods.OpenStegoRandomLSB;
 import java.util.Arrays;
 import org.geocachingtools.decoder.methods.ADFGX;
 
@@ -36,6 +48,20 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+//        try {
+//            OpenStegoRandomLSB openStego = new OpenStegoRandomLSB();
+//            File file = new File("C:/Users/lukas/Downloads/Ochsenburg.png");
+//             List<String> pwdList = new ArrayList<>();
+//             pwdList.add("Koenigsberg");
+//             pwdList.add("Franz Schubert");
+//             
+//             DecoderResult decode = openStego.decode(
+//                     new DecoderRequest<>(InputStream.class, new FileInputStream(file), openStego, pwdList));
+//             System.out.println(decode.getBriefResult());
+//             System.out.println(decode.getFullResult());
+//         } catch (IOException ex) {
+//             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+//         }
 
         //System.out.println(new ADFGX().decode("behadgcfi", "geocaching", "key", true));
         System.out.println("-------------");
@@ -47,8 +73,6 @@ public class Main {
         
         System.out.println("-------------");
         System.out.println(new ADFGX().decode("AAADAXADDADAGDDAAAFAADADADGDFGADGDAD","geocahin","trave",true));
-
-
     }
 
 }

@@ -13,6 +13,10 @@
         <location>/home.xhtml</location> 
     </error-page>-->
 
+    <listener>
+        <listener-class>org.geocachingtools.geoui.listener.SessionListener</listener-class>
+    </listener>
+
     <!-- Change to "Production" when you are ready to deploy -->
     <context-param>
         <param-name>javax.faces.PROJECT_STAGE</param-name>

@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"     
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <h:body>
+        <ui:composition template="/WEB-INF/template.xhtml">
+
+            <ui:define name="content">
+                <div class="container">
+                    <div id="mainRow" class="row">
+                        <h2>Settings</h2>
+                        <div>
+                            <input id="loadFromUrlInput" type="text" value="res/test.jpg"/>
+                            <input id="loadFromUrlButton" type="button" value="Load from URL"/>
+                        </div>
+                        <div id="debug"></div>
+                        <div>
+                            <input id="pensilButton" type="button" value="use pensil"/>
+                            <input id="rubberButton" type="button" value="use rubber"/>
+                            <a id="downloadButton" download="Canvas.png">Download Canvas</a>
+                        </div>
+                        <div>
+                            <input id="modeButton" type="checkbox" class="btn btn-sm"/>
+                            <label for="modeButton">Advanced Mode</label>
+                            <input id="renderButton" type="button" value="Render 3d Reconstruction" style="display:none;"/>
+                        </div>
+                        <h2>Controll</h2>
+                        <canvas id="graphCanvas" width="800" height="50"/>
+                        <div  id="recControllParent" style="display: none;">
+                            <input id="recControll" type="text" data-slider-value="[0,0]"/>
+                        </div>
+                        <div id="canvasParent">
+                            <canvas id="mainCanvas" class="stereocanvas" width="800" height="400" style="z-index: 1;"/>
+                            <canvas id="overlayCanvas" class="stereocanvas" width="800" height="400" style="z-index: 2;"/>
+                        </div>
+                    </div>
+                </div>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/bootstrap-slider.min.js"/>
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/css/bootstrap-slider.min.css"/>
+                <style>
+                    #canvasParent {
+                        position:relative;
+                    }
+                    #overlayCanvas {
+                        opacity: 0.8;
+                        cursor: url('data:image/x-icon;base64,AAACAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAEAAAAAAAAAAAAAAAhYWFAPqv6ADgm4sASkpKAJ/l7QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIAAAAAAAAAAAAAAAAAAAEiIAAAAAAAAAAAAAAAAAAxEiIAAAAAAAAAAAAAAAADMxEgAAAAAAAAAAAAAAAAMzMxAAAAAAAAAAAAAAAAAzMzMAAAAAAAAAAAAAAAADMzMwAAAAAAAAAAAAAAAAMzMzAAAAAAAAAAAAAAAAAzMzMAAAAAAAAAAAAAAAADMzMwAAAAAAAAAAAAAAAABTMzAAAAAAAAAAAAAAAAAFVTMAAAAAAAAAAAAAAAAABFVQAAAAAAAAAAAAAAAAAARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///////////////////////////////////////////////////////////////////////////////////////P////h////wP///4H///8D///+B////A////gf///wP///4H///+D////B////w////8///////////////w=='), auto;
+                    }
+                    #recControll {
+                        width: 100%;
+                    }
+                    .stereocanvas {
+                        position:absolute;
+                        left:0px;
+                        top:0px;
+                    }
+                </style>
+                <script src="res/js/paint.js"/>
+                <script src="res/js/base64.js"/>
+                <script>
+                    //<![CDATA[
+
+                    window.onload = function () {
+
+                        /* get elements */
+                        var img = new Image();
+                        var canvasParent = document.getElementById('canvasParent');
+                        var canvas = document.getElementById('mainCanvas');
+                        var graph = document.getElementById('graphCanvas');
+                        var overlay = document.getElementById('overlayCanvas');
+                        var modeButton = document.getElementById('modeButton');
+                        var mainRow = document.getElementById('mainRow');
+                        var renderButton = document.getElementById('renderButton');
+                        var sizeChanged = true;
+                        var graphData = [];
+                        var from = 0;
+                        var to = 0;
+
+                        var slider = new Slider('#recControll', {
+                            focus: true
+                        });
+                        var resetSlider = function (width, mx) {
+                            document.getElementById('recControll').style.width = width + 'px';
+                            slider.destroy();
+                            slider = new Slider('#recControll', {
+                                min: 0,
+                                max: mx,
+                                value: (modeButton.checked) ? [from, mx] : from,
+                                focus: true
+                            });
+                            slider.on('change', function (value) {
+                                console.log(value);
+                                if (!modeButton.checked) {
+                                    //single mode
+                                    if (value.oldValue != value.newValue) {
+                                        render(value.newValue);
+                                    }
+                                    from = value.newValue;
+                                } else {
+                                    //multi mode
+                                    if (value.oldValue[0] !== value.newValue[0]) {
+                                        render(value.newValue[0]);
+                                    }
+                                    if (value.oldValue[1] !== value.newValue[1]) {
+                                        render(value.newValue[1]);
+                                    }
+                                    from = Math.min(value.newValue[0], value.newValue[1]);
+                                    to = Math.max(value.newValue[0], value.newValue[1]);
+                                }
+                            });
+                        };
+
+                        var downloadButton = document.getElementById('downloadButton');
+                        var rubberButton = document.getElementById('rubberButton');
+                        var pensilButton = document.getElementById('pensilButton');
+                        rubberButton.addEventListener('click', function () {
+                            window.paint.setCurrentTool('rubber');
+                        }, false);
+                        pensilButton.addEventListener('click', function () {
+                            window.paint.setCurrentTool('pensil');
+                        }, false);
+                        modeButton.addEventListener('click', function (evt) {
+                            resetSlider(canvas.clientWidth, img.width);
+                            if (modeButton.checked) {
+                                renderButton.style.display = 'inline-block';
+                            } else {
+                                renderButton.style.display = 'none';
+                            }
+                        });
+                        renderButton.addEventListener('click', function () {
+                            var settings = {
+                                from: from,
+                                to: to,
+                                url: img.src
+                            };
+                            var json = JSON.stringify(settings);
+                            //var base = new Buffer(json).toString("base64");
+                            var base = Base64.encode(json);
+                            window.location.href = '/geoui/stereo_image_reconstruction.xhtml?q=' + base;
+                        });
+                        var testStereogramm = function (pixels, tresh = 20, offset = 0) {
+                            var d = pixels.data;
+                            var cnt = 0;
+                            for (var x = offset; x < pixels.width; x += 1) {
+                                for (var y = 0; y < pixels.height; y += 1) {
+                                    var i = (y * pixels.width + x) * 4;
+                                    var r = d[i];
+                                    var g = d[i + 1];
+                                    var b = d[i + 2];
+                                    if ((r + g + b) / 3 <= tresh)
+                                        cnt += 1;
+                                }
+                            }
+                            return 1.0 * cnt / (pixels.height * (pixels.width - offset));
+                        };
+                        var generateGraphData = function (img) {
+                            var result = [];
+                            var canvas = document.createElement('canvas');
+                            canvas.width = img.width;
+                            canvas.height = img.height;
+                            var ctx = canvas.getContext('2d');
+                            for (var i = 0; i < img.width; i += 1) {
+                                ctx.globalCompositeOperation = 'source-over';
+                                ctx.drawImage(img, 0, 0, img.width, img.height);
+                                ctx.globalCompositeOperation = 'difference';
+                                ctx.drawImage(img, i, 0, img.width, img.height);
+                                var pixels = ctx.getImageData(0, 0, img.width, img.height);
+                                result.push(testStereogramm(pixels, 20, i));
+                            }
+                            return result;
+                        };
+
+                        /**
+                         * encodes both layers into a png image and downloads it
+                         */
+                        var download = function () {
+                            //create temporary canvas
+                            var down = document.createElement('canvas');
+                            down.width = canvas.width;
+                            down.height = canvas.height;
+                            //draw both layers onto temporary canvas
+                            var ctx = down.getContext('2d');
+                            ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height);
+                            ctx.drawImage(overlay, 0, 0, overlay.width, overlay.height);
+                            //encode image into url
+                            var dt = down.toDataURL('image/png');
+                            //download the image
+                            this.href = dt;
+                        };
+                        downloadButton.addEventListener('click', download, false);
+
+                        /*
+                         * This functions renders image two times shifted by 'diff' onto the provided context
+                         * @param {CanvasRenderingContext2D} ctx 
+                         * @param {Image} img
+                         */
+                        var renderImage = function (ctx, offset = 0) {
+                            //it is important that the image is drawn in its original size on the canvas
+                            //otherwise some stereo images do not cancel themselve out correctly 
+                            //because of some default scalation filtering operations
+                            console.log(offset);
+                            ctx.drawImage(img, 0, 0, img.width, img.height);
+                            ctx.globalCompositeOperation = 'difference';
+                            ctx.drawImage(img, offset, 0, img.width, img.height);
+                        };
+
+                        var normalizeData = function (data) {
+                            var result = [];
+                            var mx = Math.max.apply(Math, data);
+                            var mn = Math.min.apply(Math, data);
+                            console.log('max ' + mx);
+                            console.log('min ' + mn);
+                            for (var i = 0; i < data.length; i += 1) {
+                                result.push((data[i] - mn) / (mx - mn));
+                            }
+                            return result;
+                        };
+
+                        var renderGraph = function (ctx) {
+                            if (graphData.length === 0)
+                                return;
+                            ctx.clearRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
+                            ctx.beginPath();
+                            ctx.moveTo(0, 0);
+                            for (var i = 0; i < graphData.length; i++) {
+                                ctx.lineTo(
+                                        i * ctx.canvas.clientWidth / graphData.length,
+                                        (1 - graphData[i]) * ctx.canvas.clientHeight
+                                        );
+                            }
+                            ctx.stroke();
+                        };
+
+
+                        /*
+                         * Updates the size's of the elements
+                         */
+                        var updateCanvas = function () {
+                            // update height and width for the canvas
+                            if (sizeChanged) {
+                                graph.width = canvas.width = overlay.width = mainRow.clientWidth;
+                                canvas.height = overlay.height = canvas.width * (img.height / img.width);
+                                resetSlider(canvas.clientWidth, img.width);
+
+                                sizeChanged = false;
+                            }
+                            // updates the size of the canvasParent
+                            canvasParent.style.width = canvas.width + 'px';
+                            canvasParent.style.height = canvas.height + 'px';
+                        };
+
+
+                        /*
+                         *  
+                         */
+                        var render = function (offset = 0) {
+                            updateCanvas();
+
+                            var factor = canvas.width / img.width;
+                            var ctx = canvas.getContext('2d');
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                            ctx.save();
+                            ctx.scale(factor, factor);
+                            renderImage(ctx, offset);
+                            ctx.restore();
+
+                            renderGraph(graph.getContext('2d'));
+
+                        };
+
+                        var onimgload = function () {
+
+                            var canvas = document.createElement('canvas');
+                            var ctx = canvas.getContext('2d');
+                            sizeChanged = true;
+                            canvas.width = 400;
+                            canvas.height = canvas.width * (img.height / img.width);
+                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                            setTimeout(function () {
+                                graphData = normalizeData(generateGraphData(canvas));
+                                render(from);
+                                document.getElementById('recControllParent').style = "display:'block';";
+                            }, 0);
+                            render(from);
+                        };
+
+                        document.getElementById('loadFromUrlButton').addEventListener('click', function () {
+                            img = new Image();
+                            img.addEventListener('load', onimgload, false);
+                            //img.crossOrigin = "Anonymous";
+                            img.src = document.getElementById('loadFromUrlInput').value;
+                        });
+
+
+                        window.paint.init(overlay);
+
+                        //TODO: let the user choose the file, just set img.src again with a js function
+//
+//                        img.src = 'http://localhost:8080/geoui/res/kopf.jpg';
+//                        img.src = 'http://localhost:8080/geoui/res/test.jpg';
+//                        img.src = 'http://localhost:8080/geoui/res/text.png';
+//                        img.src = 'http://localhost:8080/geoui/res/heart.png';
+//                        img.src = 'http://localhost:8080/geoui/res/L-stereogram-tree.jpg'; 
+//                        img.src = 'http://localhost:8080/geoui/res/what.png'; 
+//                        img.src = 'http://localhost:8080/geoui/res/city.jpg';
+//                        img.src = 'http://localhost:8080/geoui/res/geocaching.jpg'; 
+//                        img.src = 'http://localhost:8080/geoui/res/ost.jpg';
+//                        img.src = 'http://localhost:8080/geoui/res/nord.jpg';
+//                        img.src = 'http://localhost:8080/geoui/res/stereo.jpg';
+//                        img.src = 'http://localhost:8080/geoui/res/large.gif';
+                    };
+                    //]]>
+                </script>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
