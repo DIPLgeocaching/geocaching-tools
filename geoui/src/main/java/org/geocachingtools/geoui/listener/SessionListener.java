@@ -7,8 +7,8 @@ package org.geocachingtools.geoui.listener;
 
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-import org.geocachingtools.geoui.database.Dao;
-import org.geocachingtools.geoui.database.HibernateUtil;
+import org.geocachingtools.geoui.util.Dao;
+import org.geocachingtools.geoui.util.HibernateUtil;
 
 /**
  *
@@ -24,8 +24,5 @@ public class SessionListener implements HttpSessionListener {
 
     @Override
     public void sessionDestroyed(HttpSessionEvent se) {
-        //HibernateUtil wird geschlossen
-        Dao dao = (Dao) se.getSession().getAttribute("dao");
-//        dao.close();        
     }
 }

@@ -18,7 +18,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import org.geocachingtools.geoui.database.Dao;
+import org.geocachingtools.geoui.util.Dao;
 import org.geocachingtools.geoui.model.Cache;
 import org.geocachingtools.geoui.model.Check;
 import org.geocachingtools.geoui.model.Childwaypoint;
@@ -99,12 +99,12 @@ public class CheckerController implements Serializable {
 
         if (check.getSum() < 6) {
             infoTries = "Du hast noch " + (5 - check.getSum())
-                    + " Versuche ueber. Um " + df.format(check.getCal().getTime())
-                    + " bekommst du fuenf neue Versuche.";
+                    + " Versuche über. Um " + df.format(check.getCal().getTime())
+                    + " bekommst du fünf neue Versuche.";
             return true;
         } else {
             infoTries = "Du hast alle Versuche verbraucht. Um " + df.format(check.getCal().getTime())
-                    + " bekommst du fuenf neue Versuche.";
+                    + " bekommst du fünf neue Versuche.";
             return false;
         }
     }
@@ -112,7 +112,7 @@ public class CheckerController implements Serializable {
     public void check() {
         if (coordinate.validateCoordinate()) {
             FacesContext.getCurrentInstance().addMessage(grid.getClientId(),
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Die Koordinate ist ungueltig", "Die Koordinate ist ungueltig"));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Die Koordinate ist ungültig", "Die Koordinate ist ungültig"));
             return;
         }
         if (!checkAttempts()) {

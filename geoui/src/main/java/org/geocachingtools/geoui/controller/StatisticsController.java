@@ -20,7 +20,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
-import org.geocachingtools.geoui.database.Dao;
+import org.geocachingtools.geoui.util.Dao;
 import org.geocachingtools.geoui.model.Cache;
 import org.geocachingtools.geoui.model.Mistake;
 import org.geocachingtools.geoui.model.SessionAttempt;

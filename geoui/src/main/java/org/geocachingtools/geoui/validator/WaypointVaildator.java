@@ -32,7 +32,7 @@ public class WaypointVaildator implements Validator {
         String waypoint = o.toString().toLowerCase();//toLowerCase, da der Benutzer den Wegpunkt gorss oder klein schrebien koennte
         
         if (waypoint.length() != 7 || !waypoint.startsWith("gc")) {
-            FacesMessage msg = new FacesMessage("Waypoint validation failed.", "Der Wegpunkt ist ungueltig.");
+            FacesMessage msg = new FacesMessage("Waypoint validation failed.", "Der Wegpunkt ist ungültig.");
             msg.setSeverity(FacesMessage.SEVERITY_ERROR);
             throw new ValidatorException(msg);
         }

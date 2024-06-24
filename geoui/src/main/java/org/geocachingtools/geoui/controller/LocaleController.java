@@ -23,6 +23,10 @@ public class LocaleController implements Serializable {
     private Locale locale = Locale.ENGLISH;
     private ResourceBundle bundle;
 
+    public LocaleController() {
+        bundle = ResourceBundle.getBundle("i18n", locale);
+    }
+
     public Locale getLocale() {
         return locale;
     }

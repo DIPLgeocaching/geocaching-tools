@@ -8,7 +8,6 @@ package org.geocachingtools.geoui.model;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Entity;
 
 /**
  *
@@ -28,7 +27,6 @@ public class OAuthData implements Serializable {
     private String refreshToken;
     @Column
     private String accessToken;
-    
 
     public OAuthData() {
     }

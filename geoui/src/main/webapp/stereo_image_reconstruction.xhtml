@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="windows-1252"?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"     
+<html xmlns="http://www.w3.org/1999/xhtml"     
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://xmlns.jcp.org/jsf/html">
 
     <h:body>
@@ -40,104 +38,97 @@
                 <script>
                     //<![CDATA[
                     window.onload = function () {
-                        /* http://stackoverflow.com/questions/979975/how-to-get-the-value-from-the-get-parameters */
-                        var gup = function (name, url) {
-                            if (!url)
-                                url = location.href;
-                            name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-                            var regexS = "[\\?&]" + name + "=([^&#]*)";
-                            var regex = new RegExp(regexS);
-                            var results = regex.exec(url);
-                            return results === null ? null : results[1];
-                        }
-                        /* get elements */
-                        var img = new Image();
-                        var sizeChanged = true;
-                        var canvas = document.getElementById('mainCanvas');
-                        var settings = JSON.parse(Base64.decode(gup('q')));
-                        var progressBar = document.getElementById('progressBar');
-
-                        var doit_sub = function (sourceImg, targetCtx, mn, mx, tresh, gauss = 2, c, index, imageData) {
-                            var ctx = c.getContext('2d');
-                            ctx.globalCompositeOperation = 'source-over';
-                            ctx.drawImage(sourceImg, 0, 0, c.width, c.height);
-                            ctx.globalCompositeOperation = 'difference';
-                            ctx.drawImage(sourceImg, index, 0, c.width, c.height);
-                            var pixels = ctx.getImageData(0, 0, sourceImg.width, sourceImg.height);
-                            for (var h = 0; h < gauss; h += 1)
-                                pixels = window.stereo.filterGaussian(pixels, index);
-                            var d = pixels.data;
-                            var color = Math.floor(255 * (index - mn) / (mx - mn));
-                            var progress = 100 - Math.floor(100 * (index - mn) / (mx - mn));
-
-                            progressBar.style.width = progress + '%';
-                            progressBar.setAttribute('aria-valuenow', progress);
-
-                            for (var x = index; x < pixels.width; x++) {
-                                for (var y = 0; y < pixels.height; y++) {
-                                    var j = (y * pixels.width + x) * 4;
-                                    var avg = (d[j] + d[j + 1] + d[j + 2]) / 3;
-                                    if (avg < tresh) {
-                                        imageData.data[j] = color;
-                                        imageData.data[j + 3] = 255;
-                                    }
-                                }
-                            }
-                            console.log("fin " + index + " color " + color);
-                                targetCtx.putImageData(imageData, 0, 0);
-                            if (index <= mn) {
-                            } else {
-                                setTimeout(function () {
-                                    doit_sub(sourceImg, targetCtx, mn, mx, tresh, gauss, c, index - 1, imageData);
-                                }, 10);
-                        }
-                        };
-                        var doit = function (sourceImg, targetCtx, mn, mx, tresh, gauss = 2) {
-                            var c = document.createElement('canvas');
-                            c.width = sourceImg.width;
-                            c.height = sourceImg.height;
-                            var imageData = targetCtx.getImageData(0, 0, sourceImg.width, sourceImg.height);
-                            doit_sub(sourceImg, targetCtx, mn, mx, tresh, gauss, c, mx, imageData);
-                        };
-
-                        /*
-                         * Updates the size's of the elements
-                         */
-                        var updateCanvas = function () {
-                            // update height and width for the canvas
-                            if (sizeChanged) {
-                                canvas.width = canvas.clientWidth;
-                                canvas.height = canvas.width * (img.height / img.width);
-                                sizeChanged = false;
-                            }
-                        };
-
-                        var render = function () {
-                            updateCanvas();
-
-                            var ctx = canvas.getContext('2d');
-                            ctx.clearRect(0, 0, canvas.width, canvas.height);
-                            ctx.fillStyle = 'black';
-                            ctx.fillRect(0, 0, canvas.width, canvas.height);
-                            console.log(settings);
+                    /* http://stackoverflow.com/questions/979975/how-to-get-the-value-from-the-get-parameters */
+                    var gup = function (name, url) {
+                    if (!url)
+                            url = location.href;
+                    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+                    var regexS = "[\\?&]" + name + "=([^&#]*)";
+                    var regex = new RegExp(regexS);
+                    var results = regex.exec(url);
+                    return results === null ? null : results[1];
+                    }
+                    /* get elements */
+                    var img = new Image();
+                    var sizeChanged = true;
+                    var canvas = document.getElementById('mainCanvas');
+                    var settings = JSON.parse(Base64.decode(gup('q')));
+                    var progressBar = document.getElementById('progressBar');
+                    var doit_sub = function (sourceImg, targetCtx, mn, mx, tresh, gauss = 2, c, index, imageData) {
+                    var ctx = c.getContext('2d');
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.drawImage(sourceImg, 0, 0, c.width, c.height);
+                    ctx.globalCompositeOperation = 'difference';
+                    ctx.drawImage(sourceImg, index, 0, c.width, c.height);
+                    var pixels = ctx.getImageData(0, 0, sourceImg.width, sourceImg.height);
+                    for (var h = 0; h < gauss; h += 1)
+                            pixels = window.stereo.filterGaussian(pixels, index);
+                    var d = pixels.data;
+                    var color = Math.floor(255 * (index - mn) / (mx - mn));
+                    var progress = 100 - Math.floor(100 * (index - mn) / (mx - mn));
+                    progressBar.style.width = progress + '%';
+                    progressBar.setAttribute('aria-valuenow', progress);
+                    for (var x = index; x < pixels.width; x++) {
+                    for (var y = 0; y < pixels.height; y++) {
+                    var j = (y * pixels.width + x) * 4;
+                    var avg = (d[j] + d[j + 1] + d[j + 2]) / 3;
+                    if (avg < tresh) {
+                    imageData.data[j] = color;
+                    imageData.data[j + 3] = 255;
+                    }
+                    }
+                    }
+                    console.log("fin " + index + " color " + color);
+                    targetCtx.putImageData(imageData, 0, 0);
+                    if (index <= mn) {
+                    } else {
+                    setTimeout(function () {
+                    doit_sub(sourceImg, targetCtx, mn, mx, tresh, gauss, c, index - 1, imageData);
+                    }, 10);
+                    }
+                    };
+                    var doit = function (sourceImg, targetCtx, mn, mx, tresh, gauss = 2) {
+                    var c = document.createElement('canvas');
+                    c.width = sourceImg.width;
+                    c.height = sourceImg.height;
+                    var imageData = targetCtx.getImageData(0, 0, sourceImg.width, sourceImg.height);
+                    doit_sub(sourceImg, targetCtx, mn, mx, tresh, gauss, c, mx, imageData);
+                    };
+                    /*
+                     * Updates the size's of the elements
+                     */
+                    var updateCanvas = function () {
+                    // update height and width for the canvas
+                    if (sizeChanged) {
+                    canvas.width = canvas.clientWidth;
+                    canvas.height = canvas.width * (img.height / img.width);
+                    sizeChanged = false;
+                    }
+                    };
+                    var render = function () {
+                    updateCanvas();
+                    var ctx = canvas.getContext('2d');
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = 'black';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    console.log(settings);
 //                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                            setTimeout(function () {
-                                doit(img, ctx, settings.from, settings.to, 20);//stereo-3d.jpg
+                    setTimeout(function () {
+                    doit(img, ctx, settings.from, settings.to, 20); //stereo-3d.jpg
 //                                doit(img, ctx, 60, 100, 20);//test.jpg
 //                                doit(img, ctx, 240, 280, 20);//what.png
 //                                doit(img, ctx, 60, 100, 5);
 //                                doit(img, ctx, 60, 100, 2);
 //                                doit(img, ctx, 60, 100, 1);
-                                console.log('done');
-                            }, 10);
-                        };
-
-                        var onimgload = function () {
-                            render();
-                        };
-                        img = new Image();
-                        img.addEventListener('load', onimgload, false);
-                        img.src = settings.url;
+                    console.log('done');
+                    }, 10);
+                    };
+                    var onimgload = function () {
+                    render();
+                    };
+                    img = new Image();
+                    img.addEventListener('load', onimgload, false);
+                    img.src = settings.url;
                     };
                     //]]>
                 </script>

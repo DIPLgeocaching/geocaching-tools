@@ -56,12 +56,8 @@
         <div class="top_menue">
             <h1>Geochecker</h1>
         </div>
-
-        <p:gmap center="1.0,1.0"
-                zoom="15"
-                type="HYBRID"/>
         <h:form id="checker" style="margin-left: 30px">
-            <p:outputLabel value="Achtung! Der Cache wurde inaktiv gesetzt."
+            <p:outputLabel value="#{i18n['checkerInactivated']}"
                            rendered="#{!checkerCon.cache.status}"/><br/>
             <p:outputLabel value="#{checkerCon.cache.gcWaypoint}"
                            style="font-size: 28px;"/>
@@ -70,7 +66,7 @@
                            rendered="#{checkerCon.exists()}"
                            style="font-size: 22px;"/>
             <hr/>
-            <p:outputLabel value="Gibt hier deine Koordinaten ein:"/>
+            <p:outputLabel value="#{i18n['checkerEnterHere']}:"/>
             <br/>
 
             <h:panelGrid id="gridcoordinate"
@@ -111,7 +107,7 @@
             <p:message for="gridcoordinate"/>
             <p:outputLabel value="#{checkerCon.message}"/><br/>
             <p:outputPanel rendered="#{checkerCon.isSolved}">
-                <p:outputLabel value="Nachricht des Cache-Erstellers:" /><br/>
+                <p:outputLabel value="#{i18n['checkerMessageFromOwner']}:" /><br/>
                 <p:outputLabel value="#{checkerCon.cache.message}"
                                style="white-space: pre-wrap"/><br/>
                 <p:gmap center="#{checkerCon.coordinate.doubleCoordinateY}, #{checkerCon.coordinate.doubleCoordinateX}"
@@ -121,7 +117,7 @@
                         model="#{checkerCon.solvedModel}"/>
             </p:outputPanel>
             <p:outputPanel rendered="#{checkerCon.showAttemptHint}">
-                <p:outputLabel value="Du hast schon viele Fehlversuche. Hier ein Hinweis vom Ersteller:"/><br/>
+                <p:outputLabel value="#{i18n['checkerLimit']}:"/><br/>
                 <p:outputLabel value="#{checkerCon.attemptHint}" /><br/>
             </p:outputPanel>
             <p:commandButton value="Check"

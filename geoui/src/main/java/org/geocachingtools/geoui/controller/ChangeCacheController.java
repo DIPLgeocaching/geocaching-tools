@@ -12,8 +12,9 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import org.geocachingtools.geoui.database.Dao;
+import org.geocachingtools.geoui.util.Dao;
 import org.geocachingtools.geoui.model.Cache;
 import org.geocachingtools.geoui.model.Childwaypoint;
 import org.geocachingtools.geoui.model.Coordinate;
@@ -33,6 +34,8 @@ public class ChangeCacheController implements Serializable {
     @Inject
     private RegisteredCachesControler con;
     
+    private String link;
+    
     private Cache cache;
     private Coordinate childcoord;
     private Childwaypoint childwaypoint;
@@ -48,6 +51,11 @@ public class ChangeCacheController implements Serializable {
         resetChild();
         resetAttemptHint();
         this.cache = cache;
+        
+        HttpServletRequest origRequest = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        String l = origRequest.getRequestURL().toString();
+        this.link = l.replace("registeredCaches.xhtml", "checkerGateway.xhtml?id="+cache.getCheckerlink());
+        
         return "changeCache";
     }
 
@@ -136,5 +144,13 @@ public class ChangeCacheController implements Serializable {
 
     public void setChildcoord(Coordinate childcoord) {
         this.childcoord = childcoord;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
 }

@@ -31,7 +31,6 @@ import java.io.InputStreamReader;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,7 +73,6 @@ public class PictureController implements Serializable {
     private UIComponent pwd;
     private UIComponent pic;
     private String url;
-    private InputStream urlImage;
 
     @Inject
     private LocaleController localeCon;
@@ -90,7 +88,6 @@ public class PictureController implements Serializable {
     public InputStream getPictureByURL() {
         try {
             return new URL(url).openStream();
-
         } catch (IOException ex) {
             Logger.getLogger(PictureController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -105,7 +102,7 @@ public class PictureController implements Serializable {
 
     public void upload() {
         if (passwordFile != null) {
-            FacesMessage message = new FacesMessage(String.format(localeCon.getI18n("fileUpload"),passwordFile.getFileName()));
+            FacesMessage message = new FacesMessage(String.format(localeCon.getI18n("fileUpload"), passwordFile.getFileName()));
             FacesContext.getCurrentInstance().addMessage(null, message);
 
             try (InputStream is = passwordFile.getInputstream();

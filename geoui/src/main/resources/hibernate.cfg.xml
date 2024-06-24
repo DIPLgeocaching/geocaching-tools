@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
-  <session-factory>
-    <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
-    <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-    <property name="hibernate.connection.url">jdbc:postgresql://if-remote.htlstp.ac.at:54322/GeoChecker2</property>
-    <property name="hibernate.connection.username">5AHIF_16</property>
-    <property name="hibernate.connection.password">jeke18</property>
-    <!--MAPPINGS-->
-    <property name="hibernate.hbm2ddl.auto">create-drop</property>
-    <mapping class="org.geocachingtools.geoui.model.Cache"/>
-    <mapping class="org.geocachingtools.geoui.model.Childwaypoint"/>
-    <mapping class="org.geocachingtools.geoui.model.Gctuser"/>
-    <mapping class="org.geocachingtools.geoui.model.Hint"/>
-    <mapping class="org.geocachingtools.geoui.model.Invitekey"/>
-    <mapping class="org.geocachingtools.geoui.model.SessionAttempts"/>
-  </session-factory>
+    <session-factory>
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://if-remote.htlstp.ac.at:54322/GeocachingTools</property>
+        <property name="hibernate.connection.username">5AHIF_16</property>
+        <property name="hibernate.connection.password">jeke18</property>
+        <!--MAPPINGS-->
+        <property name="hibernate.hbm2ddl.auto">create-drop</property>
+        <mapping class="org.geocachingtools.geoui.model.Cache"/>
+        <mapping class="org.geocachingtools.geoui.model.Hint"/>
+        <mapping class="org.geocachingtools.geoui.model.SessionAttempt"/>
+        <mapping class="org.geocachingtools.geoui.model.Gctuser"/>
+        <mapping class="org.geocachingtools.geoui.model.Invitekey"/>
+        <mapping class="org.geocachingtools.geoui.model.Childwaypoint"/>
+    </session-factory>
 </hibernate-configuration>

@@ -37,5 +37,5 @@ public interface UserData {
     String getName();
 
     String getPictureUrl();
-    
+
 }

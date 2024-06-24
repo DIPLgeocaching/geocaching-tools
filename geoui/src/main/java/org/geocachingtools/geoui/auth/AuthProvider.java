@@ -72,7 +72,7 @@ public abstract class AuthProvider {
     public String getSecret() {
         return get("clientSecret");
     }
-    
+
     public String getResponseUri() {
         return get("responseUri");
     }
@@ -86,14 +86,11 @@ public abstract class AuthProvider {
         request.setHeader("accept", "application/json");
         return oAuthClient.resource(request, "GET", OAuthResourceResponse.class);
     }
-    
-    public OAuthClientRequest buildBearerRequest(String url,String accessToken) throws OAuthSystemException {
-        return  new OAuthBearerClientRequest(url)
+
+    public OAuthClientRequest buildBearerRequest(String url, String accessToken) throws OAuthSystemException {
+        return new OAuthBearerClientRequest(url)
                 .setAccessToken(accessToken)
                 .buildQueryMessage();
     }
-
-    
-    
 
 }

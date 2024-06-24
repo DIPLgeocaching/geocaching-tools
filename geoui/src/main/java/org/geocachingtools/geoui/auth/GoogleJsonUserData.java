@@ -29,14 +29,13 @@ package org.geocachingtools.geoui.auth;
  * @author Simon
  */
 public class GoogleJsonUserData implements UserData {
-    
-    
+
     private String id;
-    
+
     private String name;
-    
+
     private String picture;
-    
+
     private String email;
 
     @Override

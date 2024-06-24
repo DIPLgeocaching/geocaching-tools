@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="windows-1252"?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"     
+<html xmlns="http://www.w3.org/1999/xhtml"     
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://xmlns.jcp.org/jsf/html">
 
     <h:body>
@@ -130,7 +128,7 @@
 //                            this.href = dt;
                         };
                         downloadButton.addEventListener('click', download, false);
-                        
+
 
                         /*
                          * 
@@ -175,7 +173,7 @@
                             var ctx2 = originalCanvas.getContext('2d');
                             ctx2.drawImage(img, 0, 0, img.width, img.height);
                         };
-                        
+
                         var resetPrec = function () {
                             main.value = parseInt(parseInt(main.value) + parseInt(prec.value));
                             prec.value = 0;
@@ -224,7 +222,8 @@
                                 id: id,
                                 pixel: componentPixel
                             };
-                        };
+                        }
+                        ;
 
                         var findComponents = function (pixels) {
                             var width = pixels.width;
@@ -278,7 +277,7 @@
                             tmpcanvas.width = width;
                             tmpcanvas.height = height;
                             var tmpctx = tmpcanvas.getContext('2d');
-                            overlay.getContext('2d').clearRect(0,0,width,height);
+                            overlay.getContext('2d').clearRect(0, 0, width, height);
                             tmpctx.putImageData(data1, 0, 0);
                             overlay.getContext('2d').drawImage(tmpcanvas, 0, 0, width, height);
                             tmpctx.putImageData(data2, 0, 0);
@@ -295,7 +294,7 @@
                         greenControll.addEventListener("mousemove", pickrender, false);
                         blueControll.addEventListener("mousemove", pickrender, false);
                         img.addEventListener('load', render, false);
-                        
+
                         window.paint.init(overlay);
                         //TODO: let the user choose the file, just set img.src again with a js function
 
